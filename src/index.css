@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+#########
+# CORES #
+#########
+
+Amarelo - #f7d417
+Laranja - #de8703
+Vermelho - #e30d40
+*/
+
+
+/* Estilização do HTML */
+
+input {
+    @apply p-2 rounded-lg outline-none text-orange-900 w-full;
+}
+
+select {
+    @apply p-2 rounded-lg outline-none text-orange-900 w-full h-10;
+}
+
+label {
+    @apply block font-sans font-bold text-base text-orange-900;
+}
+
+button {
+    @apply py-2 rounded-lg outline-none w-32 md:w-48;
+}
+
+
+/* Botões */
+
+.btn-l {
+    @apply bg-orange-500 hover:bg-orange-600;
+}
+
+
+/* Componentes */
+
+.card {
+    /* @apply ; */
+}
+
+.modal {
+    @apply rounded-lg bg-sky-600 m-auto flex flex-col items-center p-1 w-80 h-80;
+}
+
+.backdrop {
+    @apply absolute top-0 left-0 right-0 bottom-0 h-screen w-screen bg-slate-100 flex
+    items-center justify-center overflow-y-hidden;
+}
+
+.inputs {
+    @apply grid grid-cols-12 gap-4;
+}
+
+.sidebar-icon {
+    @apply relative flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto bg-yellow-400
+    hover:bg-orange-900 dark:bg-gray-800 text-orange-900 hover:text-yellow-400 hover:rounded-xl
+    rounded-3xl transition-all duration-300 ease-linear cursor-pointer shadow-lg;
+}
+
+.sidebar-tooltip {
+    @apply absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-gray-900
+    text-xs font-bold transition-all duration-100 scale-0 origin-left;
+}
+
+.sidebar-tooltip-2 {
+    @apply absolute w-auto p-2 m-2 min-w-max bottom-14 rounded-md shadow-md text-white bg-gray-900
+    text-xs font-bold transition-all duration-100 scale-0 origin-left;
+}
+
+/* Features */
+
+.t-1 {
+    @apply text-orange-900 font-bold border-l-8 border-l-orange-600 pl-3 text-4xl;
+}
+
+.t-2 {
+    @apply text-orange-800 font-bold border-l-8 border-l-orange-400 pl-3 text-2xl;
+}
+
+.t-3 {
+    @apply text-orange-900 font-bold border-l-8 border-l-orange-400 pl-3 text-xl;
+}
