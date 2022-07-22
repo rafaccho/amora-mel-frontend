@@ -4,7 +4,8 @@ export function useBackend(endpoint?: Endpoint) {
     async function _fetcher(config: { method: MetodoHttp, uuid?: string, endpoint2?: Endpoint | undefined, body?: any }) {
         // const urlBase = 'http://192.168.0.216:8000/api/v1'
         // const urlBase = 'http://localhost:8000/api/v1'
-        const urlBase = 'http://54.224.33.185:8000/api/v1'
+        // const urlBase = 'http://54.224.33.185:8000/api/v1'
+        const urlBase = 'https://cors-everywhere-me.herokuapp.com/http://54.224.33.185:8000/api/v1'
 
         const init = {
             method: config.method,
