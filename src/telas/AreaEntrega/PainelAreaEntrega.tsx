@@ -97,6 +97,8 @@ export function PainelAreaEntrega() {
                                     <CardAreaEntrega
                                         key={areaEntrega.uuid}
                                         titulo={areaEntrega.nome}
+                                        uuid={areaEntrega.uuid}
+                                        endpoint={'areas_entregas'}
                                         dados={{
                                             "Código": areaEntrega.codigo ? areaEntrega.codigo : areaEntrega.uuid,
                                             "Fornecedor": `${areaEntrega.fornecedor.cpf_cnpj} - ${areaEntrega.fornecedor.nome}`,

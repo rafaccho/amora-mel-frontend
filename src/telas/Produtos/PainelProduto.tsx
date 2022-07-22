@@ -25,7 +25,6 @@ export function PainelProduto() {
     const [preco, setPreco] = useState('')
 
     const [areasEntrega, setAreasEntrega] = useState<Produto[]>([])
-    // const [fornecedores, setFornecedores] = useState<Fornecedor[]>([])
 
     const inputs = useRef<HTMLDivElement>(null)
 
@@ -84,6 +83,8 @@ export function PainelProduto() {
                                     <CardAreaEntrega
                                         key={produto.uuid}
                                         titulo={produto.nome}
+                                        uuid={produto.uuid}
+                                        endpoint={'produtos'}
                                         dados={{
                                             "Código": produto.codigo ? produto.codigo : produto.uuid,
                                             "Nome": produto.nome,
@@ -123,6 +124,11 @@ export function PainelProduto() {
                         <div className="col-span-12">
                             <label>Identificador </label>
                             <input type="text" value={uuid} readOnly disabled />
+                        </div>
+
+                        <div className="col-span-12">
+                            <label>Nome</label>
+                            <input type="text" value={nome} onChange={e => setNome(e.target.value)} />
                         </div>
 
                         <div className="col-span-12">
