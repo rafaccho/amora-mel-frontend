@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useQueryClient, useMutation, useQuery } from 'react-query'
 import { toast } from "react-toastify";
 
-import { CardAreaEntrega } from "../../componentes/CardAreaEntrega";
+import { CardRegistros } from "../../componentes/CardAreaEntrega";
 import { Filtros } from "../../componentes/Filtros";
 import { DEFAULT_TOAST_CONFIG } from "../../constantes";
 
@@ -38,12 +38,15 @@ export function PainelAreaEntrega() {
         rua,
         bairro,
         numero,
+        cep,
     }
 
     const queryClient = useQueryClient()
 
     const mutation = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados), {
-        onSuccess: () => {
+        onSuccess: (...args) => {
+            console.log(args);
+            
             toast.success('Registro salvo com sucesso!', DEFAULT_TOAST_CONFIG)
             queryClient.invalidateQueries(['areasEntregas'])
             limparCampos()
@@ -53,7 +56,8 @@ export function PainelAreaEntrega() {
         },
     })
 
-    const { data, isLoading, status, refetch } = useQuery('areasEntregas', () => todosRegistros())
+    const { data: registrosAreasDeEntrega, isLoading: carregandoAreasEntrega, status: statusAreasEntrega, refetch: refreshAreasEntrega } = useQuery('areasEntregas', () => todosRegistros())
+    const { data: registrosFornecedores, isLoading: carregandoFornecedores, status: statusFornecedores } = useQuery('fornecedores', () => todosRegistros("fornecedores"))
 
     function validarCampos(): boolean {
         const fork = inputs.current!.querySelectorAll('input')
@@ -76,10 +80,16 @@ export function PainelAreaEntrega() {
     }
 
     useEffect(() => {
-        if (isLoading) return
-        if (status === 'success') setAreasEntrega(data.results as AreaEntrega[])
+        if (carregandoAreasEntrega) return
+        if (statusAreasEntrega === 'success') setAreasEntrega(registrosAreasDeEntrega.results as AreaEntrega[])
         else toast.error("Ocorreu um erro ao carregar as áreas de entrega", DEFAULT_TOAST_CONFIG)
-    }, [isLoading, data])
+    }, [carregandoAreasEntrega, registrosAreasDeEntrega])
+
+    useEffect(() => {
+        if (carregandoFornecedores) return
+        if (statusFornecedores === 'success') setFornecedores(registrosFornecedores.results as Fornecedor[])
+        else toast.error("Ocorreu um erro ao carregar as áreas de entrega", DEFAULT_TOAST_CONFIG)
+    }, [carregandoAreasEntrega, registrosFornecedores])
 
     return (
         <div className="w-full max-w-full">
@@ -88,17 +98,22 @@ export function PainelAreaEntrega() {
             <div className="grid grid-cols-12 mt-12 lg:gap-12">
 
                 <div id="registros" className="col-span-12 lg:col-span-9">
-                    <Filtros refetch={refetch} />
+                    <Filtros refetch={refreshAreasEntrega} />
 
                     <div id="cards" className="grid grid-cols-12 gap-5 mt-12">
                         {
                             areasEntrega.map((areaEntrega: AreaEntrega) => (
                                 <div className="col-span-12 md:col-span-6 lg:col-span-4">
-                                    <CardAreaEntrega
+                                    <CardRegistros
                                         key={areaEntrega.uuid}
                                         titulo={areaEntrega.nome}
                                         uuid={areaEntrega.uuid}
                                         endpoint={'areas_entregas'}
+                                        textosDeletar={{
+                                            sucesso: "a",
+                                            erro: "b",
+                                        }}
+                                        query={'produtos'}
                                         dados={{
                                             "Código": areaEntrega.codigo ? areaEntrega.codigo : areaEntrega.uuid,
                                             "Fornecedor": `${areaEntrega.fornecedor.cpf_cnpj} - ${areaEntrega.fornecedor.nome}`,
@@ -148,15 +163,12 @@ export function PainelAreaEntrega() {
 
                         <div className="col-span-12">
                             <label>Fornecedor</label>
-                            <select name="fornecedor" id="uf" value={estado} onChange={e => setEstado(e.target.value)} required>
-                                {
-                                    fornecedores.length !== 0
-                                        ? <option defaultValue="">Nenhum cadastrado</option>
-                                        : <option defaultValue="">Selecione</option>
-                                }
-                                {
-                                    fornecedores.map((fornecedor: Fornecedor) => (<option value="DF">Distrito Federal</option>))
-                                }
+                            <select name="fornecedor" id="uf" value={fornecedor} onChange={e => {
+                                console.log(e.target.value)
+                                setFornecedor(e.target.value)
+                            }} required>
+                                    <option value="">Selecione</option>
+                                    { fornecedores.map((fornecedor: Fornecedor) => <option value={fornecedor.uuid}>{fornecedor.nome}</option>)}
                             </select>
                         </div>
 
@@ -193,7 +205,6 @@ export function PainelAreaEntrega() {
 
                                             setRua(dadosCep.logradouro)
                                             setBairro(dadosCep.bairro)
-                                            setCep(dadosCep.cep)
                                             setEstado(dadosCep.uf)
                                         })
                                 }}
@@ -256,7 +267,6 @@ export function PainelAreaEntrega() {
                         <div className="col-span-12">
                             <Button title={uuid ? 'Salvar' : 'Cadastrar'}
                                 className="btn-l flex justify-center pt-3 w-full font-bold"
-                                // onClick={() => validarCampos() }
                                 onClick={() => !validarCampos() ? toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG) : mutation.mutate()}
                             />
                         </div>
