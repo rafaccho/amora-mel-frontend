@@ -28,8 +28,10 @@ export interface Produto extends Base {
     codigo: string
     nome: string
     preco: number
-    unidade: string
-    quantidade: number
+    unidade1: string
+    unidade2: string
+    quantidade1: number
+    quantidade2: number
 }
 
 export interface Fornecedor extends Base, Endereco {
