@@ -16,6 +16,7 @@ import { Home } from "./telas/Home";
 
 import { PainelAreaEntrega } from "./telas/AreaEntrega/PainelAreaEntrega";
 import { FormAreaEntrega } from "./telas/AreaEntrega/FormAreaEntrega";
+import { PainelFornecedor } from "./telas/Fornecedor/PainelFornecedor";
 
 export function Router() {
     return (
@@ -47,6 +48,11 @@ export function Router() {
                     <Route path="areas-entrega/*">
                         <Route index element={<PainelAreaEntrega />} />
                         <Route path="cadastrar" element={<FormAreaEntrega />} />
+                    </Route>
+
+
+                    <Route path="fornecedores/*">
+                        <Route index element={<PainelFornecedor />} />
                     </Route>
 
                 </Route>

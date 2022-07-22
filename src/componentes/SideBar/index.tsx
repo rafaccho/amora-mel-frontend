@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import { BsPlus, BsTextareaResize } from 'react-icons/bs';
-import { FaBox } from 'react-icons/fa';
+import { FaBox, FaTruckMoving } from 'react-icons/fa';
 import { MdBorderColor } from 'react-icons/md';
 import { HiHome } from 'react-icons/hi';
 import { RiLogoutBoxFill } from 'react-icons/ri';
@@ -21,7 +21,7 @@ export function SideBar(props: { tipo: 'S' | 'B' }) {
         ? "flex flex-col pt-5"
         : "flex px-3 gap-2"
       }>
-        {/* <SideBarIcon to='/app/fornecedores/' text='Fornecedores' icon={<FaTruckMoving size="28" />} tipo={props.tipo} /> */}
+        <SideBarIcon to='/app/fornecedores/' text='Fornecedores' icon={<FaTruckMoving size="28" />} tipo={props.tipo} />
         <SideBarIcon to='/app/produtos/' text='Produtos' icon={<FaBox size="22" />} tipo={props.tipo} />
         {/* <SideBarIcon to='/app/' text='Home' icon={<HiHome size="29" />} tipo={props.tipo} /> */}
         <SideBarIcon to='/app/areas-entrega/' text='Áreas de Entrega' icon={<BsTextareaResize size="27" />} tipo={props.tipo} />
