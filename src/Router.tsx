@@ -25,10 +25,11 @@ export function Router() {
 
                 <Route path="/app/*" element={
                     <div>
-                        <div className="h-screen overflow-y-auto bg-[#f7d417] p-5 pl-24">
+                        <div className="h-screen overflow-y-auto bg-[#f7d417] p-5 lg:pl-24">
                             <Outlet />
                         </div>
 
+                        <SideBar tipo="B" />
                         <SideBar tipo="S" />
                     </div>
                 }>
@@ -37,6 +38,10 @@ export function Router() {
                     <Route path="produtos/*">
                         <Route index element={<PainelProduto />} />
                         <Route path="cadastrar" element={<FormProduto />} />
+                    </Route>
+
+                    <Route path="pedidos/*">
+                        <Route index element={<><h1 className="t-1">Pedidos</h1></>} />
                     </Route>
 
                     <Route path="areas-entrega/*">
