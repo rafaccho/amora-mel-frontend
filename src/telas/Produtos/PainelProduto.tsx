@@ -21,7 +21,7 @@ export function PainelProduto() {
     const [quantidade2, setQuantidade2] = useState<string | number>('')
     const [unidade2, setUnidade2] = useState('')
     const [preco, setPreco] = useState('')
-    const [areasEntrega, setAreasEntrega] = useState<Produto[]>([])
+    const [produtos, setProdutos] = useState<Produto[]>([])
 
     const inputs = useRef<HTMLDivElement>(null)
 
@@ -58,7 +58,7 @@ export function PainelProduto() {
 
     useEffect(() => {
         if (isLoading) return
-        if (status === 'success') setAreasEntrega(data.results as Produto[])
+        if (status === 'success') setProdutos(data.results as Produto[])
         else toast.error("Ocorreu um erro ao carregar as áreas de entrega", DEFAULT_TOAST_CONFIG)
     }, [isLoading, data])
 
@@ -72,8 +72,12 @@ export function PainelProduto() {
                     <Filtros refetch={refetch} />
 
                     <div id="cards" className="grid grid-cols-12 gap-5 mt-12">
+                    {
+                            isLoading &&
+                            <h1>Carregando...</h1>
+                        }
                         {
-                            areasEntrega.map((produto: Produto) => (
+                            produtos.map((produto: Produto) => (
                                 <div className="col-span-12 md:col-span-6 lg:col-span-4">
                                     <CardRegistros
                                         key={produto.uuid}
@@ -109,6 +113,12 @@ export function PainelProduto() {
                                     />
                                 </div>
                             ))
+                        }
+                        {
+                            !produtos.length && !isLoading &&
+                            <div className="col-span-12 md:col-span-6 lg:col-span-4">
+                                <span>Não existem registros...</span>
+                            </div>
                         }
 
                     </div>

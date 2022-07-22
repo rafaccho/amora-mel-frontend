@@ -102,6 +102,11 @@ export function PainelAreaEntrega() {
 
                     <div id="cards" className="grid grid-cols-12 gap-5 mt-12">
                         {
+                            carregandoAreasEntrega &&
+                            <h1>Carregando...</h1>
+                        }
+                        {
+                            !carregandoAreasEntrega && statusAreasEntrega !== "error" &&
                             areasEntrega.map((areaEntrega: AreaEntrega) => (
                                 <div className="col-span-12 md:col-span-6 lg:col-span-4">
                                     <CardRegistros
@@ -134,6 +139,12 @@ export function PainelAreaEntrega() {
                                     />
                                 </div>
                             ))
+                        }
+                        {
+                            !areasEntrega.length && !carregandoAreasEntrega &&
+                            <div className="col-span-12 md:col-span-6 lg:col-span-4">
+                                <span>Não existem registros...</span>
+                            </div>
                         }
 
                     </div>
