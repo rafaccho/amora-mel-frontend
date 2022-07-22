@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 
 import { CardRegistros } from "../../componentes/CardAreaEntrega";
 import { Filtros } from "../../componentes/Filtros";
+import { Loading } from "../../componentes/Loading";
 import { DEFAULT_TOAST_CONFIG } from "../../constantes";
 
 import { useBackend } from "../../hooks/useBackend";
@@ -103,7 +104,7 @@ export function PainelAreaEntrega() {
                     <div id="cards" className="grid grid-cols-12 gap-5 mt-12">
                         {
                             carregandoAreasEntrega &&
-                            <h1>Carregando...</h1>
+                            <Loading />
                         }
                         {
                             !carregandoAreasEntrega && statusAreasEntrega !== "error" &&

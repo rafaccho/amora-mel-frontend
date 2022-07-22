@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 
 import { CardRegistros } from "../../componentes/CardAreaEntrega";
 import { Filtros } from "../../componentes/Filtros";
+import { Loading } from "../../componentes/Loading";
 import { DEFAULT_TOAST_CONFIG } from "../../constantes";
 
 import { useBackend } from "../../hooks/useBackend";
@@ -74,7 +75,7 @@ export function PainelProduto() {
                     <div id="cards" className="grid grid-cols-12 gap-5 mt-12">
                     {
                             isLoading &&
-                            <h1>Carregando...</h1>
+                            <Loading />
                         }
                         {
                             produtos.map((produto: Produto) => (
