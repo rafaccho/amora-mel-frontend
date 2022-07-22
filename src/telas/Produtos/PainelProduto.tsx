@@ -17,9 +17,9 @@ export function PainelProduto() {
     const [uuid, setUuid] = useState('')
     const [nome, setNome] = useState('')
 
-    const [quantidade1, setQuantidade1] = useState('')
+    const [quantidade1, setQuantidade1] = useState<string | number>('')
     const [unidade1, setUnidade1] = useState('')
-    const [quantidade2, setQuantidade2] = useState('')
+    const [quantidade2, setQuantidade2] = useState<string | number>('')
     const [unidade2, setUnidade2] = useState('')
 
     const [preco, setPreco] = useState('')
@@ -88,21 +88,22 @@ export function PainelProduto() {
                                             "Código": produto.codigo ? produto.codigo : produto.uuid,
                                             "Nome": produto.nome,
                                             "Preço": produto.preco,
-                                            "Quantidade": produto.quantidade,
-                                            "Unidade": produto.unidade,
-                                            // "Unidade2": produto.,
+                                            "Unidade 1": produto.unidade1,
+                                            "Quantidade 1": produto.quantidade1,
+                                            "Unidade 2": produto.unidade2,
+                                            "Quantidade 2": produto.quantidade2,
                                         }}
                                         onEditar={() => {
                                             setCodigo(produto.codigo)
                                             setUuid(produto.uuid)
 
-                                            /* setPreco(produto.preco)
+                                            setPreco(`${produto.preco}`)
 
-                                            setQuantidade1(produto.quantidade)
-                                            setQuantidade2(produto.quantidade) */
+                                            setQuantidade1(produto.quantidade1)
+                                            setQuantidade2(produto.quantidade2)
 
-                                            setUnidade1(produto.unidade)
-                                            setUnidade2(produto.unidade)
+                                            setUnidade1(produto.unidade1)
+                                            setUnidade2(produto.unidade2)
                                         }}
                                     />
                                 </div>
@@ -131,35 +132,33 @@ export function PainelProduto() {
 
                         <div className="col-span-12">
                             <label>Preço</label>
-                            <input type="text" value={nome} onChange={e => setNome(e.target.value)} required />
+                            <input type="text" value={preco} onChange={e => setPreco(e.target.value)} required />
                         </div>
-
 
                         <div className="col-span-12">
                             <label>Quantidade 1</label>
-                            <input type="text" value={nome} onChange={e => setNome(e.target.value)} required />
+                            <input type="text" value={quantidade1} onChange={e => setQuantidade1(e.target.value)} required />
                         </div>
 
                         <div className="col-span-12">
                             <label>Unidade 1</label>
-                            <input type="text" value={nome} onChange={e => setNome(e.target.value)} required />
+                            <input type="text" value={unidade1} onChange={e => setUnidade1(e.target.value)} required />
                         </div>
 
                         <div className="col-span-12">
                             <label>Quantidade 2</label>
-                            <input type="text" value={nome} onChange={e => setNome(e.target.value)} required />
+                            <input type="text" value={quantidade2} onChange={e => setQuantidade2(e.target.value)} required />
                         </div>
 
                         <div className="col-span-12">
                             <label>Unidade 2</label>
-                            <input type="text" value={nome} onChange={e => setNome(e.target.value)} required />
+                            <input type="text" value={unidade2} onChange={e => setUnidade2(e.target.value)} required />
                         </div>
 
 
                         <div className="col-span-12">
                             <Button title={uuid ? 'Salvar' : 'Cadastrar'}
                                 className="btn-l flex justify-center pt-3 w-full font-bold"
-                                // onClick={() => validarCampos() }
                                 onClick={() => !validarCampos() ? toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG) : mutation.mutate()}
                             />
                         </div>
