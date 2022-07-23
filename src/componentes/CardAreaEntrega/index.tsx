@@ -6,7 +6,7 @@ import { useBackend } from "../../hooks/useBackend";
 import { Endpoint, QueryModulo } from "../../tipos";
 import { DEFAULT_TOAST_CONFIG } from "../../constantes";
 
-export function CardRegistros(props: {
+export function CardRegistro(props: {
     onEditar: () => void,
     titulo: any,
     dados: any,

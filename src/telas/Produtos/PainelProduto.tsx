@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useQueryClient, useMutation, useQuery } from 'react-query'
 import { toast } from "react-toastify";
 
-import { CardRegistros } from "../../componentes/CardAreaEntrega";
+import { CardRegistro } from "../../componentes/CardAreaEntrega";
 import { Filtros } from "../../componentes/Filtros";
 import { Loading } from "../../componentes/Loading";
 import { DEFAULT_TOAST_CONFIG } from "../../constantes";
@@ -80,7 +80,7 @@ export function PainelProduto() {
                         {
                             produtos.map((produto: Produto) => (
                                 <div className="col-span-12 md:col-span-6 lg:col-span-4">
-                                    <CardRegistros
+                                    <CardRegistro
                                         key={produto.uuid}
                                         titulo={produto.nome}
                                         uuid={produto.uuid}
