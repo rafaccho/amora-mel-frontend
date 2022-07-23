@@ -9,32 +9,44 @@ import { DEFAULT_TOAST_CONFIG } from "../../constantes";
 
 import { useBackend } from "../../hooks/useBackend";
 
-import { AreaEntrega, Fornecedor, Produto, ViacepResponse } from "../../interfaces";
+import { Fornecedor, ViacepResponse } from "../../interfaces";
 import { Button } from "../../tags";
 
 
 export function PainelFornecedor() {
     const [codigo, setCodigo] = useState('')
     const [uuid, setUuid] = useState('')
+    const [cpfCnpj, setCpfCnpj] = useState('')
     const [nome, setNome] = useState('')
-    const [quantidade1, setQuantidade1] = useState<string | number>('')
-    const [unidade1, setUnidade1] = useState('')
-    const [quantidade2, setQuantidade2] = useState<string | number>('')
-    const [unidade2, setUnidade2] = useState('')
-    const [preco, setPreco] = useState('')
-    const [produtos, setProdutos] = useState<Produto[]>([])
+    const [rua, setRua] = useState('')
+    const [bairro, setBairro] = useState('')
+    const [numero, setNumero] = useState('')
+    const [cep, setCep] = useState('')
+    const [complemento, setComplemento] = useState('')
+    const [estado, setEstado] = useState('MG')
+    const [fornecedores, setFornecedores] = useState<Fornecedor[]>([])
 
     const inputs = useRef<HTMLDivElement>(null)
 
     const dados = {
+        codigo,
+        uuid,
+        cpfCnpj,
+        nome,
+        rua,
+        bairro,
+        numero,
+        cep,
+        complemento,
+        estado,
     }
 
-    const { criarRegistro, editarRegistro, todosRegistros, deletarRegistro } = useBackend('produtos')
+    const { criarRegistro, editarRegistro, todosRegistros, deletarRegistro } = useBackend('fornecedores')
     const queryClient = useQueryClient()
     const criarEditar = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
-            toast.success('Registro salvo com sucesso!', DEFAULT_TOAST_CONFIG)
-            queryClient.invalidateQueries(['produtos'])
+            toast.success('Fornecedor salvo com sucesso!', DEFAULT_TOAST_CONFIG)
+            queryClient.invalidateQueries(['fornecedores'])
             limparCampos()
         },
         onError: (err) => {
@@ -42,7 +54,7 @@ export function PainelFornecedor() {
         },
     })
 
-    const { data, isLoading, status, refetch } = useQuery('produtos', () => todosRegistros())
+    const { data, isLoading, status, refetch } = useQuery('fonecedores', () => todosRegistros())
 
     function validarCampos(): boolean {
         const inputsForm = inputs.current!.querySelectorAll('input')
@@ -55,17 +67,23 @@ export function PainelFornecedor() {
         setCodigo('')
         setUuid('')
         setNome('')
+        setRua('')
+        setBairro('')
+        setNumero('')
+        setCep('')
+        setComplemento('')
+        setEstado('')
     }
 
     useEffect(() => {
         if (isLoading) return
-        if (status === 'success') setProdutos(data.results as Produto[])
-        else toast.error("Ocorreu um erro ao carregar as áreas de entrega", DEFAULT_TOAST_CONFIG)
+        if (status === 'success') setFornecedores(data.results as Fornecedor[])
+        else toast.error("Ocorreu um erro ao carregar as fornecedores", DEFAULT_TOAST_CONFIG)
     }, [isLoading, data])
 
     return (
         <div className="w-full max-w-full">
-            <h1 className="t-1 mb-2">Produtos</h1>
+            <h1 className="t-1 mb-2">Fornecedores</h1>
 
             <div className="grid grid-cols-12 mt-12 lg:gap-12">
 
@@ -73,12 +91,12 @@ export function PainelFornecedor() {
                     <Filtros refetch={refetch} />
 
                     <div id="cards" className="grid grid-cols-12 gap-5 mt-12">
-                    {
+                        {
                             isLoading &&
                             <Loading />
                         }
                         {
-                            produtos.map((produto: Produto) => (
+                            fornecedores.map((produto: Fornecedor) => (
                                 <div className="col-span-12 md:col-span-6 lg:col-span-4">
                                     <CardRegistros
                                         key={produto.uuid}
@@ -91,32 +109,17 @@ export function PainelFornecedor() {
                                         }}
                                         query={'produtos'}
                                         dados={{
-                                            "Código": produto.codigo ? produto.codigo : produto.uuid,
-                                            "Nome": produto.nome,
-                                            "Preço": produto.preco,
-                                            "Unidade 1": produto.unidade1,
-                                            "Quantidade 1": produto.quantidade1,
-                                            "Unidade 2": produto.unidade2,
-                                            "Quantidade 2": produto.quantidade2,
+
                                         }}
                                         onEditar={() => {
-                                            setCodigo(produto.codigo)
-                                            setUuid(produto.uuid)
 
-                                            setPreco(`${produto.preco}`)
-
-                                            setQuantidade1(produto.quantidade1)
-                                            setQuantidade2(produto.quantidade2)
-
-                                            setUnidade1(produto.unidade1)
-                                            setUnidade2(produto.unidade2)
                                         }}
                                     />
                                 </div>
                             ))
                         }
                         {
-                            !produtos.length && !isLoading &&
+                            !fornecedores.length && !isLoading &&
                             <div className="col-span-12 md:col-span-6 lg:col-span-4">
                                 <span>Não existem registros...</span>
                             </div>
@@ -143,35 +146,106 @@ export function PainelFornecedor() {
                         </div>
 
                         <div className="col-span-12">
+                            <label>CPF/CNPJ</label>
+                            <input type="text" value={cpfCnpj} onChange={e => setCpfCnpj(e.target.value)} />
+                        </div>
+
+                        <div className="col-span-12">
                             <label>Código</label>
                             <input type="text" value={codigo} onChange={e => setCodigo(e.target.value)} />
                         </div>
 
                         <div className="col-span-12">
-                            <label>Preço</label>
-                            <input type="text" value={preco} onChange={e => setPreco(e.target.value)} required />
+                            <h1 className="t-3 mt-9 mb-5">Informações de Endereço</h1>
                         </div>
 
                         <div className="col-span-12">
-                            <label>Quantidade 1</label>
-                            <input type="text" value={quantidade1} onChange={e => setQuantidade1(e.target.value)} required />
+                            <label>CEP</label>
+                            <input type="text" required
+                                value={cep}
+                                onChange={e => setCep(e.target.value)}
+                                onBlur={async e => {
+                                    if (cep.replace("-", "").length !== 8) return toast.error("CEP inválido", DEFAULT_TOAST_CONFIG)
+
+                                    const requisicao = toast.loading('Buscando dados do CEP')
+
+                                    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                                        .then(res => {
+                                            if (res.status !== 200) return toast.update(requisicao, {
+                                                type: 'error',
+                                                render: 'CEP não encontrado',
+                                                isLoading: false,
+                                            })
+
+                                            return res.json()
+                                        })
+                                        .then((dadosCep: ViacepResponse) => {
+                                            toast.update(requisicao, {
+                                                type: 'success',
+                                                render: 'Dados de endereço carregados',
+                                                ...DEFAULT_TOAST_CONFIG
+                                            })
+
+                                            setRua(dadosCep.logradouro)
+                                            setBairro(dadosCep.bairro)
+                                            setEstado(dadosCep.uf)
+                                        })
+                                }}
+                            />
                         </div>
 
                         <div className="col-span-12">
-                            <label>Unidade 1</label>
-                            <input type="text" value={unidade1} onChange={e => setUnidade1(e.target.value)} required />
+                            <label>Rua</label>
+                            <input type="text" value={rua} onChange={e => setRua(e.target.value)} required />
                         </div>
 
                         <div className="col-span-12">
-                            <label>Quantidade 2</label>
-                            <input type="text" value={quantidade2} onChange={e => setQuantidade2(e.target.value)} required />
+                            <label>Estado</label>
+                            <select name="uf" id="uf" value={estado} onChange={e => setEstado(e.target.value)} required >
+                                <option value="AC">Acre</option>
+                                <option value="AL">Alagoas</option>
+                                <option value="AP">Amapá</option>
+                                <option value="AM">Amazonas</option>
+                                <option value="BA">Bahia</option>
+                                <option value="CE">Ceará</option>
+                                <option value="DF">Distrito Federal</option>
+                                <option value="ES">Espírito Santo</option>
+                                <option value="EX">Exterior</option>
+                                <option value="GO">Goiás</option>
+                                <option value="MA">Maranhão</option>
+                                <option value="MT">Mato Grosso</option>
+                                <option value="MS">Mato Grosso do Sul</option>
+                                <option value="MG">Minas Gerais</option>
+                                <option value="PA">Pará</option>
+                                <option value="PB">Paraíba</option>
+                                <option value="PR">Paraná</option>
+                                <option value="PE">Pernambuco</option>
+                                <option value="PI">Piauí</option>
+                                <option value="RJ">Rio de Janeiro</option>
+                                <option value="RN">Rio Grande do Norte</option>
+                                <option value="RS">Rio Grande do Sul</option>
+                                <option value="RO">Rondônia</option>
+                                <option value="RR">Roraima</option>
+                                <option value="SC">Santa Catarina</option>
+                                <option value="SP">São Paulo</option>
+                                <option value="SE">Sergipe</option>
+                                <option value="TO">Tocantins</option></select>
                         </div>
 
                         <div className="col-span-12">
-                            <label>Unidade 2</label>
-                            <input type="text" value={unidade2} onChange={e => setUnidade2(e.target.value)} required />
+                            <label>Bairro</label>
+                            <input type="text" value={bairro} onChange={e => setBairro(e.target.value)} required />
                         </div>
 
+                        <div className="col-span-12">
+                            <label>Número</label>
+                            <input type="text" value={numero} onChange={e => setNumero(e.target.value)} required />
+                        </div>
+
+                        <div className="col-span-12">
+                            <label>Complemento</label>
+                            <input type="text" value={complemento} onChange={e => setComplemento(e.target.value)} />
+                        </div>
 
                         <div className="col-span-12">
                             <Button title={uuid ? 'Salvar' : 'Cadastrar'}
@@ -187,23 +261,3 @@ export function PainelFornecedor() {
         </div>
     )
 }
-/*
-Endereço):
-    codigo = models.CharField(
-        max_length=30,
-        verbose_name="Código do produto",
-        blank=True,
-        null=True,
-    )
-
-    nome = models.CharField(
-        max_length=50,
-        verbose_name="Nome",
-    )
-
-    cpf_cnpj = models.CharField(
-        max_length=13,
-        verbose_name="Código de CPF/CNPJ",
-*/
-
-
