@@ -87,3 +87,7 @@ button {
 .t-3 {
     @apply text-orange-900 font-bold border-l-8 border-l-orange-400 pl-3 text-xl;
 }
+
+.invalidado {
+    @apply p-2 rounded-lg outline-none text-red-800 border-solid border-2 border-red-500 w-full;
+}
