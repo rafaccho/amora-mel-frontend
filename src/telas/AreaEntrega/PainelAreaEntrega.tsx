@@ -61,10 +61,15 @@ export function PainelAreaEntrega() {
     const { data: registrosFornecedores, isLoading: carregandoFornecedores, status: statusFornecedores } = useQuery('fornecedores', () => todosRegistros("fornecedores"))
 
     function validarCampos(): boolean {
-        const fork = inputs.current!.querySelectorAll('input')
-        const valido = Array.from(fork).every(input => input.checkValidity())
+        const todosInputs = inputs.current!.querySelectorAll('input')
+        Array.from(todosInputs).forEach(input => {
+            // const valido = Array.from(fork).every(input => {
+            const inputEstaValido = input.checkValidity()
+            !inputEstaValido ? input.classList.add('invalidado') : input.classList.remove('invalidado')
+            return inputEstaValido
+        })
 
-        return valido
+        return !(document.querySelector('.invalidado'))
     }
 
     function limparCampos(): void {
