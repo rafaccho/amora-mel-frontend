@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useQueryClient, useMutation, useQuery } from 'react-query'
 import { toast } from "react-toastify";
 
-import { CardAreaEntrega } from "../../componentes/CardAreaEntrega";
+import { CardRegistros } from "../../componentes/CardAreaEntrega";
 import { Filtros } from "../../componentes/Filtros";
 import { DEFAULT_TOAST_CONFIG } from "../../constantes";
 
@@ -16,27 +16,21 @@ export function PainelProduto() {
     const [codigo, setCodigo] = useState('')
     const [uuid, setUuid] = useState('')
     const [nome, setNome] = useState('')
-
     const [quantidade1, setQuantidade1] = useState<string | number>('')
     const [unidade1, setUnidade1] = useState('')
     const [quantidade2, setQuantidade2] = useState<string | number>('')
     const [unidade2, setUnidade2] = useState('')
-
     const [preco, setPreco] = useState('')
-
     const [areasEntrega, setAreasEntrega] = useState<Produto[]>([])
-    // const [fornecedores, setFornecedores] = useState<Fornecedor[]>([])
 
     const inputs = useRef<HTMLDivElement>(null)
-
-    const { criarRegistro, editarRegistro, todosRegistros } = useBackend('produtos')
 
     const dados = {
     }
 
+    const { criarRegistro, editarRegistro, todosRegistros, deletarRegistro } = useBackend('produtos')
     const queryClient = useQueryClient()
-
-    const mutation = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados), {
+    const criarEditar = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
             toast.success('Registro salvo com sucesso!', DEFAULT_TOAST_CONFIG)
             queryClient.invalidateQueries(['produtos'])
@@ -50,8 +44,8 @@ export function PainelProduto() {
     const { data, isLoading, status, refetch } = useQuery('produtos', () => todosRegistros())
 
     function validarCampos(): boolean {
-        const fork = inputs.current!.querySelectorAll('input')
-        const valido = Array.from(fork).every(input => input.checkValidity())
+        const inputsForm = inputs.current!.querySelectorAll('input')
+        const valido = Array.from(inputsForm).every(input => input.checkValidity())
 
         return valido
     }
@@ -81,9 +75,16 @@ export function PainelProduto() {
                         {
                             areasEntrega.map((produto: Produto) => (
                                 <div className="col-span-12 md:col-span-6 lg:col-span-4">
-                                    <CardAreaEntrega
+                                    <CardRegistros
                                         key={produto.uuid}
                                         titulo={produto.nome}
+                                        uuid={produto.uuid}
+                                        endpoint={'produtos'}
+                                        textosDeletar={{
+                                            sucesso: "a",
+                                            erro: "b",
+                                        }}
+                                        query={'produtos'}
                                         dados={{
                                             "Código": produto.codigo ? produto.codigo : produto.uuid,
                                             "Nome": produto.nome,
@@ -126,6 +127,11 @@ export function PainelProduto() {
                         </div>
 
                         <div className="col-span-12">
+                            <label>Nome</label>
+                            <input type="text" value={nome} onChange={e => setNome(e.target.value)} />
+                        </div>
+
+                        <div className="col-span-12">
                             <label>Código</label>
                             <input type="text" value={codigo} onChange={e => setCodigo(e.target.value)} />
                         </div>
@@ -159,7 +165,7 @@ export function PainelProduto() {
                         <div className="col-span-12">
                             <Button title={uuid ? 'Salvar' : 'Cadastrar'}
                                 className="btn-l flex justify-center pt-3 w-full font-bold"
-                                onClick={() => !validarCampos() ? toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG) : mutation.mutate()}
+                                onClick={() => !validarCampos() ? toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG) : criarEditar.mutate()}
                             />
                         </div>
 

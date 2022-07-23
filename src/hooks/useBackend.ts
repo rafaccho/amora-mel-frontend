@@ -1,6 +1,6 @@
 import { Endpoint, MetodoHttp } from "../tipos"
 
-export function useBackend(endpoint?: Endpoint) {
+export function useBackend(endpoint: Endpoint) {
     async function _fetcher(config: { method: MetodoHttp, uuid?: string, endpoint2?: Endpoint | undefined, body?: any }) {
         // const urlBase = 'http://192.168.0.216:8000/api/v1'
         // const urlBase = 'http://localhost:8000/api/v1'
@@ -13,7 +13,7 @@ export function useBackend(endpoint?: Endpoint) {
             body: JSON.stringify(config.body),
         }
 
-        var url = `${urlBase}/${endpoint}/${config.uuid ? `${config.uuid}/` : ''}`
+        var url = `${urlBase}/${config.endpoint2 ? config.endpoint2 : endpoint}/${config.uuid ? `${config.uuid}/` : ''}`
 
         return await fetch(url, init).then(async res => {
             const status = res.status
