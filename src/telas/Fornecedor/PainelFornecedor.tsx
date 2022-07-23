@@ -30,8 +30,7 @@ export function PainelFornecedor() {
 
     const dados = {
         codigo,
-        uuid,
-        cpfCnpj,
+        cpf_cnpj: cpfCnpj,
         nome,
         rua,
         bairro,
@@ -43,7 +42,7 @@ export function PainelFornecedor() {
 
     const { criarRegistro, editarRegistro, todosRegistros, deletarRegistro } = useBackend('fornecedores')
     const queryClient = useQueryClient()
-    const criarEditar = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados), {
+    const criarEditarFornecedor = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
             toast.success('Fornecedor salvo com sucesso!', DEFAULT_TOAST_CONFIG)
             queryClient.invalidateQueries(['fornecedores'])
@@ -54,7 +53,7 @@ export function PainelFornecedor() {
         },
     })
 
-    const { data, isLoading, status, refetch } = useQuery('fonecedores', () => todosRegistros())
+    const { data, isLoading, status, refetch } = useQuery('fornecedores', () => todosRegistros())
 
     function validarCampos(): boolean {
         const inputsForm = inputs.current!.querySelectorAll('input')
@@ -73,6 +72,7 @@ export function PainelFornecedor() {
         setCep('')
         setComplemento('')
         setEstado('')
+        setCpfCnpj('')
     }
 
     useEffect(() => {
@@ -96,23 +96,31 @@ export function PainelFornecedor() {
                             <Loading />
                         }
                         {
-                            fornecedores.map((produto: Fornecedor) => (
+                            fornecedores.map((fornecedor: Fornecedor) => (
                                 <div className="col-span-12 md:col-span-6 lg:col-span-4">
                                     <CardRegistro
-                                        key={produto.uuid}
-                                        titulo={produto.nome}
-                                        uuid={produto.uuid}
-                                        endpoint={'produtos'}
+                                        key={fornecedor.uuid}
+                                        titulo={fornecedor.nome}
+                                        uuid={fornecedor.uuid}
+                                        endpoint={'fornecedores'}
                                         textosDeletar={{
-                                            sucesso: "a",
-                                            erro: "b",
+                                            sucesso: `${fornecedor.nome} excluído com sucesso!`,
+                                            erro: "Ocorreu um erro ao excluir o fornecedor!",
                                         }}
-                                        query={'produtos'}
+                                        query={'fornecedores'}
                                         dados={{
-
+                                            'Nome': fornecedor.nome,
+                                            'CPF/CNPJ': fornecedor.cpf_cnpj,
+                                            'CEP': fornecedor.cep,
                                         }}
                                         onEditar={() => {
-
+                                            setCodigo(fornecedor.codigo ? fornecedor.codigo : fornecedor.uuid)
+                                            setUuid(fornecedor.uuid)
+                                            setNome(fornecedor.nome)
+                                            setRua(fornecedor.rua)
+                                            setBairro(fornecedor.bairro)
+                                            setNumero(fornecedor.numero)
+                                            setCep(fornecedor.cep)
                                         }}
                                     />
                                 </div>
@@ -250,7 +258,7 @@ export function PainelFornecedor() {
                         <div className="col-span-12">
                             <Button title={uuid ? 'Salvar' : 'Cadastrar'}
                                 className="btn-l flex justify-center pt-3 w-full font-bold"
-                                onClick={() => !validarCampos() ? toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG) : criarEditar.mutate()}
+                                onClick={() => !validarCampos() ? toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG) : criarEditarFornecedor.mutate()}
                             />
                         </div>
 
