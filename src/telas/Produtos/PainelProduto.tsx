@@ -79,7 +79,7 @@ export function PainelProduto() {
                         }
                         {
                             produtos.map((produto: Produto) => (
-                                <div className="col-span-12 md:col-span-6 lg:col-span-4">
+                                <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
                                     <CardRegistro
                                         key={produto.uuid}
                                         titulo={produto.nome}

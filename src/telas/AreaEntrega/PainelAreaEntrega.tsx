@@ -109,7 +109,7 @@ export function PainelAreaEntrega() {
                         {
                             !carregandoAreasEntrega && statusAreasEntrega !== "error" &&
                             areasEntrega.map((areaEntrega: AreaEntrega) => (
-                                <div className="col-span-12 md:col-span-6 lg:col-span-4">
+                                <div className="col-span-12 md:col-span-6 lg:col-span-4 xl:col-span-3">
                                     <CardRegistro
                                         key={areaEntrega.uuid}
                                         titulo={areaEntrega.nome}
