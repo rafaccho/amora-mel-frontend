@@ -7,7 +7,7 @@ import { HiHome } from 'react-icons/hi';
 import { RiLogoutBoxFill } from 'react-icons/ri';
 
 
-export function SideBar(props: { tipo: 'S' | 'B' }) {
+export function MenuBar(props: { tipo: 'S' | 'B' }) {
   return (
     <div className={
       props.tipo === 'S'
