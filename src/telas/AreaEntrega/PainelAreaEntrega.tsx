@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useQueryClient, useMutation, useQuery } from 'react-query'
 import { toast } from "react-toastify";
+import axios from "axios";
 
 import { CardRegistro } from "../../componentes/CardAreaEntrega";
 import { Filtros } from "../../componentes/Filtros";
@@ -30,9 +31,12 @@ export function PainelAreaEntrega() {
     const [areasEntrega, setAreasEntrega] = useState<AreaEntrega[]>([])
     const [fornecedores, setFornecedores] = useState<Fornecedor[]>([])
 
+
     const inputs = useRef<HTMLDivElement>(null)
 
-    const { criarRegistro, editarRegistro, todosRegistros } = useBackend('areas_entregas')
+
+    const { criarRegistro, editarRegistro, todosRegistros } = useBackend("areas_entregas")
+
 
     const dados = {
         nome,
@@ -44,26 +48,34 @@ export function PainelAreaEntrega() {
         cep,
     }
 
-    const queryClient = useQueryClient()
-
-    function getTo() {
-        return fetch('https://viacep.com.br/ws/' + cep + '/json/')
-    }
-
-    const mutation = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados))
 
     const {
         data: registrosAreasDeEntrega,
         status: statusAreasEntrega,
         refetch: refreshAreasEntrega,
-        isRefetching: refreshingAreasEntrega,
-    } = useQuery('areasEntregas', () => todosRegistros())
+        isLoading: carregandoAreasEntrega,
+        isRefetching: refeshingAreasEntrega,
+    } = useQuery('areasEntregas', () => todosRegistros('areas_entregas'))
 
     const {
         data: registrosFornecedores,
         isLoading: carregandoFornecedores,
-        status: statusFornecedores
+        status: statusFornecedores,
+        isRefetching: refeshingFornecedores,
     } = useQuery('fornecedores', () => todosRegistros("fornecedores"))
+
+    const queryClient = useQueryClient()
+    const mutation = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados), {
+        onSuccess: (err) => {
+            queryClient.invalidateQueries(['areasEntregas'])
+            toast.success('Registro criado com sucesso!', DEFAULT_TOAST_CONFIG)
+            limparCampos()
+        },
+        onError: (err) => {
+            toast.error("Ocorreu um erro!", DEFAULT_TOAST_CONFIG)
+        }
+    })
+
 
     function validarCampos(): boolean {
         const todosInputs = inputs.current!.querySelectorAll('input')
@@ -98,8 +110,12 @@ export function PainelAreaEntrega() {
     }
 
     useEffect(() => {
+        statusAreasEntrega === "success" && setAreasEntrega(registrosAreasDeEntrega.data.results as AreaEntrega[])
+    }, [statusAreasEntrega, carregandoAreasEntrega, refeshingAreasEntrega])
 
-    }, [statusAreasEntrega])
+    useEffect(() => {
+        statusFornecedores === "success" && setFornecedores(registrosFornecedores.data.results as Fornecedor[])
+    }, [statusFornecedores, carregandoFornecedores])
 
     return (
         <div className="w-full max-w-full">
@@ -110,11 +126,10 @@ export function PainelAreaEntrega() {
                     <Filtros refetch={refreshAreasEntrega} />
 
                     <div id="cards" className="grid grid-cols-12 gap-5 mt-12">
-                        { statusAreasEntrega === "loading" && <Loading /> }
-                        { statusAreasEntrega === "error" && <Error /> }
-
+                        {statusAreasEntrega === "loading" && <Loading />}
+                        {statusAreasEntrega === "error" && <Error />}
                         {
-                            statusAreasEntrega !== "loading" &&
+                            statusAreasEntrega === "success" &&
                             areasEntrega.map((areaEntrega: AreaEntrega) => (
                                 <div className="col-span-12 md:col-span-6 lg:col-span-4">
                                     <CardRegistro
@@ -123,21 +138,22 @@ export function PainelAreaEntrega() {
                                         uuid={areaEntrega.uuid}
                                         endpoint={'areas_entregas'}
                                         textosDeletar={{
-                                            sucesso: "a",
-                                            erro: "b",
+                                            sucesso: "Área de Entrega deletada com sucesso!",
+                                            erro: "Erro ao deletar Área de Entrega!",
                                         }}
-                                        query={'produtos'}
+                                        querys={['areasEntregas']}
                                         dados={{
-                                            "Código": areaEntrega.codigo ? areaEntrega.codigo : areaEntrega.uuid,
-                                            "Fornecedor": `${areaEntrega.fornecedor.cpf_cnpj} - ${areaEntrega.fornecedor.nome}`,
+                                            "Identificador": areaEntrega.uuid,
+                                            "Código": areaEntrega.codigo,
+                                            // "Fornecedor": `${areaEntrega.fornecedor.cpf_cnpj} - ${areaEntrega.fornecedor.nome}`,
                                             "Rua": areaEntrega.rua,
                                             "Bairro": areaEntrega.bairro,
                                             "Número": areaEntrega.numero,
                                         }}
                                         onEditar={() => {
-                                            setCodigo(areaEntrega.codigo ? areaEntrega.codigo : areaEntrega.uuid)
+                                            setCodigo(areaEntrega.codigo)
                                             setUuid(areaEntrega.uuid)
-                                            setFornecedor(`${areaEntrega.fornecedor.cpf_cnpj} - ${areaEntrega.fornecedor.nome}`)
+                                            setFornecedor(areaEntrega.fornecedor)
                                             setNome(areaEntrega.nome)
                                             setRua(areaEntrega.rua)
                                             setBairro(areaEntrega.bairro)
@@ -178,7 +194,15 @@ export function PainelAreaEntrega() {
                         <div className="col-span-12">
                             <label>Fornecedor <i className="text-rose-700">*</i></label>
                             <select name="fornecedor" id="uf" value={fornecedor} onChange={e => setFornecedor(e.target.value)} required>
-                                <option value="">Selecione</option>
+                                <option value="">
+                                    {
+                                        carregandoFornecedores
+                                            ? "Carregando..."
+                                            : fornecedores.length === 0
+                                                ? "Não existem Fornecedores cadastrados"
+                                                : "Selecione"
+                                    }
+                                </option>
                                 {fornecedores.map((fornecedor: Fornecedor) => <option value={fornecedor.uuid}>{fornecedor.nome}</option>)}
                             </select>
                         </div>
