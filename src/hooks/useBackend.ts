@@ -1,32 +1,26 @@
+import axios from "axios"
 import { Endpoint, MetodoHttp } from "../tipos"
 
-export function useBackend(endpoint: Endpoint) {
-    async function _fetcher(config: { method: MetodoHttp, uuid?: string, endpoint2?: Endpoint | undefined, body?: any }) {
+export function useBackend(endpointPrimario: Endpoint) {
+    async function service(config: {
+        metodo: MetodoHttp,
+        endpointSecundario?: any,// Endpoint,
+        uuid?: string,
+        body?: any,
+    }) {
         // const urlBase = 'http://192.168.0.216:8000/api/v1'
-        // const urlBase = 'http://localhost:8000/api/v1'
-        // const urlBase = 'http://54.224.33.185:8000/api/v1'
-        const urlBase = 'https://cors-everywhere-me.herokuapp.com/http://54.224.33.185:8000/api/v2'
+        // const urlBase = 'https://cors-everywhere-me.herokuapp.com/http://54.224.33.185:8000/api/v1'
+        const urlBase = 'http://localhost:8000/api/v1'
+        const url = `${urlBase}/${config.endpointSecundario ? config.endpointSecundario : endpointPrimario}/${config.uuid ? `${config.uuid}/` : ''}`
 
-        const init = {
-            method: config.method,
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(config.body),
-        }
-
-        var url = `${urlBase}/${config.endpoint2 ? config.endpoint2 : endpoint}/${config.uuid ? `${config.uuid}/` : ''}`
-
-        return await fetch(url, init).then(res => res.json())/* .then(async res => {
-            const status = res.status
-            const obj = await res.json()
-            return {...obj, status}
-        }) */
+        return axios[config.metodo](url, config.body || {})
     }
 
-    const todosRegistros = (endpoint2?: Endpoint) => _fetcher({ method: "GET", endpoint2: endpoint2 ? endpoint2 : undefined })
-    const umRegistro = (uuid: string, endpoint2?: Endpoint) => _fetcher({ method: "GET", uuid, endpoint2: endpoint2 ? endpoint2 : undefined })
-    const criarRegistro = (body: any, endpoint2?: Endpoint) => _fetcher({ method: "POST", body, endpoint2: endpoint2 ? endpoint2 : undefined })
-    const editarRegistro = (uuid: string, body: any, endpoint2?: Endpoint) => _fetcher({ method: "PATCH", uuid, body, endpoint2: endpoint2 ? endpoint2 : undefined })
-    const deletarRegistro = (uuid: string, endpoint2?: Endpoint) => _fetcher({ method: "DELETE", uuid, endpoint2: endpoint2 ? endpoint2 : undefined })
+    const todosRegistros = (endpointSecundario?: any) => service({ metodo: 'get', endpointSecundario }) // : Endpoint
+    const umRegistro = (uuid: string, endpointSecundario?: any) => service({ metodo: 'get', endpointSecundario, uuid }) // : Endpoint
+    const criarRegistro = (body: any, endpointSecundario?: any) => service({ metodo: 'post', endpointSecundario, body }) // : Endpoint
+    const editarRegistro = (uuid: string, body: any, endpointSecundario?: any) => service({ metodo: 'patch', endpointSecundario, uuid, body }) // : Endpoint
+    const deletarRegistro = (uuid: string, endpointSecundario?: any, ) => service({ metodo: 'delete', endpointSecundario, uuid }) // : Endpoint
 
     return {
         todosRegistros,
