@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import { CardRegistro } from "../../componentes/CardAreaEntrega";
 import { Filtros } from "../../componentes/Filtros";
 import { Loading } from "../../componentes/Loading";
+import { Error } from "../../componentes/Error";
+
 import { DEFAULT_TOAST_CONFIG } from "../../constantes";
 
 import { useBackend } from "../../hooks/useBackend";
@@ -53,7 +55,8 @@ export function PainelAreaEntrega() {
     const {
         data: registrosAreasDeEntrega,
         status: statusAreasEntrega,
-        refetch: refreshAreasEntrega
+        refetch: refreshAreasEntrega,
+        isRefetching: refreshingAreasEntrega,
     } = useQuery('areasEntregas', () => todosRegistros())
 
     const {
@@ -101,7 +104,6 @@ export function PainelAreaEntrega() {
     return (
         <div className="w-full max-w-full">
             <h1 className="t-1 mb-2">Áreas de Entrega</h1>
-
             <div className="grid grid-cols-12 mt-12 lg:gap-12">
 
                 <div id="registros" className="col-span-12 lg:col-span-9">
@@ -109,10 +111,10 @@ export function PainelAreaEntrega() {
 
                     <div id="cards" className="grid grid-cols-12 gap-5 mt-12">
                         { statusAreasEntrega === "loading" && <Loading /> }
-                        { statusAreasEntrega === "error" && <h1>Deu pau</h1> }
-                        
+                        { statusAreasEntrega === "error" && <Error /> }
+
                         {
-                            !statusAreasEntrega &&
+                            statusAreasEntrega !== "loading" &&
                             areasEntrega.map((areaEntrega: AreaEntrega) => (
                                 <div className="col-span-12 md:col-span-6 lg:col-span-4">
                                     <CardRegistro
