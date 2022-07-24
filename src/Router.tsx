@@ -5,7 +5,7 @@ import {
     Outlet,
 } from "react-router-dom";
 
-import { SideBar } from "./componentes/SideBar";
+import { SideBar } from "./componentes/MenuBar";
 import { BottomBar } from "./componentes/BottomBar";
 
 import { PainelProduto as PainelProduto } from "./telas/Produtos/PainelProduto";

@@ -18,12 +18,23 @@ export function CardRegistro(props: {
     const { deletarRegistro } = useBackend(props.endpoint)
     const queryClient = useQueryClient()
 
-    const deletar = useMutation((uuidRegistro: string) => deletarRegistro(uuidRegistro), {
+    const deletar = useMutation((uuidRegistro: string) => deletarRegistro(uuidRegistro))
+
+    /*
+    , {
         onSuccess: () => {
             toast.success(props.textosDeletar?.sucesso, DEFAULT_TOAST_CONFIG)
             queryClient.invalidateQueries([props.query])
         },
-    })
+        onError: () => {
+            toast.success(props.textosDeletar?.sucesso, DEFAULT_TOAST_CONFIG)
+            queryClient.invalidateQueries([props.query])
+        },
+    }
+    */
+
+    console.log(deletar.isError)
+    
     return (
         <div id="card" className="w-full h-96 bg-orange-400 rounded-md overflow-y-auto">
             <div id="card-header" className="bg-orange-700 rounded-md text-center font-bold py-1 sticky top-0">

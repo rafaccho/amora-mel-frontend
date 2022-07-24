@@ -57,11 +57,11 @@ export function PainelProduto() {
         setNome('')
     }
 
-    useEffect(() => {
+    /* useEffect(() => {
         if (isLoading) return
         if (status === 'success') setProdutos(data.results as Produto[])
         else toast.error("Ocorreu um erro ao carregar as áreas de entrega", DEFAULT_TOAST_CONFIG)
-    }, [isLoading, data])
+    }, [isLoading, data]) */
 
     return (
         <div className="w-full max-w-full">

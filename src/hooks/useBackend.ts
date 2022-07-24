@@ -5,7 +5,7 @@ export function useBackend(endpoint: Endpoint) {
         // const urlBase = 'http://192.168.0.216:8000/api/v1'
         // const urlBase = 'http://localhost:8000/api/v1'
         // const urlBase = 'http://54.224.33.185:8000/api/v1'
-        const urlBase = 'https://cors-everywhere-me.herokuapp.com/http://54.224.33.185:8000/api/v1'
+        const urlBase = 'https://cors-everywhere-me.herokuapp.com/http://54.224.33.185:8000/api/v2'
 
         const init = {
             method: config.method,
@@ -15,11 +15,11 @@ export function useBackend(endpoint: Endpoint) {
 
         var url = `${urlBase}/${config.endpoint2 ? config.endpoint2 : endpoint}/${config.uuid ? `${config.uuid}/` : ''}`
 
-        return await fetch(url, init).then(async res => {
+        return await fetch(url, init).then(res => res.json())/* .then(async res => {
             const status = res.status
             const obj = await res.json()
             return {...obj, status}
-        })
+        }) */
     }
 
     const todosRegistros = (endpoint2?: Endpoint) => _fetcher({ method: "GET", endpoint2: endpoint2 ? endpoint2 : undefined })

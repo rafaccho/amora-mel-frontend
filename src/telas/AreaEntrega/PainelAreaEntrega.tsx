@@ -44,28 +44,37 @@ export function PainelAreaEntrega() {
 
     const queryClient = useQueryClient()
 
-    const mutation = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados), {
-        onSuccess: (...args) => {
-            console.log(args);
-            
-            toast.success('Registro salvo com sucesso!', DEFAULT_TOAST_CONFIG)
-            queryClient.invalidateQueries(['areasEntregas'])
-            limparCampos()
-        },
-        onError: (err) => {
-            toast.error('Ocorreu um erro!', DEFAULT_TOAST_CONFIG)
-        },
-    })
+    function getTo() {
+        return fetch('https://viacep.com.br/ws/' + cep + '/json/')
+    }
 
-    const { data: registrosAreasDeEntrega, isLoading: carregandoAreasEntrega, status: statusAreasEntrega, refetch: refreshAreasEntrega } = useQuery('areasEntregas', () => todosRegistros())
-    const { data: registrosFornecedores, isLoading: carregandoFornecedores, status: statusFornecedores } = useQuery('fornecedores', () => todosRegistros("fornecedores"))
+    const mutation = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados))
+
+    const {
+        data: registrosAreasDeEntrega,
+        status: statusAreasEntrega,
+        refetch: refreshAreasEntrega
+    } = useQuery('areasEntregas', () => todosRegistros())
+
+    const {
+        data: registrosFornecedores,
+        isLoading: carregandoFornecedores,
+        status: statusFornecedores
+    } = useQuery('fornecedores', () => todosRegistros("fornecedores"))
 
     function validarCampos(): boolean {
         const todosInputs = inputs.current!.querySelectorAll('input')
+        const todosSelects = inputs.current!.querySelectorAll('select')
+
         Array.from(todosInputs).forEach(input => {
-            // const valido = Array.from(fork).every(input => {
             const inputEstaValido = input.checkValidity()
             !inputEstaValido ? input.classList.add('invalidado') : input.classList.remove('invalidado')
+            return inputEstaValido
+        })
+
+        Array.from(todosSelects).forEach(select => {
+            const inputEstaValido = select.checkValidity()
+            !inputEstaValido ? select.classList.add('invalidado') : select.classList.remove('invalidado')
             return inputEstaValido
         })
 
@@ -86,16 +95,8 @@ export function PainelAreaEntrega() {
     }
 
     useEffect(() => {
-        if (carregandoAreasEntrega) return
-        if (statusAreasEntrega === 'success') setAreasEntrega(registrosAreasDeEntrega.results as AreaEntrega[])
-        else toast.error("Ocorreu um erro ao carregar as áreas de entrega", DEFAULT_TOAST_CONFIG)
-    }, [carregandoAreasEntrega, registrosAreasDeEntrega])
 
-    useEffect(() => {
-        if (carregandoFornecedores) return
-        if (statusFornecedores === 'success') setFornecedores(registrosFornecedores.results as Fornecedor[])
-        else toast.error("Ocorreu um erro ao carregar as áreas de entrega", DEFAULT_TOAST_CONFIG)
-    }, [carregandoAreasEntrega, registrosFornecedores])
+    }, [statusAreasEntrega])
 
     return (
         <div className="w-full max-w-full">
@@ -107,12 +108,11 @@ export function PainelAreaEntrega() {
                     <Filtros refetch={refreshAreasEntrega} />
 
                     <div id="cards" className="grid grid-cols-12 gap-5 mt-12">
+                        { statusAreasEntrega === "loading" && <Loading /> }
+                        { statusAreasEntrega === "error" && <h1>Deu pau</h1> }
+                        
                         {
-                            carregandoAreasEntrega &&
-                            <Loading />
-                        }
-                        {
-                            !carregandoAreasEntrega && statusAreasEntrega !== "error" &&
+                            !statusAreasEntrega &&
                             areasEntrega.map((areaEntrega: AreaEntrega) => (
                                 <div className="col-span-12 md:col-span-6 lg:col-span-4">
                                     <CardRegistro
@@ -147,7 +147,7 @@ export function PainelAreaEntrega() {
                             ))
                         }
                         {
-                            !areasEntrega.length && !carregandoAreasEntrega &&
+                            !areasEntrega.length && statusAreasEntrega === "success" &&
                             <div className="col-span-12 md:col-span-6 lg:col-span-4">
                                 <span>Não existem registros...</span>
                             </div>
@@ -169,24 +169,21 @@ export function PainelAreaEntrega() {
                         </div>
 
                         <div className="col-span-12">
-                            <label>Código</label>
-                            <input type="text" value={codigo} onChange={e => setCodigo(e.target.value)} />
-                        </div>
-
-                        <div className="col-span-12">
-                            <label>Nome</label>
+                            <label>Nome <i className="text-rose-700">*</i></label>
                             <input type="text" value={nome} onChange={e => setNome(e.target.value)} required />
                         </div>
 
                         <div className="col-span-12">
-                            <label>Fornecedor</label>
-                            <select name="fornecedor" id="uf" value={fornecedor} onChange={e => {
-                                console.log(e.target.value)
-                                setFornecedor(e.target.value)
-                            }} required>
-                                    <option value="">Selecione</option>
-                                    { fornecedores.map((fornecedor: Fornecedor) => <option value={fornecedor.uuid}>{fornecedor.nome}</option>)}
+                            <label>Fornecedor <i className="text-rose-700">*</i></label>
+                            <select name="fornecedor" id="uf" value={fornecedor} onChange={e => setFornecedor(e.target.value)} required>
+                                <option value="">Selecione</option>
+                                {fornecedores.map((fornecedor: Fornecedor) => <option value={fornecedor.uuid}>{fornecedor.nome}</option>)}
                             </select>
+                        </div>
+
+                        <div className="col-span-12">
+                            <label>Código</label>
+                            <input type="text" value={codigo} onChange={e => setCodigo(e.target.value)} />
                         </div>
 
                         <div className="col-span-12">
@@ -194,7 +191,7 @@ export function PainelAreaEntrega() {
                         </div>
 
                         <div className="col-span-12">
-                            <label>CEP</label>
+                            <label>CEP <i className="text-rose-700">*</i></label>
                             <input type="text" required
                                 value={cep}
                                 onChange={e => setCep(e.target.value)}
@@ -229,12 +226,12 @@ export function PainelAreaEntrega() {
                         </div>
 
                         <div className="col-span-12">
-                            <label>Rua</label>
+                            <label>Rua <i className="text-rose-700">*</i></label>
                             <input type="text" value={rua} onChange={e => setRua(e.target.value)} required />
                         </div>
 
                         <div className="col-span-12">
-                            <label>Estado</label>
+                            <label>Estado <i className="text-rose-700">*</i></label>
                             <select name="uf" id="uf" value={estado} onChange={e => setEstado(e.target.value)} required >
                                 <option value="AC">Acre</option>
                                 <option value="AL">Alagoas</option>
@@ -267,12 +264,12 @@ export function PainelAreaEntrega() {
                         </div>
 
                         <div className="col-span-12">
-                            <label>Bairro</label>
+                            <label>Bairro <i className="text-rose-700">*</i></label>
                             <input type="text" value={bairro} onChange={e => setBairro(e.target.value)} required />
                         </div>
 
                         <div className="col-span-12">
-                            <label>Número</label>
+                            <label>Número <i className="text-rose-700">*</i></label>
                             <input type="text" value={numero} onChange={e => setNumero(e.target.value)} required />
                         </div>
 

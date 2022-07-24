@@ -80,6 +80,7 @@ export function FormAreaEntrega() {
         if (status === 'success') setAreasEntrega(data.results as AreaEntrega[])
         else toast.error("Ocorreu um erro ao carregar as áreas de entrega", DEFAULT_TOAST_CONFIG)
     }, [isLoading, data])
+
     return (
         <div ref={inputs} id="formulario" className="w-full">
             <h1 className="t-1 mb-6">Área de Entega</h1>

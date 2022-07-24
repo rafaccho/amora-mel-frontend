@@ -18,14 +18,12 @@ export function Home() {
 
     const fecharModal = () => setModalAberto(false) // const abrirModal = () => setModalAberto(true)
 
-    useEffect(() => {
+    /* useEffect(() => {
         if (data) {
             let newData = data as BackendResponse
-
-            // @ts-ignore
             setPedidos(newData.results)
         }
-    }, [data])
+    }, [data]) */
 
     return (
         <div className="w-full h-screen">
