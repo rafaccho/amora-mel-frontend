@@ -99,21 +99,27 @@ export function FormAreaEntrega() {
 
     return (
         <div ref={inputs} id="formulario" className="w-full">
-            <h1 className="t-1 mb-6">Área de Entega</h1>
+            <div id="cabecalho-form-areas-entrega" className="sticky left-0 top-0 bg-orange-200 px-3 py-6 mb-6">
 
-            <div className="w-full flex mb-12 gap-4 sticky bottom-0">
-                <Button title={<><TiArrowBackOutline size={22} /> Voltar</>}
-                    className="btn-l flex justify-center pt-3 font-bold w-1/3"
-                    onClick={() => navigate('/app/areas-entrega')}
-                />
-                <Button title={uuid ? 'Salvar' : 'Cadastrar'}
-                    className="btn-l flex justify-center pt-3 font-bold w-2/3"
-                // onClick={() => !validarCampos() ? toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG) : mutation.mutate()}
-                />
+                <h1 className="t-1 mb-6">Área de Entega</h1>
+
+                <div className="w-full flex gap-4">
+                    <Button title={<><TiArrowBackOutline size={22} /> Voltar</>}
+                        className="btn-l flex justify-center pt-3 w-1/3"
+                        onClick={() => navigate('/app/areas-entrega')}
+                    />
+                    <Button title={uuid ? 'Salvar' : 'Cadastrar'}
+                        className="btn-l flex justify-center pt-3 w-2/3"
+                        onClick={() => !validarCampos() ? toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG) : mutation.mutate()}
+                    />
+
+                </div>
+
             </div>
 
 
-            <div ref={inputs} id="formulario">
+
+            <div ref={inputs} id="formulario" className="p-5">
                 <div className="inputs">
 
                     <div className="col-span-12">
@@ -241,13 +247,6 @@ export function FormAreaEntrega() {
                     <div className="col-span-12">
                         <label>Complemento</label>
                         <input type="text" value={complemento} onChange={e => setComplemento(e.target.value)} />
-                    </div>
-
-                    <div className="col-span-12">
-                        <Button title={uuid ? 'Salvar' : 'Cadastrar'}
-                            className="btn-l flex justify-center pt-3 w-full font-bold mt-8"
-                            onClick={() => !validarCampos() ? toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG) : mutation.mutate()}
-                        />
                     </div>
 
                 </div>
