@@ -62,7 +62,6 @@ export function PainelAreaEntrega() {
         data: registrosFornecedores,
         isLoading: carregandoFornecedores,
         status: statusFornecedores,
-        // isRefetching: refeshingFornecedores,
     } = useQuery('fornecedores', () => todosRegistros("fornecedores", filtros))
 
     const queryClient = useQueryClient()
@@ -133,8 +132,8 @@ export function PainelAreaEntrega() {
                     />
 
                     <div id="cards" className="grid grid-cols-12 gap-5 mt-12">
-                        {statusAreasEntrega === "loading" && <Loading />}
-                        {statusAreasEntrega === "error" && <Error />}
+                        { statusAreasEntrega === "loading" && <Loading /> }
+                        { statusAreasEntrega === "error" && <Error /> }
                         {
                             statusAreasEntrega === "success" &&
                             areasEntrega.map((areaEntrega: AreaEntrega) => (
