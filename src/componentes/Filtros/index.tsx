@@ -18,8 +18,7 @@ export function Filtros(props: { refetch?: any, urlCadastrar?: string, state?: a
 
                 <div className="col-span-12 md:col-span-12 lg:col-span-8">
                     <input type="text" placeholder="Pesquise qualquer coisa..."
-                        value={props.state.state}
-                        onChange={(e) => {props.state.setState(e.target.value)}}
+                        // value={props.state.state} onChange={(e) => {props.state.setState(e.target.value)}}
                     />
                 </div>
 
