@@ -6,17 +6,16 @@ import {
 } from "react-router-dom";
 
 import { MenuBar } from "./componentes/MenuBar";
-/* import { BottomBar } from "./componentes/BottomBar";
 
 import { PainelProduto as PainelProduto } from "./telas/Produtos/PainelProduto";
-import { FormProduto } from "./telas/Produtos/FormProduto"; */
+import { FormProduto } from "./telas/Produtos/FormProduto";
 
 import { Login } from "./telas/Login";
-// import { Home } from "./telas/Home";
+import { Home } from "./telas/Home";
 
 import { PainelAreaEntrega } from "./telas/AreaEntrega/PainelAreaEntrega";
 import { FormAreaEntrega } from "./telas/AreaEntrega/FormAreaEntrega";
-// import { PainelFornecedor } from "./telas/Fornecedor/PainelFornecedor";
+import { PainelFornecedor } from "./telas/Fornecedor/PainelFornecedor";
 
 export function Router() {
     return (
@@ -34,16 +33,12 @@ export function Router() {
                         <MenuBar tipo="S" />
                     </div>
                 }>
-                    {/* <Route index element={<Home />} /> */}
+                    <Route index element={<Home />} />
                     
-                    {/* <Route path="produtos/*">
+                    <Route path="produtos/*">
                         <Route index element={<PainelProduto />} />
                         <Route path="cadastrar" element={<FormProduto />} />
                     </Route>
-
-                    <Route path="pedidos/*">
-                        <Route index element={<><h1 className="t-1">Pedidos</h1></>} />
-                    </Route> */}
 
                     <Route path="areas-entrega/*">
                         <Route index element={<PainelAreaEntrega />} />
@@ -51,9 +46,13 @@ export function Router() {
                         <Route path="editar/:uuid" element={<FormAreaEntrega />} />
                     </Route>
 
-                    {/* <Route path="fornecedores/*">
-                        <Route index element={<PainelFornecedor />} />
+                    {/* <Route path="pedidos/*">
+                        <Route index element={<><h1 className="t-1">Pedidos</h1></>} />
                     </Route> */}
+
+                    <Route path="fornecedores/*">
+                        <Route index element={<PainelFornecedor />} />
+                    </Route>
 
                 </Route>
             </Routes>
