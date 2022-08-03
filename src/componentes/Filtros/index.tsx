@@ -6,19 +6,21 @@ import { useNavigate } from 'react-router-dom';
 
 import { Button } from "../../tags";
 import { useState } from 'react';
+import { toast } from 'react-toastify';
+import { DEFAULT_TOAST_CONFIG } from '../../constantes';
 
-
-export function Filtros(props: { refetch?: any, urlCadastrar?: string }) {
-    const [  ] = useState('')
-    const [  ] = useState('')
-
+export function Filtros(props: { refetch?: any, urlCadastrar?: string, state?: any }) {
     const navigate = useNavigate()
+
     return (
         <div id="filtros">
             <div className="grid grid-cols-12 gap-5">
 
                 <div className="col-span-12 md:col-span-12 lg:col-span-8">
-                    <input type="text" placeholder="Pesquise qualquer coisa..." />
+                    <input type="text" placeholder="Pesquise qualquer coisa..."
+                        value={props.state.state}
+                        onChange={(e) => {props.state.setState(e.target.value)}}
+                    />
                 </div>
 
                 <div className="flex lg:hidden justify-center md:justify-end col-span-12 md:col-span-4">
@@ -26,11 +28,22 @@ export function Filtros(props: { refetch?: any, urlCadastrar?: string }) {
                 </div>
 
                 <div className="flex justify-center md:justify-end col-span-6 md:col-span-4 lg:col-span-2">
-                    <Button className="btn-l pb-3 w-full flex justify-center pt-3 font-bold" onClick={() => props.refetch()} title={<BsSearch />} />
+                    <Button className="btn-l pb-3 w-full flex justify-center pt-3 font-bold" title={<BsSearch />}
+                        onClick={() => {
+                            const promise = toast.loading("Carregando 1...", DEFAULT_TOAST_CONFIG)
+                            props.refetch('teste=123&teste2=12')
+                            console.log(props.refetch)
+                        }}
+                    />
                 </div>
 
                 <div className="flex justify-center md:justify-end col-span-6 md:col-span-4 lg:col-span-2">
-                    <Button className="btn-l pb-3 w-full flex justify-center pt-3 font-bold" onClick={() => props.refetch()} title={<FiRefreshCw />} />
+                    <Button className="btn-l pb-3 w-full flex justify-center pt-3 font-bold" title={<FiRefreshCw />}
+                        onClick={() => {
+                            const promise = toast.loading("Carregando 2...", DEFAULT_TOAST_CONFIG)
+                            props.refetch('teste=123&teste2=12')
+                        }}
+                    />
                 </div>
 
                 <div className="col-span-12 md:col-span-12 lg:col-span-12 flex justify-between lg:gap-12 md:mt-12 lg:mt-0">

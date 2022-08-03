@@ -1,4 +1,4 @@
-export type MetodoHttp = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+export type MetodoHttp = 'get' | 'post' | 'put' | 'delete' | 'patch'
 export type Endpoint = 'pedidos' | 'areas_entregas' | 'fornecedores' | 'lojas' | 'produtos' | 'produto_fornecedores' | 'compras' | 'areas_entregas_produto'
 export type PedidoStatus = 'A' | 'P' | 'B' | 'F' | 'C' 
 export type UnidadeLoja = 'FA' | 'CN' | 'UN' | 'FL'

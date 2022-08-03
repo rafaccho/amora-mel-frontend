@@ -51,7 +51,6 @@ export function Router() {
                         <Route path="editar/:uuid" element={<FormAreaEntrega />} />
                     </Route>
 
-
                     {/* <Route path="fornecedores/*">
                         <Route index element={<PainelFornecedor />} />
                     </Route> */}

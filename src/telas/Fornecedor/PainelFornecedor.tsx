@@ -42,7 +42,7 @@ export function PainelFornecedor() {
 
     const { criarRegistro, editarRegistro, todosRegistros, deletarRegistro } = useBackend('fornecedores')
     const queryClient = useQueryClient()
-    const criarEditarFornecedor = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados), {
+    /* const criarEditarFornecedor = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
             toast.success('Fornecedor salvo com sucesso!', DEFAULT_TOAST_CONFIG)
             queryClient.invalidateQueries(['fornecedores'])
@@ -51,7 +51,7 @@ export function PainelFornecedor() {
         onError: (err) => {
             toast.error('Ocorreu um erro!', DEFAULT_TOAST_CONFIG)
         },
-    })
+    }) */
 
     const { data, isLoading, status, refetch } = useQuery('fornecedores', () => todosRegistros())
 
@@ -258,7 +258,7 @@ export function PainelFornecedor() {
                         <div className="col-span-12">
                             <Button title={uuid ? 'Salvar' : 'Cadastrar'}
                                 className="btn-l flex justify-center pt-3 w-full font-bold"
-                                onClick={() => !validarCampos() ? toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG) : criarEditarFornecedor.mutate()}
+                                // onClick={() => !validarCampos() ? toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG) : criarEditarFornecedor.mutate()}
                             />
                         </div>
 

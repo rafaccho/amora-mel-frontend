@@ -43,7 +43,7 @@ export interface Fornecedor extends Base, Endereco {
 export interface AreaEntrega extends Base, Endereco {
     codigo: string
     nome: string
-    fornecedor: Fornecedor
+    fornecedor: string //| Fornecedor
 }
 
 export interface Pedido extends Base {

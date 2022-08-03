@@ -31,6 +31,7 @@ export function PainelAreaEntrega() {
     const [areasEntrega, setAreasEntrega] = useState<AreaEntrega[]>([])
     const [fornecedores, setFornecedores] = useState<Fornecedor[]>([])
 
+    const [filtros, setFiltros] = useState('')
 
     const inputs = useRef<HTMLDivElement>(null)
 
@@ -61,17 +62,17 @@ export function PainelAreaEntrega() {
         data: registrosFornecedores,
         isLoading: carregandoFornecedores,
         status: statusFornecedores,
-        isRefetching: refeshingFornecedores,
-    } = useQuery('fornecedores', () => todosRegistros("fornecedores"))
+        // isRefetching: refeshingFornecedores,
+    } = useQuery('fornecedores', () => todosRegistros("fornecedores", filtros))
 
     const queryClient = useQueryClient()
     const mutation = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados), {
-        onSuccess: (err) => {
+        onSuccess: () => {
             queryClient.invalidateQueries(['areasEntregas'])
             toast.success('Registro criado com sucesso!', DEFAULT_TOAST_CONFIG)
             limparCampos()
         },
-        onError: (err) => {
+        onError: () => {
             toast.error("Ocorreu um erro!", DEFAULT_TOAST_CONFIG)
         }
     })
@@ -118,12 +119,18 @@ export function PainelAreaEntrega() {
     }, [statusFornecedores, carregandoFornecedores])
 
     return (
-        <div className="w-full max-w-full">
+        <div className="w-full max-w-full p-5">
             <h1 className="t-1 mb-2">Áreas de Entrega</h1>
             <div className="grid grid-cols-12 mt-12 lg:gap-12">
 
                 <div id="registros" className="col-span-12 lg:col-span-9">
-                    <Filtros refetch={refreshAreasEntrega} />
+                    <Filtros
+                        refetch={refreshAreasEntrega}
+                        state={{
+                            state: filtros,
+                            setState: setFiltros,
+                        }}
+                    />
 
                     <div id="cards" className="grid grid-cols-12 gap-5 mt-12">
                         {statusAreasEntrega === "loading" && <Loading />}
@@ -306,7 +313,7 @@ export function PainelAreaEntrega() {
 
                         <div className="col-span-12">
                             <Button title={uuid ? 'Salvar' : 'Cadastrar'}
-                                className="btn-l flex justify-center pt-3 w-full font-bold"
+                                className="btn-l flex justify-center pt-3 w-full font-bold mt-8"
                                 onClick={() => !validarCampos() ? toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG) : mutation.mutate()}
                             />
                         </div>
