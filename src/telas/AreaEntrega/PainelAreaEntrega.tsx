@@ -132,8 +132,8 @@ export function PainelAreaEntrega() {
                     />
 
                     <div id="cards" className="grid grid-cols-12 gap-5 mt-12">
-                        { statusAreasEntrega === "loading" && <Loading /> }
-                        { statusAreasEntrega === "error" && <Error /> }
+                        {statusAreasEntrega === "loading" && <Loading />}
+                        {statusAreasEntrega === "error" && <Error />}
                         {
                             statusAreasEntrega === "success" &&
                             areasEntrega.map((areaEntrega: AreaEntrega) => (
@@ -193,6 +193,11 @@ export function PainelAreaEntrega() {
                         </div>
 
                         <div className="col-span-12">
+                            <label>Código</label>
+                            <input type="text" value={codigo} onChange={e => setCodigo(e.target.value)} />
+                        </div>
+
+                        <div className="col-span-12">
                             <label>Nome <i className="text-rose-700">*</i></label>
                             <input type="text" value={nome} onChange={e => setNome(e.target.value)} required />
                         </div>
@@ -211,11 +216,6 @@ export function PainelAreaEntrega() {
                                 </option>
                                 {fornecedores.map((fornecedor: Fornecedor) => <option value={fornecedor.uuid}>{fornecedor.nome}</option>)}
                             </select>
-                        </div>
-
-                        <div className="col-span-12">
-                            <label>Código</label>
-                            <input type="text" value={codigo} onChange={e => setCodigo(e.target.value)} />
                         </div>
 
                         <div className="col-span-12">
