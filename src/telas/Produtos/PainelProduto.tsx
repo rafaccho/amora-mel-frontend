@@ -5,11 +5,12 @@ import { toast } from "react-toastify";
 import { CardRegistro } from "../../componentes/CardAreaEntrega";
 import { Filtros } from "../../componentes/Filtros";
 import { Loading } from "../../componentes/Loading";
+import { Error } from "../../componentes/Error";
 import { DEFAULT_TOAST_CONFIG } from "../../constantes";
 
 import { useBackend } from "../../hooks/useBackend";
 
-import { AreaEntrega, Fornecedor, Produto, ViacepResponse } from "../../interfaces";
+import { Produto } from "../../interfaces";
 import { Button } from "../../tags";
 
 
@@ -27,57 +28,88 @@ export function PainelProduto() {
     const inputs = useRef<HTMLDivElement>(null)
 
     const dados = {
+        nome,
+        preco,
+        unidade: unidade1,
+        quantidade: quantidade1,
+
+        // unidade1,
+        // unidade2,
+
+        // quantidade1,
+        // quantidade2,
     }
 
     const { criarRegistro, editarRegistro, todosRegistros, deletarRegistro } = useBackend('produtos')
+
     const queryClient = useQueryClient()
-    /* const criarEditar = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados), {
+
+    const mutation = useMutation(() => uuid ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
-            toast.success('Registro salvo com sucesso!', DEFAULT_TOAST_CONFIG)
             queryClient.invalidateQueries(['produtos'])
+            toast.success('Produto cadastrado com sucesso!', DEFAULT_TOAST_CONFIG)
             limparCampos()
         },
-        onError: (err) => {
-            toast.error('Ocorreu um erro!', DEFAULT_TOAST_CONFIG)
-        },
-    }) */
-
-    const { data, isLoading, status, refetch } = useQuery('produtos', () => todosRegistros())
+        onError: () => {
+            toast.error("Ocorreu um erro!", DEFAULT_TOAST_CONFIG)
+        }
+    })
 
     function validarCampos(): boolean {
-        const inputsForm = inputs.current!.querySelectorAll('input')
-        const valido = Array.from(inputsForm).every(input => input.checkValidity())
+        const todosInputs = inputs.current!.querySelectorAll('input')
+        const todosSelects = inputs.current!.querySelectorAll('select')
 
-        return valido
+        Array.from(todosInputs).forEach(input => {
+            const inputEstaValido = input.checkValidity()
+            !inputEstaValido ? input.classList.add('invalidado') : input.classList.remove('invalidado')
+            return inputEstaValido
+        })
+
+        Array.from(todosSelects).forEach(select => {
+            const inputEstaValido = select.checkValidity()
+            !inputEstaValido ? select.classList.add('invalidado') : select.classList.remove('invalidado')
+            return inputEstaValido
+        })
+
+        return !(document.querySelector('.invalidado'))
     }
+
+    const {
+        data: registrosProdutos,
+        status: statusProdutos,
+        isLoading: carregandoProdutos,
+        isRefetching: refeshingProdutos,
+    } = useQuery('produtos', () => todosRegistros('produtos'))
 
     function limparCampos(): void {
         setCodigo('')
         setUuid('')
         setNome('')
+        setQuantidade1('')
+        setUnidade1('')
+        setQuantidade2('')
+        setUnidade2('')
+        setPreco('')
     }
 
-    /* useEffect(() => {
-        if (isLoading) return
-        if (status === 'success') setProdutos(data.results as Produto[])
-        else toast.error("Ocorreu um erro ao carregar as áreas de entrega", DEFAULT_TOAST_CONFIG)
-    }, [isLoading, data]) */
+    useEffect(() => {
+        statusProdutos === "success" && setProdutos(registrosProdutos.data.results as Produto[])
+    }, [statusProdutos, carregandoProdutos, refeshingProdutos])
 
     return (
-        <div className="w-full max-w-full">
+        <div className="w-full max-w-full p-5">
             <h1 className="t-1 mb-2">Produtos</h1>
 
             <div className="grid grid-cols-12 mt-12 lg:gap-12">
 
                 <div id="registros" className="col-span-12 lg:col-span-9">
-                    <Filtros refetch={refetch} />
+                    <Filtros refetch={() => ''} />
 
                     <div id="cards" className="grid grid-cols-12 gap-5 mt-12">
-                    {
-                            isLoading &&
-                            <Loading />
-                        }
+                        { statusProdutos === "loading" && <Loading /> }
+                        { statusProdutos === "error" && <Error /> }
                         {
+                            statusProdutos === "success" &&
                             produtos.map((produto: Produto) => (
                                 <div className="col-span-12 md:col-span-6 lg:col-span-4">
                                     <CardRegistro
@@ -86,12 +118,13 @@ export function PainelProduto() {
                                         uuid={produto.uuid}
                                         endpoint={'produtos'}
                                         textosDeletar={{
-                                            sucesso: "a",
-                                            erro: "b",
+                                            sucesso: "Produto excluído com sucesso!",
+                                            erro: "Ocorreu um erro ao excluir o produto!",
                                         }}
                                         query={'produtos'}
                                         dados={{
-                                            "Código": produto.codigo ? produto.codigo : produto.uuid,
+                                            "Identificador": produto.uuid,
+                                            "Código": produto.codigo,
                                             "Nome": produto.nome,
                                             "Preço": produto.preco,
                                             "Unidade 1": produto.unidade1,
@@ -116,7 +149,7 @@ export function PainelProduto() {
                             ))
                         }
                         {
-                            !produtos.length && !isLoading &&
+                            !produtos.length && statusProdutos === "success" &&
                             <div className="col-span-12 md:col-span-6 lg:col-span-4">
                                 <span>Não existem registros...</span>
                             </div>
@@ -138,45 +171,45 @@ export function PainelProduto() {
                         </div>
 
                         <div className="col-span-12">
-                            <label>Nome</label>
-                            <input type="text" value={nome} onChange={e => setNome(e.target.value)} />
-                        </div>
-
-                        <div className="col-span-12">
                             <label>Código</label>
                             <input type="text" value={codigo} onChange={e => setCodigo(e.target.value)} />
                         </div>
 
                         <div className="col-span-12">
-                            <label>Preço</label>
+                            <label>Nome <i className="text-rose-700">*</i></label>
+                            <input type="text" value={nome} onChange={e => setNome(e.target.value)} required />
+                        </div>
+
+                        <div className="col-span-12">
+                            <label>Preço <i className="text-rose-700">*</i></label>
                             <input type="text" value={preco} onChange={e => setPreco(e.target.value)} required />
                         </div>
 
                         <div className="col-span-12">
-                            <label>Quantidade 1</label>
+                            <label>Quantidade 1 <i className="text-rose-700">*</i></label>
                             <input type="text" value={quantidade1} onChange={e => setQuantidade1(e.target.value)} required />
                         </div>
 
                         <div className="col-span-12">
-                            <label>Unidade 1</label>
+                            <label>Unidade 1 <i className="text-rose-700">*</i></label>
                             <input type="text" value={unidade1} onChange={e => setUnidade1(e.target.value)} required />
                         </div>
 
                         <div className="col-span-12">
                             <label>Quantidade 2</label>
-                            <input type="text" value={quantidade2} onChange={e => setQuantidade2(e.target.value)} required />
+                            <input type="text" value={quantidade2} onChange={e => setQuantidade2(e.target.value)} />
                         </div>
 
                         <div className="col-span-12">
                             <label>Unidade 2</label>
-                            <input type="text" value={unidade2} onChange={e => setUnidade2(e.target.value)} required />
+                            <input type="text" value={unidade2} onChange={e => setUnidade2(e.target.value)} />
                         </div>
 
 
                         <div className="col-span-12">
                             <Button title={uuid ? 'Salvar' : 'Cadastrar'}
                                 className="btn-l flex justify-center pt-3 w-full font-bold"
-                                // onClick={() => !validarCampos() ? toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG) : criarEditar.mutate()}
+                                onClick={() => !validarCampos() ? toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG) : mutation.mutate()}
                             />
                         </div>
 
