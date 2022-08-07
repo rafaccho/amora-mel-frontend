@@ -1,13 +1,28 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-export function BotoesForm() {
+export function BotoesForm(props: {
+    onSalvar: () => void;
+    onEditar: () => void;
+    onDeletar: () => void;
+}) {
     const navigate = useNavigate()
+    const { pathname } = useLocation()
+    const urlVoltar = pathname.match('cadastrar/')
+        ? pathname.replace('cadastrar/', '')
+        : pathname.split('/').splice(0, 3).join('/') + '/'
 
     return (
-        <div id="botoes" className="flex justify-end gap-3 mb-12">
-            <button className="btn-l">Salvar</button>
-            <button className="btn-l">Editar</button>
-            <button onClick={() => navigate("/app/produtos/")} className="btn-l">Voltar</button>
+        <div id="botoes" className="flex justify-end gap-3 my-12">
+            <button className="btn-l"
+                onClick={() => props.onSalvar()}
+            >Salvar</button>
+            <button className="btn-l"
+                onClick={() => props.onEditar()}
+            >Editar</button>
+            <button className="btn-l"
+                onClick={() => props.onDeletar()}
+            >Deletar</button>
+            <button onClick={() => navigate(urlVoltar)} className="btn-l">Voltar</button>
         </div>
     )
 }
