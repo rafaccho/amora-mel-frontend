@@ -19,7 +19,7 @@ export function Grid(props: {
     naoExibirCodigo?: boolean,
 }) {
     const [ filtros, setFiltros ] = useState('')
-    const [ paginalAtual, setPaginalAtual ] = useState('')
+    const [ paginalAtual, setPaginalAtual ] = useState(1)
     const [ totalPaginas, setTotalPaginas ] = useState('')
     
     const navigate = useNavigate()
@@ -31,7 +31,7 @@ export function Grid(props: {
         let quantidadeTotalPaginas;
 
         if(dadosResponse) {
-            const divisao = dadosResponse.count / 20
+            const divisao = dadosResponse.count / 8
 
             if (divisao < 1) quantidadeTotalPaginas = 1
             else if (divisao % 1 === 0) quantidadeTotalPaginas = divisao
@@ -106,9 +106,9 @@ export function Grid(props: {
             <div className="my-8" />
 
             <div className="grid grid-cols-12">
-                <div className="col-span-12 flex justify-center md:justify-end gap-16">
+                <div className="col-span-12 flex justify-center md:justify-end gap-14">
                     <Button className="btn-l w-24 flex justify-center pt-3" title={<AiOutlineArrowLeft />} />
-                    <span className='font-bold font-sans'>1 de {calcularQuantidadePaginas()}</span>
+                    <span className='font-bold font-sans'>{paginalAtual} de {calcularQuantidadePaginas()}</span>
                     <Button className="btn-l w-24 flex justify-center pt-3" title={<AiOutlineArrowRight />} />
                 </div>
             </div>
