@@ -2,7 +2,7 @@ import { Painel } from "../../componentes/Painel"
 
 export const PainelProduto = () => (
     <Painel
-        titulo="Fornecedores"
+        titulo="Produtos"
         grid={{
             exibicaoDadosConfig: [
                 { coluna: 'Codigo', chaveApi: 'codigo' },
