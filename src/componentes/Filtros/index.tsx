@@ -45,11 +45,11 @@ export function Filtros(props: { refetch?: any, urlCadastrar?: string, state?: a
                     />
                 </div>
 
-                <div className="col-span-12 md:col-span-12 lg:col-span-12 flex justify-between lg:gap-12 md:mt-12 lg:mt-0">
+                {/* <div className="col-span-12 md:col-span-12 lg:col-span-12 flex justify-between lg:gap-12 md:mt-12 lg:mt-0">
                     <Button className="btn-l w-24 flex justify-center pt-3" onClick={() => props.refetch()} title={<AiOutlineArrowLeft />} />
                     <span className='font-bold font-sans'>1 de 1</span>
                     <Button className="btn-l w-24 flex justify-center pt-3" onClick={() => props.refetch()} title={<AiOutlineArrowRight />} />
-                </div>
+                </div> */}
 
             </div>
         </div>
