@@ -17,18 +17,18 @@ export function Filtros(props: { refresh: any }) {
                     <input type="text" placeholder="Pesquise qualquer coisa..." />
                 </div>
 
-                <div className="col-span-2 md:col-span-4 lg:col-span-2 flex justify-center md:justify-end">
+                <div className="col-span-2 md:col-span-4 lg:col-span-1 flex justify-center md:justify-end">
                     <Button className="btn-l pb-3 w-full flex justify-center pt-3" title={<BsSearch />}
                         onClick={() => {
                         }}
                     />
                 </div>
 
-                <div className="col-span-8 md:col-span-4 flex lg:hidden justify-center md:justify-end">
+                <div className="col-span-8 md:col-span-4 lg:col-span-2 lg:order-last flex justify-center md:justify-end">
                     <Button  className="btn-l w-full font-medium" title="Adicionar" onClick={() => navigate('cadastrar/')} />
                 </div>
 
-                <div className="col-span-4 md:col-span-4 lg:col-span-2 flex justify-center md:justify-end">
+                <div className="col-span-4 md:col-span-4 lg:col-span-1 flex justify-center md:justify-end">
                     <Button className="btn-l pb-3 w-full flex justify-center pt-3" title={<FiRefreshCw />}
                         onClick={() => {
                         }}
