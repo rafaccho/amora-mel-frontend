@@ -1,10 +1,13 @@
-import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai'
 import { useQuery } from 'react-query'
+import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai'
+import { useLocation, useNavigate } from 'react-router-dom'
+
+import { Filtros } from '../Filtros'
 import { useBackend } from "../../hooks/useBackend"
 import { Button } from '../../tags'
 import { Endpoint } from "../../tipos"
 import { BackendResponse, ExibicaoDadoConfig } from "../../interfaces";
-import { Filtros } from '../Filtros'
+import { useState } from 'react'
 
 export function Grid(props: {
     exibicaoDadosConfig: ExibicaoDadoConfig[],
@@ -14,13 +17,18 @@ export function Grid(props: {
     refresh?: () => void,
     naoExibirCodigo?: boolean,
 }) {
+    const [ filtros, setFiltros ] = useState('')
+    const [ paginalAtual, setPaginalAtual ] = useState('')
+    const [ totalPaginas, setTotalPaginas ] = useState('')
+    
+    const navigate = useNavigate()
     const { todosRegistros } = useBackend(props.requisicaoConfig.endpoint)
     const query = useQuery(props.requisicaoConfig.endpoint, () => todosRegistros())
 
     function calcularQuantidadePaginas() {
         const dadosResponse = query.data?.data as BackendResponse
         let quantidadeTotalPaginas;
-        
+
         if(dadosResponse) {
             const divisao = dadosResponse.count / 20
 
@@ -28,7 +36,6 @@ export function Grid(props: {
             else if (divisao % 1 === 0) quantidadeTotalPaginas = divisao
             else quantidadeTotalPaginas = Math.floor(divisao) + 1
         }
-
         return quantidadeTotalPaginas
     }
 
@@ -66,7 +73,7 @@ export function Grid(props: {
                                 <tbody className="bg-white divide-y divide-orange-900">
                                     {
                                         query.data?.data.results.map((registro: any) => (
-                                            <tr key={registro.uuid} className="bg-orange-400 text-j-white">
+                                            <tr key={registro.uuid} className="bg-orange-400 text-j-white" onClick={() => navigate}>
 
                                                 <td className="coluna-grid" />
                                                 <td className="coluna-grid truncate">{registro.uuid}</td>
