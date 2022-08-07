@@ -2,7 +2,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 export function BotoesForm(props: {
     onSalvar: () => void;
-    onEditar: () => void;
     onDeletar: () => void;
 }) {
     const navigate = useNavigate()
@@ -17,7 +16,7 @@ export function BotoesForm(props: {
                 onClick={() => props.onSalvar()}
             >Salvar</button>
             <button className="btn-l"
-                onClick={() => props.onEditar()}
+                onClick={() => props.onSalvar()}
             >Editar</button>
             <button className="btn-l"
                 onClick={() => props.onDeletar()}
