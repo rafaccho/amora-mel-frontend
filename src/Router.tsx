@@ -26,11 +26,9 @@ export function Router() {
 
                 <Route path="/app/*" element={
                     <div>
-                        <div className="h-screen overflow-y-auto bg-[#f7d417] lg:pl-24">
+                        <div className="h-screen overflow-y-auto bg-[#f7d417] lg:pl-20">
                             <Outlet />
                         </div>
-
-                        {/* <MenuBar tipo="B" /> */}
 
                         <MenuBar tipo="S" />
                     </div>
