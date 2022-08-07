@@ -1,16 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { useQueryClient, useMutation, useQuery } from 'react-query'
 import { toast } from "react-toastify";
-import { useLocation, useParams } from "react-router-dom";
-
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Loading } from "../../componentes/Loading";
 import { Error } from "../../componentes/Error";
-import { DEFAULT_TOAST_CONFIG } from "../../constantes";
-
-import { useBackend } from "../../hooks/useBackend";
-
-import { Produto } from "../../interfaces";
 import { CabecalhoForm } from "../../componentes/CabecalhoForm";
+import { DEFAULT_TOAST_CONFIG } from "../../constantes";
+import { useBackend } from "../../hooks/useBackend";
+import { criarUrlVoltar } from "../../utils/criarUrlVoltar";
+import { Produto } from "../../interfaces";
 
 export function FormProduto() {
     const [codigo, setCodigo] = useState('')
@@ -20,29 +18,25 @@ export function FormProduto() {
     const [unidade1, setUnidade1] = useState('')
     const [quantidade2, setQuantidade2] = useState<string | number>('')
     const [unidade2, setUnidade2] = useState('')
-    const [preco, setPreco] = useState('')
-    const [produtos, setProdutos] = useState<Produto[]>([])
 
     const inputs = useRef<HTMLDivElement>(null)
 
     const { uuidEdit } = useParams()
     const { pathname } = useLocation()
-
-
+    const navigate = useNavigate()
     const { criarRegistro, editarRegistro, umRegistro } = useBackend('produtos')
 
-    const {
-        data: dadosProduto,
-        status: statusProduto,
-        isLoading: carregandoProduto,
-        isRefetching: refeshingProduto,
-    } = useQuery('produtos', () => umRegistro(''))
+    const { data: dadosProduto, status: statusProduto } = useQuery(
+        'produto',
+        () => umRegistro(uuidEdit ? uuidEdit : uuid),
+        { enabled: uuidEdit !== undefined }
+    )
 
     const queryClient = useQueryClient()
 
     const dados = {
+        codigo,
         nome,
-        preco,
         unidade1,
         unidade2,
         quantidade1,
@@ -52,8 +46,8 @@ export function FormProduto() {
     const mutation = useMutation(() => uuidEdit ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
             queryClient.invalidateQueries(['produtos'])
-            toast.success('Produto cadastrado com sucesso!', DEFAULT_TOAST_CONFIG)
-            limparCampos()
+            toast.success('Produto salvo com sucesso!', DEFAULT_TOAST_CONFIG)
+            navigate(criarUrlVoltar(pathname))
         },
         onError: () => {
             toast.error("Ocorreu um erro!", DEFAULT_TOAST_CONFIG)
@@ -93,75 +87,102 @@ export function FormProduto() {
         return !(document.querySelector('.invalidado'))
     }
 
-    function limparCampos(): void {
-        setCodigo('')
-        setUuid('')
-        setNome('')
-        setQuantidade1('')
-        setUnidade1('')
-        setQuantidade2('')
-        setUnidade2('')
-        setPreco('')
-    }
 
     useEffect(() => {
-        console.log(pathname.match('editar/') )
-        dadosProduto && pathname.match('editar/') && preencherDados()
+        pathname.match('editar/') && dadosProduto && preencherDados()
     }, [dadosProduto])
 
-    
+
     return (
         <div className="p-5">
 
             <div className="cabecalho-form">
                 <CabecalhoForm
-                    titulo="Cadastro de Produtos"
+                    titulo={ pathname.match('cadastrar/') ? "Cadastro de Produtos" : `Editar Produto ${uuidEdit?.split('-')[0]}`}
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
-                        // onEditar: () => mutation.mutate(),
-                        onDeletar: () => {
-
+                        onDeletar: {
+                            endpoint: 'produtos',
+                            textoSucesso: "Produto deletado com sucesso!",
+                            textoErro: "Ocorreu um erro ao deletar o produto!",
                         },
+                        validarCampos,
                     }}
                 />
             </div>
 
-            { carregandoProduto && <Loading /> }
+            {statusProduto === 'loading' && <Loading />}
 
-            { statusProduto === 'error' && <Error /> }
+            {statusProduto === 'error' && <Error />}
 
             {
-                dadosProduto &&
-                <div className="inputs">
+                (
+                    uuidEdit !== undefined
+                        ? statusProduto === 'success'
+                        : pathname.match('cadastrar/')
+                ) &&
+                <div ref={inputs} className="inputs">
 
-                    <div className="col-span-12 md:col-span-5 lg:col-span-4">
-                        <label>Nome</label>
-                        <input type="text" />
+                    <div className="col-span-7 md:col-span-2 lg:col-span-3">
+                        <label>Identificador</label>
+                        <input type="text"
+                            value={uuid}
+                            readOnly
+                            disabled
+                        />
                     </div>
 
-                    <div className="col-span-12 md:col-span-4 lg:col-span-2">
-                        <label>Preço</label>
-                        <input type="text" className="text-right" />
+                    <div className="col-span-5 md:col-span-2 lg:col-span-2">
+                        <label>Código</label>
+                        <input type="number"
+                            value={codigo}
+                            onChange={e => setCodigo(e.target.value)}
+                        />
                     </div>
 
-                    <div className="col-span-12 md:col-span-3 lg:col-span-1">
-                        <label>Unidade Pri.</label>
-                        <input type="text" />
+                    <div className="col-span-12 md:col-span-5 lg:col-span-5">
+                        <label>Nome  <i className="text-rose-700">*</i></label>
+                        <input type="text"
+                            value={nome}
+                            onChange={e => setNome(e.target.value)}
+                            required
+                        />
                     </div>
 
-                    <div className="col-span-12 md:col-span-4 lg:col-span-1">
-                        <label>Quantidade</label>
-                        <input type="text" className="text-right" />
+                    <div className="col-span-6 md:col-span-3 lg:col-span-2">
+                        <label>Unidade 1  <i className="text-rose-700">*</i></label>
+                        <input type="text"
+                            value={unidade1}
+                            onChange={e => setUnidade1(e.target.value)}
+                            required
+                        />
                     </div>
 
-                    <div className="col-span-12 md:col-span-3 lg:col-span-1">
-                        <label>Unidade Item</label>
-                        <input type="text" />
+                    <div className="col-span-6 md:col-span-4 lg:col-span-2">
+                        <label>Quantidade 1  <i className="text-rose-700">*</i></label>
+                        <input type="number" className="text-right"
+                            value={quantidade1}
+                            onChange={e => setQuantidade1(e.target.value)}
+                            required
+                        />
                     </div>
 
-                    <div className="col-span-12 md:col-span-4 lg:col-span-1">
-                        <label>Quantidade</label>
-                        <input type="text" className="text-right" />
+                    <div className="col-span-6 md:col-span-3 lg:col-span-2">
+                        <label>Unidade 2  <i className="text-rose-700">*</i></label>
+                        <input type="text"
+                            value={unidade2}
+                            onChange={e => setUnidade2(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="col-span-6 md:col-span-4 lg:col-span-2">
+                        <label>Quantidade 2  <i className="text-rose-700">*</i></label>
+                        <input type="number" className="text-right"
+                            value={quantidade2}
+                            onChange={e => setQuantidade2(e.target.value)}
+                            required
+                        />
                     </div>
 
                 </div>
