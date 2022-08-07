@@ -66,3 +66,12 @@ export interface ViacepResponse {
     ddd: string;
     siafi: string;
 }
+
+
+/*  */
+
+export interface ExibicaoDadoConfig {
+    coluna: string,
+    chaveApi: string,
+    mascara?: () => void,
+}
