@@ -31,6 +31,7 @@ export function Router() {
                         </div>
 
                         <MenuBar tipo="S" />
+                        <MenuBar tipo="B" />
                     </div>
                 }>
                     <Route index element={<Home />} />
