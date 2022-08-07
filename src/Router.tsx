@@ -31,7 +31,7 @@ export function Router() {
                         </div>
 
                         <MenuBar tipo="S" />
-                        <MenuBar tipo="B" />
+                        {/* <MenuBar tipo="B" /> */}
                     </div>
                 }>
                     <Route index element={<Home />} />
@@ -39,22 +39,25 @@ export function Router() {
                     <Route path="produtos/*">
                         <Route index element={<PainelProduto />} />
                         <Route path="cadastrar" element={<FormProduto />} />
+                        <Route path="editar/:uuidEdit/" element={<FormProduto />} />
                     </Route>
 
                     <Route path="areas-entrega/*">
                         <Route index element={<PainelAreaEntrega />} />
                         <Route path="cadastrar" element={<FormAreaEntrega />} />
-                        <Route path="editar/:uuid" element={<FormAreaEntrega />} />
+                        <Route path="editar/:uuidEdit" element={<FormAreaEntrega />} />
                     </Route>
 
                     <Route path="pedidos/*">
-                        <Route index element={
-                            <PainelPedidos />
-                        } />
+                        <Route index element={ <PainelPedidos /> } />
+                        <Route path="cadastrar" element={<FormAreaEntrega />} />
+                        <Route path="editar/:uuidEdit" element={<FormAreaEntrega />} />
                     </Route>
 
                     <Route path="fornecedores/*">
                         <Route index element={<PainelFornecedor />} />
+                        <Route path="cadastrar" element={<FormAreaEntrega />} />
+                        <Route path="editar/:uuidEdit" element={<FormAreaEntrega />} />
                     </Route>
 
                 </Route>

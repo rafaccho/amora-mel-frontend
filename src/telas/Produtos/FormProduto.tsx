@@ -23,8 +23,8 @@ export function FormProduto() {
 
     const { uuidEdit } = useParams()
     const { pathname } = useLocation()
-    const navigate = useNavigate()
     const { criarRegistro, editarRegistro, umRegistro } = useBackend('produtos')
+    const navigate = useNavigate()
 
     const { data: dadosProduto, status: statusProduto } = useQuery(
         'produto',
@@ -141,7 +141,7 @@ export function FormProduto() {
                     </div>
 
                     <div className="col-span-12 md:col-span-5 lg:col-span-5">
-                        <label>Nome  <i className="text-rose-700">*</i></label>
+                        <label>Nome <i className="text-rose-700">*</i></label>
                         <input type="text"
                             value={nome}
                             onChange={e => setNome(e.target.value)}
@@ -150,7 +150,7 @@ export function FormProduto() {
                     </div>
 
                     <div className="col-span-6 md:col-span-3 lg:col-span-2">
-                        <label>Unidade 1  <i className="text-rose-700">*</i></label>
+                        <label>Unidade 1 <i className="text-rose-700">*</i></label>
                         <input type="text"
                             value={unidade1}
                             onChange={e => setUnidade1(e.target.value)}
@@ -159,7 +159,7 @@ export function FormProduto() {
                     </div>
 
                     <div className="col-span-6 md:col-span-4 lg:col-span-2">
-                        <label>Quantidade 1  <i className="text-rose-700">*</i></label>
+                        <label>Quantidade 1 <i className="text-rose-700">*</i></label>
                         <input type="number" className="text-right"
                             value={quantidade1}
                             onChange={e => setQuantidade1(e.target.value)}
@@ -168,7 +168,7 @@ export function FormProduto() {
                     </div>
 
                     <div className="col-span-6 md:col-span-3 lg:col-span-2">
-                        <label>Unidade 2  <i className="text-rose-700">*</i></label>
+                        <label>Unidade 2 <i className="text-rose-700">*</i></label>
                         <input type="text"
                             value={unidade2}
                             onChange={e => setUnidade2(e.target.value)}
@@ -177,7 +177,7 @@ export function FormProduto() {
                     </div>
 
                     <div className="col-span-6 md:col-span-4 lg:col-span-2">
-                        <label>Quantidade 2  <i className="text-rose-700">*</i></label>
+                        <label>Quantidade 2 <i className="text-rose-700">*</i></label>
                         <input type="number" className="text-right"
                             value={quantidade2}
                             onChange={e => setQuantidade2(e.target.value)}
