@@ -16,6 +16,7 @@ import { Home } from "./telas/Home";
 import { PainelAreaEntrega } from "./telas/AreaEntrega/PainelAreaEntrega";
 import { FormAreaEntrega } from "./telas/AreaEntrega/FormAreaEntrega";
 import { PainelFornecedor } from "./telas/Fornecedor/PainelFornecedor";
+import { PainelPedidos } from "./telas/Pedidos/PainelPedidos";
 
 export function Router() {
     return (
@@ -30,6 +31,7 @@ export function Router() {
                         </div>
 
                         {/* <MenuBar tipo="B" /> */}
+
                         <MenuBar tipo="S" />
                     </div>
                 }>
@@ -46,9 +48,11 @@ export function Router() {
                         <Route path="editar/:uuid" element={<FormAreaEntrega />} />
                     </Route>
 
-                    {/* <Route path="pedidos/*">
-                        <Route index element={<><h1 className="t-1">Pedidos</h1></>} />
-                    </Route> */}
+                    <Route path="pedidos/*">
+                        <Route index element={
+                            <PainelPedidos />
+                        } />
+                    </Route>
 
                     <Route path="fornecedores/*">
                         <Route index element={<PainelFornecedor />} />
