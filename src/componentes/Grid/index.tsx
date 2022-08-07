@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query'
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai'
 import { useLocation, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
 import { Filtros } from '../Filtros'
 import { useBackend } from "../../hooks/useBackend"
@@ -56,12 +57,12 @@ export function Grid(props: {
 
                                 <thead className="bg-orange-600">
                                     <tr>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs text-j-white font-extrabold uppercase tracking-wider whitespace-nowrap">Status</th>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs text-j-white font-extrabold uppercase tracking-wider whitespace-nowrap">Identificador</th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs text-black font-extrabold uppercase tracking-wider whitespace-nowrap">Status</th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs text-black font-extrabold uppercase tracking-wider whitespace-nowrap">Identificador</th>
 
                                         {
                                             props.exibicaoDadosConfig.map((dadoExibicao: ExibicaoDadoConfig) => (
-                                                <th key={dadoExibicao.coluna + dadoExibicao.chaveApi} scope="col" className="px-6 py-3 text-left text-xs text-j-white font-extrabold uppercase tracking-wider whitespace-nowrap">
+                                                <th key={dadoExibicao.coluna + dadoExibicao.chaveApi} scope="col" className="px-6 py-3 text-left text-xs text-black font-extrabold uppercase tracking-wider whitespace-nowrap">
                                                     {dadoExibicao.coluna}
                                                 </th>
                                             ))
@@ -73,7 +74,10 @@ export function Grid(props: {
                                 <tbody className="bg-white divide-y divide-orange-900">
                                     {
                                         query.data?.data.results.map((registro: any) => (
-                                            <tr key={registro.uuid} className="bg-orange-400 text-j-white" onClick={() => navigate}>
+                                            <motion.tr key={registro.uuid} className="bg-orange-400 hover:bg-orange-300 cursor-pointer"
+                                                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }} 
+                                                onClick={() => navigate(`editar/${registro.uuid}/`)}
+                                            >
 
                                                 <td className="coluna-grid" />
                                                 <td className="coluna-grid truncate">{registro.uuid}</td>
@@ -87,7 +91,7 @@ export function Grid(props: {
                                                     ))
                                                 }
 
-                                            </tr>
+                                            </motion.tr>
                                         ))
                                     }
                                 </tbody>
