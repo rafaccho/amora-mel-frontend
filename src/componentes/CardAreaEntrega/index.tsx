@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 import { Button } from "../../tags";
 import { useBackend } from "../../hooks/useBackend";
-import { Endpoint, QueryModulo } from "../../tipos";
+import { Endpoint } from "../../tipos";
 import { DEFAULT_TOAST_CONFIG } from "../../constantes";
 import { useNavigate } from "react-router-dom";
 
@@ -14,8 +14,8 @@ export function CardRegistro(props: {
     endpoint: Endpoint,
     textosDeletar: { erro: string, sucesso: string },
     uuid: string,
-    querys?: QueryModulo[],
-    query?: QueryModulo,
+    querys?: Endpoint[],
+    query?: Endpoint,
 }) {
     const { deletarRegistro } = useBackend(props.endpoint)
     const queryClient = useQueryClient()
