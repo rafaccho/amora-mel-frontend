@@ -27,7 +27,6 @@ export interface Endereco {
 export interface Produto extends Base {
     codigo: string
     nome: string
-    preco: number
     unidade1: string
     unidade2: string
     quantidade1: number
