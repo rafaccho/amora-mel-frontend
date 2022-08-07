@@ -1,11 +1,16 @@
 import { BotoesForm } from "../BotoesForm";
+import { Endpoint } from "../../tipos";
 
 export function CabecalhoForm(props: {
     titulo: string;
     botoesForm: {
-        onSalvar: () => void;
-        // onEditar: () => void;
-        onDeletar: () => void;
+        onSalvar: () => void,
+        onDeletar: {
+            endpoint: Endpoint;
+            textoSucesso: string;
+            textoErro: string;
+        },
+        validarCampos: () => boolean,
     }
 }) {
     return (
@@ -15,6 +20,7 @@ export function CabecalhoForm(props: {
             <BotoesForm
                 onSalvar={props.botoesForm.onSalvar}
                 onDeletar={props.botoesForm.onDeletar}
+                validarCampos={props.botoesForm.validarCampos}
             />
 
             <div className="mb-8 border-b-4 border-orange-700" />
