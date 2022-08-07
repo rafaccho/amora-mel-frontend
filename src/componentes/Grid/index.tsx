@@ -3,39 +3,58 @@ import { useQuery } from 'react-query'
 import { useBackend } from "../../hooks/useBackend"
 import { Button } from '../../tags'
 import { Endpoint } from "../../tipos"
+import { BackendResponse, ExibicaoDadoConfig } from "../../interfaces";
 import { Filtros } from '../Filtros'
-import { ExibicaoDadoConfig } from "../../interfaces";
 
 export function Grid(props: {
     exibicaoDadosConfig: ExibicaoDadoConfig[],
     requisicaoConfig: {
         endpoint: Endpoint,
-    }
+    },
+    refresh?: () => void,
+    naoExibirCodigo?: boolean,
 }) {
     const { todosRegistros } = useBackend(props.requisicaoConfig.endpoint)
     const query = useQuery(props.requisicaoConfig.endpoint, () => todosRegistros())
 
+    function calcularQuantidadePaginas() {
+        const dadosResponse = query.data?.data as BackendResponse
+        let quantidadeTotalPaginas;
+        
+        if(dadosResponse) {
+            const divisao = dadosResponse.count / 20
+
+            if (divisao < 1) quantidadeTotalPaginas = 1
+            else if (divisao % 1 === 0) quantidadeTotalPaginas = divisao
+            else quantidadeTotalPaginas = Math.floor(divisao) + 1
+        }
+
+        return quantidadeTotalPaginas
+    }
+
     return (
         <div id={`grid-${props.requisicaoConfig.endpoint}`} className="w-full">
-            <Filtros refetch={() => ''} />
+            <Filtros
+                refresh={props.refresh}
+            />
 
             <div className="my-8" />
 
             <div className="flex flex-col">
                 <div className="-my-2 overflow-x-auto">
-                    <div className="py-2 align-middle inline-block min-w-full"> {/*  sm:px-6 lg:px-8 */}
-                        <div className="shadow overflow-hidden border-b border-gray-200 rounded-lg">
+                    <div className="py-2 align-middle inline-block min-w-full">
+                        <div className="shadow overflow-hidden rounded-lg">
 
-                            <table className="min-w-full divide-y divide-gray-200">
+                            <table className="min-w-full divide-y divide-orange-900">
 
-                                <thead className="bg-gray-600">
+                                <thead className="bg-orange-600">
                                     <tr>
                                         <th scope="col" className="px-6 py-3 text-left text-xs text-j-white font-extrabold uppercase tracking-wider whitespace-nowrap">Status</th>
                                         <th scope="col" className="px-6 py-3 text-left text-xs text-j-white font-extrabold uppercase tracking-wider whitespace-nowrap">Identificador</th>
 
                                         {
                                             props.exibicaoDadosConfig.map((dadoExibicao: ExibicaoDadoConfig) => (
-                                                <th scope="col" className="px-6 py-3 text-left text-xs text-j-white font-extrabold uppercase tracking-wider whitespace-nowrap">
+                                                <th key={dadoExibicao.coluna + dadoExibicao.chaveApi} scope="col" className="px-6 py-3 text-left text-xs text-j-white font-extrabold uppercase tracking-wider whitespace-nowrap">
                                                     {dadoExibicao.coluna}
                                                 </th>
                                             ))
@@ -44,19 +63,20 @@ export function Grid(props: {
                                     </tr>
                                 </thead>
 
-                                <tbody className="bg-white divide-y divide-gray-200">
+                                <tbody className="bg-white divide-y divide-orange-900">
                                     {
                                         query.data?.data.results.map((registro: any) => (
-                                            <tr key={registro.uuid} className="bg-gray-700 text-j-white">
+                                            <tr key={registro.uuid} className="bg-orange-400 text-j-white">
 
-                                                <td className="coluna-grid text-sm font-medium" />
-                                                <td className="coluna-grid text-sm font-medium truncate">{registro.uuid}</td>
+                                                <td className="coluna-grid" />
+                                                <td className="coluna-grid truncate">{registro.uuid}</td>
+                                                { props.naoExibirCodigo && <td className="coluna-grid truncate">{registro.codigo}</td> }
 
                                                 {
                                                     props.exibicaoDadosConfig.map((dadoExibicao: ExibicaoDadoConfig) => (
-                                                        <td className="coluna-grid"> <span className="text-sm font-medium">
+                                                        <td key={dadoExibicao.chaveApi + dadoExibicao.coluna} className="coluna-grid">
                                                             {registro[dadoExibicao.chaveApi]}
-                                                        </span></td>
+                                                        </td>
                                                     ))
                                                 }
 
@@ -77,7 +97,7 @@ export function Grid(props: {
             <div className="grid grid-cols-12">
                 <div className="col-span-12 flex justify-center md:justify-end gap-16">
                     <Button className="btn-l w-24 flex justify-center pt-3" title={<AiOutlineArrowLeft />} />
-                    <span className='font-bold font-sans'>1 de 1</span>
+                    <span className='font-bold font-sans'>1 de {calcularQuantidadePaginas()}</span>
                     <Button className="btn-l w-24 flex justify-center pt-3" title={<AiOutlineArrowRight />} />
                 </div>
             </div>
