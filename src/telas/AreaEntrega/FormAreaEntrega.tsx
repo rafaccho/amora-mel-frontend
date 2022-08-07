@@ -148,7 +148,7 @@ export function FormAreaEntrega() {
                                             : "Selecione"
                                 }
                             </option>
-                            {fornecedores.map((fornecedor: Fornecedor) => <option value={fornecedor.uuid}>{fornecedor.nome}</option>)}
+                            {fornecedores.map((fornecedor: Fornecedor) => <option key={fornecedor.uuid} value={fornecedor.uuid}>{fornecedor.nome}</option>)}
                         </select>
                     </div>
 
