@@ -75,7 +75,7 @@ button {
 }
 
 .coluna-grid {
-    @apply px-6 py-4 whitespace-nowrap;
+    @apply px-6 py-4 whitespace-nowrap text-sm font-medium;
 }
 
 /* Features */
