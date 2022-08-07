@@ -74,6 +74,10 @@ button {
     text-xs font-bold transition-all duration-100 scale-0 origin-left;
 }
 
+.coluna-grid {
+    @apply px-6 py-4 whitespace-nowrap;
+}
+
 /* Features */
 
 .t-1 {
