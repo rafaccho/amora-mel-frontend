@@ -232,7 +232,8 @@ export function FormFornecedor() {
                                 <option value="SC">Santa Catarina</option>
                                 <option value="SP">São Paulo</option>
                                 <option value="SE">Sergipe</option>
-                                <option value="TO">Tocantins</option></select>
+                                <option value="TO">Tocantins</option>
+                            </select>
                         </div>
 
                         <div className="col-span-5 md:col-span-3">
