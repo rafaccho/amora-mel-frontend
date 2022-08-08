@@ -1,22 +1,21 @@
-import {
-    BrowserRouter,
-    Routes,
-    Route,
-    Outlet,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 
 import { MenuBar } from "./componentes/MenuBar";
-
-import { PainelProduto as PainelProduto } from "./telas/Produtos/PainelProduto";
-import { FormProduto } from "./telas/Produtos/FormProduto";
 
 import { Login } from "./telas/Login";
 import { Home } from "./telas/Home";
 
+import { PainelProduto } from "./telas/Produtos/PainelProduto";
+import { FormProduto } from "./telas/Produtos/FormProduto";
+
 import { PainelAreaEntrega } from "./telas/AreaEntrega/PainelAreaEntrega";
 import { FormAreaEntrega } from "./telas/AreaEntrega/FormAreaEntrega";
+
 import { PainelFornecedor } from "./telas/Fornecedor/PainelFornecedor";
+import { FormFornecedor } from "./telas/Fornecedor/FormFornecedor";
+
 import { PainelPedidos } from "./telas/Pedidos/PainelPedidos";
+import { FormPedidos } from "./telas/Pedidos/FormPedidos";
 
 export function Router() {
     return (
@@ -31,7 +30,7 @@ export function Router() {
                         </div>
 
                         <MenuBar tipo="S" />
-                        {/* <MenuBar tipo="B" /> */}
+                        <MenuBar tipo="B" />
                     </div>
                 }>
                     <Route index element={<Home />} />
@@ -50,14 +49,14 @@ export function Router() {
 
                     <Route path="pedidos/*">
                         <Route index element={ <PainelPedidos /> } />
-                        <Route path="cadastrar" element={<FormAreaEntrega />} />
-                        <Route path="editar/:uuidEdit" element={<FormAreaEntrega />} />
+                        <Route path="cadastrar" element={<FormPedidos />} />
+                        <Route path="editar/:uuidEdit" element={<FormPedidos />} />
                     </Route>
 
                     <Route path="fornecedores/*">
                         <Route index element={<PainelFornecedor />} />
-                        <Route path="cadastrar" element={<FormAreaEntrega />} />
-                        <Route path="editar/:uuidEdit" element={<FormAreaEntrega />} />
+                        <Route path="cadastrar" element={<FormFornecedor />} />
+                        <Route path="editar/:uuidEdit" element={<FormFornecedor />} />
                     </Route>
 
                 </Route>
