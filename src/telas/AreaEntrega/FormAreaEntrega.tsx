@@ -33,11 +33,11 @@ export function FormAreaEntrega() {
 
     const { uuidEdit } = useParams()
     const { pathname } = useLocation()
-    const { criarRegistro, editarRegistro, umRegistro, todosRegistros } = useBackend('produtos')
+    const { criarRegistro, editarRegistro, umRegistro, todosRegistros } = useBackend('areas_entregas')
     const navigate = useNavigate()
 
     const { data: dadosAreaEntrega, status: statusAreaEntrega } = useQuery(
-        'produto',
+        'areaEntrega',
         () => umRegistro(uuidEdit ? uuidEdit : uuid),
         { enabled: uuidEdit !== undefined }
     )
@@ -61,7 +61,7 @@ export function FormAreaEntrega() {
 
     const mutation = useMutation(() => uuidEdit ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
-            queryClient.invalidateQueries(['produtos'])
+            queryClient.invalidateQueries(['areasEntregas'])
             toast.success('Área de Entrega salva com sucesso!', DEFAULT_TOAST_CONFIG)
             navigate(criarUrlVoltar(pathname))
         },
@@ -125,9 +125,9 @@ export function FormAreaEntrega() {
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onDeletar: {
-                            endpoint: 'produtos',
-                            textoSucesso: "Produto deletado com sucesso!",
-                            textoErro: "Ocorreu um erro ao deletar o produto!",
+                            endpoint: 'areas_entregas',
+                            textoSucesso: "Área de Entrega deletada com sucesso!",
+                            textoErro: "Ocorreu um erro!",
                         },
                         validarCampos,
                     }}
@@ -160,6 +160,14 @@ export function FormAreaEntrega() {
                             <input type="number"
                                 value={codigo}
                                 onChange={e => setCodigo(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="col-span-12 md:col-span-3 lg:col-span-3">
+                            <label>Nome</label>
+                            <input type="text"
+                                value={nome}
+                                onChange={e => setNome(e.target.value)}
                             />
                         </div>
 
