@@ -87,7 +87,7 @@ export function FormPedidos() {
             setUuid(dados.uuid)
             setLoja(dados.loja)
             setProduto(dados.produto)
-            // setQuantidade(dados.quantidade)
+            setQuantidade(`${dados.quantidade}`)
             setAreaEntrega(dados.area_entrega)
             setStatus(dados.status)
         }
@@ -130,12 +130,12 @@ export function FormPedidos() {
 
             <div className="cabecalho-form">
                 <CabecalhoForm
-                    titulo={pathname.match('cadastrar/') ? "Cadastro de Fornecedor" : `Editar Fornecedor ${uuidEdit?.split('-')[0]}`}
+                    titulo={pathname.match('cadastrar/') ? "Cadastro de Pedido" : `Editar Pedido ${uuidEdit?.split('-')[0]}`}
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onDeletar: {
-                            endpoint: 'fornecedores',
-                            textoSucesso: "Fornecedor deletado com sucesso!",
+                            endpoint: 'pedidos',
+                            textoSucesso: "Pedido deletado com sucesso!",
                             textoErro: "Ocorreu um erro!",
                         },
                         validarCampos,
@@ -155,7 +155,7 @@ export function FormPedidos() {
                 <div ref={inputs} id="formulario" className="p-5">
                     <div className="inputs">
 
-                        <div className="col-span-7 md:col-span-4 lg:col-span-4">
+                        <div className="col-span-5 md:col-span-4 lg:col-span-4">
                             <label>Identificador</label>
                             <input type="text"
                                 value={uuid}
@@ -175,7 +175,7 @@ export function FormPedidos() {
                             </select>
                         </div>
 
-                        <div className="col-span-12 md:col-span-3">
+                        <div className="col-span-8 md:col-span-3">
                             <label>Produto <i className="text-rose-700">*</i></label>
                             <select name="fornecedor" id="uf" value={produto} onChange={e => setProduto(e.target.value)} required>
                                 <option value="">
@@ -189,6 +189,14 @@ export function FormPedidos() {
                                 </option>
                                 {produtos.map((produto: Produto) => <option key={produto.uuid} value={produto.uuid}>{produto.nome}</option>)}
                             </select>
+                        </div>
+
+                        <div className="col-span-4 md:col-span-2">
+                            <label>Quantidade <i className="text-rose-700">*</i></label>
+                            <input type="number" className="text-right"
+                                value={quantidade}
+                                onChange={e => setQuantidade(e.target.value)}
+                            />
                         </div>
 
                     </div>
