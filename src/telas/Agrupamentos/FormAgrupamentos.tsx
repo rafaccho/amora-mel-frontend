@@ -23,13 +23,19 @@ export function FormAgrupamentos(props: {
 
     const { uuidEdit } = useParams()
     const { pathname } = useLocation()
-    const { criarRegistro, editarRegistro, umRegistro } = useBackend('produtos')
+    const { criarRegistro, editarRegistro, umRegistro } = useBackend('agrupamentos')
     const navigate = useNavigate()
 
-    const { data: dadosProduto, status: statusProduto } = useQuery(
-        'produto',
+    const { data: dadosAgrupamento, status: statusAgrupamento } = useQuery(
+        props.entidade === "G" ? 'grupos' : "subgrupos",
         () => umRegistro(uuidEdit ? uuidEdit : uuid),
         { enabled: uuidEdit !== undefined }
+    )
+
+    const { data: dadosGrupos, status: statusGrupos } = useQuery(
+        'grupos-select',
+        () => umRegistro(uuidEdit ? uuidEdit : uuid),
+        { enabled: props.entidade === "G" }
     )
 
     const queryClient = useQueryClient()
@@ -44,7 +50,7 @@ export function FormAgrupamentos(props: {
     const mutation = useMutation(() => uuidEdit ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
             queryClient.invalidateQueries(['produtos'])
-            toast.success('Produto salvo com sucesso!', DEFAULT_TOAST_CONFIG)
+            toast.success(`${props.entidade === "G" ? 'Grupo' : "Subgrupo"} salvo com sucesso!`, DEFAULT_TOAST_CONFIG)
             navigate(criarUrlVoltar(pathname))
         },
         onError: () => {
@@ -53,8 +59,8 @@ export function FormAgrupamentos(props: {
     })
 
     function preencherDados(): void {
-        if (dadosProduto) {
-            const dados = dadosProduto.data as Produto
+        if (dadosAgrupamento) {
+            const dados = dadosAgrupamento.data as Produto
 
             setCodigo(dados.codigo)
             setUuid(dados.uuid)
@@ -83,35 +89,35 @@ export function FormAgrupamentos(props: {
 
 
     useEffect(() => {
-        pathname.match('editar/') && dadosProduto && preencherDados()
-    }, [dadosProduto])
+        pathname.match('editar/') && dadosAgrupamento && preencherDados()
+    }, [dadosAgrupamento])
 
     return (
         <div className="p-5">
 
             <div className="cabecalho-form">
                 <CabecalhoForm
-                    titulo={pathname.match('cadastrar/') ? "Cadastro de Produtos" : `Editar Produto ${uuidEdit?.split('-')[0]}`}
+                    titulo={pathname.match('cadastrar/') ? "Cadastro de Grupos" : `Editar Produto ${uuidEdit?.split('-')[0]}`}
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onDeletar: {
-                            endpoint: 'produtos',
-                            textoSucesso: "Produto deletado com sucesso!",
-                            textoErro: "Ocorreu um erro ao deletar o produto!",
+                            endpoint: 'agrupamentos',
+                            textoSucesso: `${props.entidade === "G" ? 'Grupo' : "Subgrupo"} deletado com sucesso!`,
+                            textoErro: "Ocorreu um erro!",
                         },
                         validarCampos,
                     }}
                 />
             </div>
 
-            {statusProduto === 'loading' && <Loading />}
+            {statusAgrupamento === 'loading' && <Loading />}
 
-            {statusProduto === 'error' && <Error />}
+            {statusAgrupamento === 'error' && <Error />}
 
             {
                 (
                     uuidEdit !== undefined
-                        ? statusProduto === 'success'
+                        ? statusAgrupamento === 'success'
                         : pathname.match('cadastrar/')
                 ) &&
                 <div ref={inputs} className="inputs">
@@ -145,23 +151,23 @@ export function FormAgrupamentos(props: {
                     <div className="col-span-12 md:col-span-5 lg:col-span-5">
                         <label>Descrição <i className="text-rose-700">*</i></label>
                         <input type="text"
-                            value={nome}
+                            value={descricao}
                             onChange={e => setDescricao(e.target.value)}
                             required
                         />
                     </div>
 
-                    {/* <select name="fornecedor" id="uf" value={produto} onChange={e => setProduto(e.target.value)} required>
+                    {/* <select name="grupo" id="grupo" value={grupo} onChange={e => setGrupo(e.target.value)} required>
                         <option value="">
                             {
                                 statusProdutos === "loading"
                                     ? "Carregando..."
                                     : produtos.length === 0
-                                        ? "Não existem produtos cadastrados"
+                                        ? "Não existem grupos cadastrados"
                                         : "Selecione"
                             }
                         </option>
-                        {produtos.map((produto: Produto) => <option key={produto.uuid} value={produto.uuid}>{produto.nome}</option>)}
+                        {dadosGrupos.map((grupo: Grupo) => <option key={grupo.uuid} value={grupo.uuid}>{grupo.nome}</option>)}
                     </select> */}
 
                 </div>
