@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 
 import { MenuBar } from "./componentes/MenuBar";
 
+import { Painel } from "./componentes/Painel";
+
 import { Login } from "./telas/Login";
 import { Home } from "./telas/Home";
 
@@ -33,10 +35,27 @@ export function Router() {
                         <MenuBar tipo="B" />
                     </div>
                 }>
-                    <Route index element={<Home />} />
-                    
+                    {/* <Route index element={<Home />} /> */}
+
                     <Route path="produtos/*">
-                        <Route index element={<PainelProduto />} />
+                        <Route index element={
+                            <Painel
+                                titulo="Produtos"
+                                grid={{
+                                    exibicaoDadosConfig: [
+                                        { coluna: 'Codigo', chaveApi: 'codigo' },
+                                        { coluna: 'Nome', chaveApi: 'nome' },
+                                        { coluna: 'Unidade 1', chaveApi: 'unidade1' },
+                                        { coluna: 'Quantidade 1', chaveApi: 'quantidade1' },
+                                        { coluna: 'Unidade 2', chaveApi: 'unidade2' },
+                                        { coluna: 'Quantidade 2', chaveApi: 'quantidade2' },
+                                    ],
+                                    requisicaoConfig: {
+                                        endpoint: 'produtos',
+                                    }
+                                }}
+                            />
+                        } />
                         <Route path="cadastrar" element={<FormProduto />} />
                         <Route path="editar/:uuidEdit/" element={<FormProduto />} />
                     </Route>
@@ -48,13 +67,44 @@ export function Router() {
                     </Route>
 
                     <Route path="pedidos/*">
-                        <Route index element={ <PainelPedidos /> } />
+                        <Route index element={
+                            <Painel
+                                titulo="Pedidos"
+                                grid={{
+                                    exibicaoDadosConfig: [
+                                        { coluna: 'Fornecedor', chaveApi: 'fornecedor', mascara: () => '' },
+                                        { coluna: 'Produto', chaveApi: 'produto' },
+                                        { coluna: 'Quantidade', chaveApi: 'quantidade' },
+                                    ],
+                                    requisicaoConfig: {
+                                        endpoint: 'pedidos',
+                                    }
+                                }}
+                            />
+                        } />
                         <Route path="cadastrar" element={<FormPedidos />} />
                         <Route path="editar/:uuidEdit" element={<FormPedidos />} />
                     </Route>
 
                     <Route path="fornecedores/*">
-                        <Route index element={<PainelFornecedor />} />
+                        <Route index element={
+                            <Painel
+                                titulo="Fornecedores"
+                                grid={{
+                                    exibicaoDadosConfig: [
+                                        { coluna: 'Codigo', chaveApi: 'codigo' },
+                                        { coluna: 'Nome', chaveApi: 'nome' },
+                                        { coluna: 'CPF/CNPJ', chaveApi: 'cpf_cnpj' },
+                                        { coluna: 'CEP', chaveApi: 'cep' },
+                                        { coluna: 'Bairro', chaveApi: 'bairro' },
+                                        { coluna: 'Rua', chaveApi: 'rua' },
+                                    ],
+                                    requisicaoConfig: {
+                                        endpoint: 'fornecedores',
+                                    }
+                                }}
+                            />
+                        } />
                         <Route path="cadastrar" element={<FormFornecedor />} />
                         <Route path="editar/:uuidEdit" element={<FormFornecedor />} />
                     </Route>
