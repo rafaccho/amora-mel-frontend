@@ -123,7 +123,7 @@ export function Router() {
                                     ],
                                     requisicaoConfig: {
                                         endpoint: 'agrupamentos',
-                                        filtros: "?entidade=G"
+                                        filtros: "entidade=G"
                                     }
                                 }}
                             />
@@ -145,7 +145,7 @@ export function Router() {
                                     ],
                                     requisicaoConfig: {
                                         endpoint: 'agrupamentos',
-                                        filtros: "?entidade=S"
+                                        filtros: "entidade=S"
                                         
                                     }
                                 }}
