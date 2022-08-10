@@ -95,3 +95,17 @@ button {
 .invalidado {
     @apply p-2 rounded-lg outline-none text-red-800 border-solid border-2 border-red-500 w-full;
 }
+
+@media (min-width: 992px) {
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+}
