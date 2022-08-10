@@ -19,6 +19,8 @@ import { FormFornecedor } from "./telas/Fornecedor/FormFornecedor";
 import { PainelPedidos } from "./telas/Pedidos/PainelPedidos";
 import { FormPedidos } from "./telas/Pedidos/FormPedidos";
 
+import { FormAgrupamentos } from "./telas/Agrupamentos/FormAgrupamentos";
+
 export function Router() {
     return (
         <BrowserRouter>
@@ -107,6 +109,47 @@ export function Router() {
                         } />
                         <Route path="cadastrar" element={<FormFornecedor />} />
                         <Route path="editar/:uuidEdit" element={<FormFornecedor />} />
+                    </Route>
+
+                    <Route path="grupos/*">
+                        <Route index element={
+                            <Painel
+                                titulo="Grupos de Produtos"
+                                grid={{
+                                    exibicaoDadosConfig: [
+                                        { coluna: 'Codigo', chaveApi: 'codigo' },
+                                        { coluna: 'Nome', chaveApi: 'nome' },
+                                        { coluna: 'Descrição', chaveApi: 'descricao' },
+                                    ],
+                                    requisicaoConfig: {
+                                        endpoint: 'agrupamentos',
+                                    }
+                                }}
+                            />
+                        } />
+                        <Route path="cadastrar" element={<FormAgrupamentos entidade="G" />} />
+                        <Route path="editar/:uuidEdit" element={<FormAgrupamentos entidade="G" />} />
+                    </Route>
+
+                    <Route path="subgrupos/*">
+                        <Route index element={
+                            <Painel
+                                titulo="Subgrupos de Produtos"
+                                grid={{
+                                    exibicaoDadosConfig: [
+                                        { coluna: 'Codigo', chaveApi: 'codigo' },
+                                        { coluna: 'Nome', chaveApi: 'nome' },
+                                        { coluna: 'Descrição', chaveApi: 'descricao' },
+                                        { coluna: 'Grupo', chaveApi: 'grupo' },
+                                    ],
+                                    requisicaoConfig: {
+                                        endpoint: 'agrupamentos',
+                                    }
+                                }}
+                            />
+                        } />
+                        <Route path="cadastrar" element={<FormAgrupamentos entidade="S" />} />
+                        <Route path="editar/:uuidEdit" element={<FormAgrupamentos entidade="S" />} />
                     </Route>
 
                 </Route>
