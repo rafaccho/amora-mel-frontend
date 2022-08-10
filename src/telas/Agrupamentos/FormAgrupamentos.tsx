@@ -8,7 +8,7 @@ import { CabecalhoForm } from "../../componentes/CabecalhoForm";
 import { DEFAULT_TOAST_CONFIG } from "../../constantes";
 import { useBackend } from "../../hooks/useBackend";
 import { criarUrlVoltar } from "../../utils/criarUrlVoltar";
-import { Produto } from "../../interfaces";
+import { Agrupamento } from "../../interfaces";
 
 export function FormAgrupamentos(props: {
     entidade: "G" | "S"
@@ -60,11 +60,14 @@ export function FormAgrupamentos(props: {
 
     function preencherDados(): void {
         if (dadosAgrupamento) {
-            const dados = dadosAgrupamento.data as Produto
+            const dados = dadosAgrupamento.data as Agrupamento
 
-            setCodigo(dados.codigo)
             setUuid(dados.uuid)
+            setCodigo(dados.codigo)
             setNome(dados.nome)
+            setDescricao(dados.descricao)
+
+            if (props.entidade === "S" && dados.grupo) setGrupo(dados.grupo)
         }
     }
 

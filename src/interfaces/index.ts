@@ -53,6 +53,16 @@ export interface Pedido extends Base {
     status: PedidoStatus
 }
 
+
+export interface Agrupamento extends Base {
+    codigo: string
+    nome: string
+    descricao: string
+    grupo: string
+}
+
+/*  */
+
 export interface ViacepResponse {
     cep: string;
     logradouro: string;
@@ -65,7 +75,6 @@ export interface ViacepResponse {
     ddd: string;
     siafi: string;
 }
-
 
 /*  */
 
