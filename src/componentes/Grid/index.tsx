@@ -25,7 +25,7 @@ export function Grid(props: {
     
     const navigate = useNavigate()
     const { todosRegistros } = useBackend(props.requisicaoConfig.endpoint)
-    const query = useQuery(props.requisicaoConfig.endpoint, () => todosRegistros(undefined, props.requisicaoConfig.filtros))
+    const query = useQuery([props.requisicaoConfig.endpoint, props.requisicaoConfig.filtros], () => todosRegistros(undefined,))
 
     function calcularQuantidadePaginas() {
         const dadosResponse = query.data?.data as BackendResponse
