@@ -138,7 +138,26 @@ export function Router() {
                                     requisicaoConfig: {
                                         endpoint: 'agrupamentos',
                                         filtros: "entidade=S"
-                                        
+
+                                    }
+                                }}
+                            />
+                        } />
+                        <Route path="cadastrar" element={<FormAgrupamentos entidade="S" />} />
+                        <Route path="editar/:uuidEdit" element={<FormAgrupamentos entidade="S" />} />
+                    </Route>
+
+                    <Route path="estoques/*">
+                        <Route index element={
+                            <Painel
+                                titulo="Produtos em Estoque"
+                                grid={{
+                                    exibicaoDadosConfig: [
+                                        { coluna: 'Produto', chaveApi: 'produto' },
+                                        { coluna: 'Quantidade', chaveApi: 'quantidade' },
+                                    ],
+                                    requisicaoConfig: {
+                                        endpoint: 'estoques',
                                     }
                                 }}
                             />
