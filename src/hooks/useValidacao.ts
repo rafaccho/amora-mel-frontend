@@ -1,6 +1,7 @@
 import React from "react"
 
-export function useValidacaoFormulario() {
+
+export function useValidacao() {
     function validarCampos(inputs: HTMLDivElement): boolean {
         const todosInputs = inputs!.querySelectorAll('input')
         Array.from(todosInputs).forEach(input => {
@@ -12,14 +13,18 @@ export function useValidacaoFormulario() {
         return !(document.querySelector('.invalidado'))
     }
 
-    function validarCampo(input: HTMLInputElement): boolean {
+    // function validarCampo(input: React.MutableRefObject<HTMLInputElement> ): boolean {
+    function validarCampo(input: any): boolean {
         const inputEstaValido = input.checkValidity()
+        console.log(inputEstaValido)
+        
         !inputEstaValido ? input.classList.add('invalidado') : input.classList.remove('invalidado')
 
-        return !(document.querySelector('.invalidado'))
+        return input.classList.contains('invalidado')
     }
 
     return {
-        validarCampos
+        validarCampos,
+        validarCampo
     }
 }
