@@ -10,14 +10,13 @@ import { useBackend } from "../../hooks/useBackend";
 import { criarUrlVoltar } from "../../utils/criarUrlVoltar";
 import { Agrupamento } from "../../interfaces";
 
-export function FormAgrupamentos(props: {
-    entidade: "G" | "S"
-}) {
+export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
     const [codigo, setCodigo] = useState('')
     const [uuid, setUuid] = useState('')
     const [nome, setNome] = useState('')
     const [descricao, setDescricao] = useState('')
     const [grupo, setGrupo] = useState('')
+    const [grupos, setGrupos] = useState<Agrupamento[]>([])
 
     const inputs = useRef<HTMLDivElement>(null)
 
@@ -27,15 +26,15 @@ export function FormAgrupamentos(props: {
     const navigate = useNavigate()
 
     const { data: dadosAgrupamento, status: statusAgrupamento } = useQuery(
-        props.entidade === "G" ? 'grupos' : "subgrupos",
+        props.entidade === "G" ? 'grupo' : "subgrupo",
         () => umRegistro(uuidEdit ? uuidEdit : uuid),
         { enabled: uuidEdit !== undefined }
     )
 
     const { data: dadosGrupos, status: statusGrupos } = useQuery(
-        'grupos-select',
+        'grupos',
         () => umRegistro(uuidEdit ? uuidEdit : uuid),
-        { enabled: props.entidade === "G" }
+        { enabled: props.entidade === "S" }
     )
 
     const queryClient = useQueryClient()
@@ -44,12 +43,13 @@ export function FormAgrupamentos(props: {
         codigo,
         nome,
         descricao,
-        entidade: props.entidade
+        entidade: props.entidade,
+        grupo: grupo ? grupo : null,
     }
 
     const mutation = useMutation(() => uuidEdit ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
-            queryClient.invalidateQueries(['produtos'])
+            queryClient.invalidateQueries(['grupos', 'subgrupos'])
             toast.success(`${props.entidade === "G" ? 'Grupo' : "Subgrupo"} salvo com sucesso!`, DEFAULT_TOAST_CONFIG)
             navigate(criarUrlVoltar(pathname))
         },
@@ -90,6 +90,9 @@ export function FormAgrupamentos(props: {
         return !(document.querySelector('.invalidado'))
     }
 
+    useEffect(() => {
+        statusGrupos === "success" && setGrupos(dadosGrupos!.data.results as Agrupamento[])
+    }, [statusGrupos])
 
     useEffect(() => {
         pathname.match('editar/') && dadosAgrupamento && preencherDados()
@@ -100,7 +103,8 @@ export function FormAgrupamentos(props: {
 
             <div className="cabecalho-form">
                 <CabecalhoForm
-                    titulo={pathname.match('cadastrar/') ? "Cadastro de Grupos" : `Editar Produto ${uuidEdit?.split('-')[0]}`}
+                    titulo={pathname.match('cadastrar/') ? `Cadastro de ${ props.entidade === "G" ? "Grupo" : "Subgrupo" }` : `Editar ${ props.entidade === "G" ? "Grupo" : "Subgrupo" } ${uuidEdit?.split('-')[0]}`}
+                    // titulo={pathname.match('cadastrar/') ? `${props.entidade === "G" ? "Cadastro de Grupos" : ""}` : `Editar Produto ${uuidEdit?.split('-')[0]}`}
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onDeletar: {
@@ -125,7 +129,7 @@ export function FormAgrupamentos(props: {
                 ) &&
                 <div ref={inputs} className="inputs">
 
-                    <div className="col-span-7 md:col-span-2 lg:col-span-3">
+                    <div className="col-span-7 md:col-span-2 lg:col-span-2">
                         <label>Identificador</label>
                         <input type="text"
                             value={uuid}
@@ -142,7 +146,7 @@ export function FormAgrupamentos(props: {
                         />
                     </div>
 
-                    <div className="col-span-12 md:col-span-5 lg:col-span-5">
+                    <div className="col-span-12 md:col-span-3">
                         <label>Nome <i className="text-rose-700">*</i></label>
                         <input type="text"
                             value={nome}
@@ -151,7 +155,7 @@ export function FormAgrupamentos(props: {
                         />
                     </div>
 
-                    <div className="col-span-12 md:col-span-5 lg:col-span-5">
+                    <div className="col-span-12 md:col-span-5">
                         <label>Descrição <i className="text-rose-700">*</i></label>
                         <input type="text"
                             value={descricao}
@@ -160,18 +164,24 @@ export function FormAgrupamentos(props: {
                         />
                     </div>
 
-                    {/* <select name="grupo" id="grupo" value={grupo} onChange={e => setGrupo(e.target.value)} required>
-                        <option value="">
-                            {
-                                statusProdutos === "loading"
-                                    ? "Carregando..."
-                                    : produtos.length === 0
-                                        ? "Não existem grupos cadastrados"
-                                        : "Selecione"
-                            }
-                        </option>
-                        {dadosGrupos.map((grupo: Grupo) => <option key={grupo.uuid} value={grupo.uuid}>{grupo.nome}</option>)}
-                    </select> */}
+                    {
+                        props.entidade === "S" &&
+                        <div className="col-span-12 md:col-span-4">
+                        <label>Grupo <i className="text-rose-700">*</i></label>
+                        <select name="grupo" id="grupo" value={grupo} onChange={e => setGrupo(e.target.value)} required>
+                            <option value="">
+                                {
+                                    statusGrupos === "loading"
+                                        ? "Carregando..."
+                                        : grupos.length === 0
+                                            ? "Não existem grupos cadastrados"
+                                            : "Selecione"
+                                }
+                            </option>
+                            {grupos.map((grupo: Agrupamento) => <option key={grupo.uuid} value={grupo.uuid}>{grupo.nome}</option>)}
+                        </select>
+                    </div>
+                    }
 
                 </div>
             }
