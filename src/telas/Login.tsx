@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import Logo from "../fotos/logo-login.png";
 import Loja from "../fotos/amora-mel.jpg";
+
 import { useBackend } from "../hooks/useBackend";
 import { useValidacao } from "../hooks/useValidacao";
 
@@ -25,11 +26,13 @@ export function Login() {
         validarCampo(txtUsuario.current)
         validarCampo(txtSenha.current)
 
-        !document.querySelector('.invalidado') ? login({ usuario, senha }).then(res =>
-            res.status === 200
-                ? navigate("/")
-                : toast.error("Usuário ou senha inválidos", DEFAULT_TOAST_CONFIG)
-        )
+        !document.querySelector('.invalidado')
+            ? login({ usuario, senha }).then(res => {
+                if(res.status !== 200) return toast.error("Usuário ou senha inválidos", DEFAULT_TOAST_CONFIG)
+
+                navigate("/app/")
+                toast.success("Bem vindo!", DEFAULT_TOAST_CONFIG)
+            })
             : toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG)
     }
 
