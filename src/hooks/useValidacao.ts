@@ -13,11 +13,8 @@ export function useValidacao() {
         return !(document.querySelector('.invalidado'))
     }
 
-    // function validarCampo(input: React.MutableRefObject<HTMLInputElement> ): boolean {
     function validarCampo(input: any): boolean {
         const inputEstaValido = input.checkValidity()
-        console.log(inputEstaValido)
-        
         !inputEstaValido ? input.classList.add('invalidado') : input.classList.remove('invalidado')
 
         return input.classList.contains('invalidado')
