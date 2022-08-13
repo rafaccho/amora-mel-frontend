@@ -26,8 +26,7 @@ export function Router() {
                             <Outlet />
                         </div>
 
-                        <MenuBar tipo="S" />
-                        <MenuBar tipo="B" />
+                        <MenuBar />
                     </div>
                 }>
                     {/* <Route index element={<Home />} /> */}
