@@ -13,7 +13,7 @@ export function MenuBar(props: { tipo: 'S' | 'B' }) {
   return (
     <div className={
       props.tipo === 'S'
-        ? "absolute top-0 left-0 h-screen flex-col justify-between w-20 bg-[#de8814] shadow-lg text-white hidden lg:flex"
+        ? "absolute top-0 left-0 h-screen flex-col w-20 bg-[#de8814] shadow-lg text-white hidden lg:flex"
         : "absolute bottom-0 w-full bg-[#de8814] justify-between h-18  shadow-lg text-white flex lg:hidden px-5"
       // ? "h-screen flex-col justify-between w-20 bg-[#de8814] shadow-lg text-white hidden lg:flex"
       // : "absolute bottom-0 w-full justify-between h-18 bg-[#de8814] shadow-lg text-white flex lg:hidden px-5"
