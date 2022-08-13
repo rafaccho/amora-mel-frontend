@@ -22,7 +22,7 @@ export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
 
     const { uuidEdit } = useParams()
     const { pathname } = useLocation()
-    const { criarRegistro, editarRegistro, umRegistro } = useBackend('agrupamentos')
+    const { criarRegistro, editarRegistro, umRegistro, todosRegistros } = useBackend('agrupamentos')
     const navigate = useNavigate()
 
     const { data: dadosAgrupamento, status: statusAgrupamento } = useQuery(
@@ -32,8 +32,8 @@ export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
     )
 
     const { data: dadosGrupos, status: statusGrupos } = useQuery(
-        'grupos',
-        () => umRegistro(uuidEdit ? uuidEdit : uuid),
+        'grupos-select',
+        () => todosRegistros(),
         { enabled: props.entidade === "S" }
     )
 
@@ -49,7 +49,7 @@ export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
 
     const mutation = useMutation(() => uuidEdit ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
-            queryClient.invalidateQueries(['grupos', 'subgrupos'])
+            queryClient.invalidateQueries(['agrupamentos'])
             toast.success(`${props.entidade === "G" ? 'Grupo' : "Subgrupo"} salvo com sucesso!`, DEFAULT_TOAST_CONFIG)
             navigate(criarUrlVoltar(pathname))
         },
@@ -91,6 +91,7 @@ export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
     }
 
     useEffect(() => {
+        statusGrupos === "success" && console.log(dadosGrupos!.data)
         statusGrupos === "success" && setGrupos(dadosGrupos!.data.results as Agrupamento[])
     }, [statusGrupos])
 
@@ -173,7 +174,7 @@ export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
                                 {
                                     statusGrupos === "loading"
                                         ? "Carregando..."
-                                        : grupos.length === 0
+                                        : grupos!.length === 0
                                             ? "Não existem grupos cadastrados"
                                             : "Selecione"
                                 }
