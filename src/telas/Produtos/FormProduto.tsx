@@ -18,6 +18,7 @@ export function FormProduto() {
     const [unidade1, setUnidade1] = useState('')
     const [quantidade2, setQuantidade2] = useState<string | number>('')
     const [unidade2, setUnidade2] = useState('')
+    const [estoqueMinimo, setEstoqueMinimo] = useState<string | number>('')
 
     const inputs = useRef<HTMLDivElement>(null)
 
@@ -41,6 +42,7 @@ export function FormProduto() {
         unidade2,
         quantidade1,
         quantidade2,
+        estoque_minimo: estoqueMinimo
     }
 
     const mutation = useMutation(() => uuidEdit ? editarRegistro(uuid, dados) : criarRegistro(dados), {
@@ -65,6 +67,7 @@ export function FormProduto() {
             setUnidade1(dados.unidade1)
             setQuantidade2(dados.quantidade2)
             setUnidade2(dados.unidade2)
+            setEstoqueMinimo(dados.estoque_minimo)
         }
     }
 
@@ -98,7 +101,7 @@ export function FormProduto() {
 
             <div className="cabecalho-form">
                 <CabecalhoForm
-                    titulo={ pathname.match('cadastrar/') ? "Cadastro de Produtos" : `Editar Produto ${uuidEdit?.split('-')[0]}`}
+                    titulo={pathname.match('cadastrar/') ? "Cadastro de Produtos" : `Editar Produto ${uuidEdit?.split('-')[0]}`}
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onDeletar: {
@@ -181,6 +184,15 @@ export function FormProduto() {
                         <input type="number" className="text-right"
                             value={quantidade2}
                             onChange={e => setQuantidade2(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="col-span-6 md:col-span-4 lg:col-span-2">
+                        <label>Estoque Mínimo <i className="text-rose-700">*</i></label>
+                        <input type="number" className="text-right"
+                            value={estoqueMinimo}
+                            onChange={e => setEstoqueMinimo(e.target.value)}
                             required
                         />
                     </div>
