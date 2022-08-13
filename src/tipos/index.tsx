@@ -1,5 +1,5 @@
 export type MetodoHttp = 'get' | 'post' | 'put' | 'delete' | 'patch'
-export type Endpoint = 'pedidos' | 'areas_entregas' | 'fornecedores' | 'lojas' | 'produtos' | 'produto_fornecedores' | 'compras' | 'areas_entregas_produto' | 'agrupamentos'
+export type Endpoint = 'pedidos' | 'areas_entregas' | 'fornecedores' | 'lojas' | 'produtos' | 'produto_fornecedores' | 'compras' | 'areas_entregas_produto' | 'agrupamentos' | 'login'
 export type PedidoStatus = 'A' | 'P' | 'B' | 'F' | 'C' 
 export type UnidadeLoja = 'FA' | 'CN' | 'UN' | 'FL'
 export type SimNao = 'S' | 'N'
