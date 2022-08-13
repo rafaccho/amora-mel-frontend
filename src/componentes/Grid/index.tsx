@@ -75,7 +75,7 @@ export function Grid(props: {
                                 <tbody className="bg-white divide-y divide-blue-900">
                                     {
                                         query.data?.data.results.map((registro: any) => (
-                                            <motion.tr key={registro.uuid} className="bg-blue-400 hover:bg-blue-300 cursor-pointer"
+                                            <motion.tr key={registro.uuid} className="bg-blue-200 cursor-pointer"
                                                 whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }} 
                                                 onClick={() => navigate(`editar/${registro.uuid}/`)}
                                             >
@@ -109,7 +109,7 @@ export function Grid(props: {
             <div className="grid grid-cols-12">
                 <div className="col-span-12 flex justify-center md:justify-end gap-14">
                     <Button className="botao-blue-1 w-24 flex justify-center pt-3" title={<AiOutlineArrowLeft />} />
-                    <span className='font-bold font-sans'>{paginalAtual} de {calcularQuantidadePaginas()}</span>
+                    <span className='font-bold font-sans text-blue-700'>{paginalAtual} de {calcularQuantidadePaginas()}</span>
                     <Button className="botao-blue-1 w-24 flex justify-center pt-3" title={<AiOutlineArrowRight />} />
                 </div>
             </div>
