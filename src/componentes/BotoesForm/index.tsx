@@ -38,13 +38,13 @@ export function BotoesForm(props: {
 
     return (
         <div id="botoes" className="flex justify-end gap-3 my-12">
-            <Button className="btn-l" title="Salvar"
+            <Button className="botao-blue-1" title="Salvar"
                 onClick={() => !props.validarCampos() ? toast.error('Preencha todos os campos', DEFAULT_TOAST_CONFIG) : props.onSalvar()}
             />
-            <Button className="btn-l" title="Deletar"
+            <Button className="botao-blue-1" title="Deletar"
                 onClick={() => mutation.mutate()}
             />
-            <Button className="btn-l" title="Voltar"
+            <Button className="botao-blue-1" title="Voltar"
                 onClick={() => navigate(urlVoltar)} 
             />
         </div>

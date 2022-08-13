@@ -2,29 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-/*
-#########
-# CORES #
-#########
-
-Amarelo - #f7d417
-Laranja - #de8703
-Vermelho - #e30d40
-*/
-
 
 /* Estilização do HTML */
 
 input {
-    @apply p-2 rounded-lg outline-none text-orange-900 w-full;
+    @apply p-2 rounded-lg outline-none text-blue-900 w-full;
 }
 
 select {
-    @apply p-2 rounded-lg outline-none text-orange-900 w-full h-10;
+    @apply p-2 rounded-lg outline-none text-blue-900 w-full h-10;
 }
 
 label {
-    @apply block font-sans font-bold text-base text-orange-900;
+    @apply block font-sans font-bold text-base text-blue-900;
 }
 
 button {
@@ -34,16 +24,12 @@ button {
 
 /* Botões */
 
-.btn-l {
-    @apply bg-orange-500 hover:bg-orange-600;
+.botao-blue-1 {
+    @apply bg-blue-200 hover:bg-blue-300 text-blue-800 hover:text-blue-700 font-bold;
 }
 
 
 /* Componentes */
-
-.card {
-    /* @apply ; */
-}
 
 .modal {
     @apply rounded-lg bg-sky-600 m-auto flex flex-col items-center p-1 w-80 h-80;
@@ -59,18 +45,18 @@ button {
 }
 
 .sidebar-icon {
-    @apply relative flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto bg-yellow-400
-    hover:bg-orange-900 dark:bg-gray-800 text-orange-900 hover:text-yellow-400 hover:rounded-xl
+    @apply relative flex items-center justify-center h-12 w-12 mt-2 mb-2 mx-auto bg-blue-300
+    hover:bg-blue-900 text-blue-900 hover:text-blue-300 hover:rounded-xl
     rounded-3xl transition-all duration-300 ease-linear cursor-pointer shadow-lg;
 }
 
 .sidebar-tooltip {
-    @apply absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-gray-900
+    @apply absolute w-auto p-2 m-2 min-w-max left-14 rounded-md shadow-md text-white bg-sky-900
     text-xs font-bold transition-all duration-200 scale-0 origin-left;
 }
 
 .sidebar-tooltip-2 {
-    @apply absolute w-auto p-2 m-2 min-w-max bottom-14 rounded-md shadow-md text-white bg-gray-900
+    @apply absolute w-auto p-2 m-2 min-w-max bottom-14 rounded-md shadow-md text-white bg-sky-900
     text-xs font-bold transition-all duration-100 scale-0 origin-left;
 }
 
@@ -81,15 +67,15 @@ button {
 /* Features */
 
 .t-1 {
-    @apply text-orange-900 font-bold border-l-8 border-l-orange-600 pl-3 text-4xl;
+    @apply text-blue-900 font-bold border-l-8 border-l-blue-900 pl-3 text-4xl;
 }
 
 .t-2 {
-    @apply text-orange-800 font-bold border-l-8 border-l-orange-400 pl-3 text-2xl;
+    @apply text-blue-900 font-bold border-l-8 border-l-blue-900 pl-3 text-2xl;
 }
 
 .t-3 {
-    @apply text-orange-900 font-bold border-l-8 border-l-orange-400 pl-3 text-xl;
+    @apply text-blue-900 font-bold border-l-8 border-l-blue-900 pl-3 text-xl;
 }
 
 .invalidado {

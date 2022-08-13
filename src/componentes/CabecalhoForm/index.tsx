@@ -23,7 +23,7 @@ export function CabecalhoForm(props: {
                 validarCampos={props.botoesForm.validarCampos}
             />
 
-            <div className="mb-8 border-b-4 border-orange-700" />
+            <div className="mb-8 border-b-4 border-blue-900" />
         </div>
     )
 }

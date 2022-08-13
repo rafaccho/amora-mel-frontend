@@ -1,25 +1,18 @@
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 
 import { MenuBar } from "./componentes/MenuBar";
-
 import { Painel } from "./componentes/Painel";
 
 import { Login } from "./telas/Login";
 import { Home } from "./telas/Home";
 
-import { PainelProduto } from "./telas/Produtos/PainelProduto";
-import { FormProduto } from "./telas/Produtos/FormProduto";
-
 import { PainelAreaEntrega } from "./telas/AreaEntrega/PainelAreaEntrega";
+
 import { FormAreaEntrega } from "./telas/AreaEntrega/FormAreaEntrega";
-
-import { PainelFornecedor } from "./telas/Fornecedor/PainelFornecedor";
 import { FormFornecedor } from "./telas/Fornecedor/FormFornecedor";
-
-import { PainelPedidos } from "./telas/Pedidos/PainelPedidos";
 import { FormPedidos } from "./telas/Pedidos/FormPedidos";
-
 import { FormAgrupamentos } from "./telas/Agrupamentos/FormAgrupamentos";
+import { FormProduto } from "./telas/Produtos/FormProduto";
 
 export function Router() {
     return (
@@ -29,7 +22,7 @@ export function Router() {
 
                 <Route path="/app/*" element={
                     <div>
-                        <div className="h-screen overflow-y-auto bg-[#f7d417] lg:pl-20">
+                        <div className="h-screen overflow-y-auto bg-blue-50 lg:pl-20">
                             <Outlet />
                         </div>
 

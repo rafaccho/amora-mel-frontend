@@ -40,15 +40,10 @@ export function Login() {
         <div className='w-screen h-screen bg-stone-800'>
             <div className="flex flex-wrap">
 
-                <div className="w-full h-screen md:w-1/3 lg:w-1/6 bg-[#f79937] p-2">
+                <div className="w-full h-screen md:w-1/3 lg:w-1/6 bg-blue-400 p-2">
 
-                    <div className="p-5 mb-14 md:mb-2 flex justify-center">
-                        <img src={Logo} alt="Logo da Amora & Mel" />
-                    </div>
-
-                    <div className="p-2 mb-2 md:mb-5">
+                    <div className="p-2 mb-2 md:mb-5 my-12">
                         <h1 className="t-1">Login</h1>
-                        <br />
                     </div>
 
                     <div className="p-3">
@@ -73,7 +68,7 @@ export function Login() {
                         </div>
 
                         <div className="flex justify-center w-full mt-12">
-                            <Button onClick={() => logar()} className="btn-l w-full" title="Login" />
+                            <Button onClick={() => logar()} className="botao-blue-1 w-full" title="Login" />
                         </div>
                     </div>
 

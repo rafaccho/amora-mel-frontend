@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 import { BsPlus, BsTextareaResize } from 'react-icons/bs';
 import { FaBox, FaTruckMoving } from 'react-icons/fa';
@@ -8,13 +9,14 @@ import { RiLogoutBoxFill } from 'react-icons/ri';
 import { BsFillLayersFill } from 'react-icons/bs';
 import { FaLayerGroup } from 'react-icons/fa';
 
+import { DEFAULT_TOAST_CONFIG } from '../../constantes';
 
 export function MenuBar(props: { tipo: 'S' | 'B' }) {
   return (
     <div className={
       props.tipo === 'S'
-        ? "absolute top-0 left-0 h-screen flex-col w-20 bg-[#de8814] shadow-lg text-white hidden lg:flex"
-        : "absolute bottom-0 w-full bg-[#de8814] justify-between h-18  shadow-lg text-white flex lg:hidden px-5"
+        ? "absolute top-0 left-0 h-screen flex-col w-20 bg-blue-200 shadow-lg text-white hidden lg:flex"
+        : "absolute bottom-0 w-full bg-blue-200 justify-between h-18  shadow-lg text-white flex lg:hidden px-5"
       // ? "h-screen flex-col justify-between w-20 bg-[#de8814] shadow-lg text-white hidden lg:flex"
       // : "absolute bottom-0 w-full justify-between h-18 bg-[#de8814] shadow-lg text-white flex lg:hidden px-5"
     }>
@@ -25,13 +27,13 @@ export function MenuBar(props: { tipo: 'S' | 'B' }) {
       <SideBarIcon to='/app/pedidos/' text='Pedidos' icon={<MdBorderColor size="29" />} tipo={props.tipo} />
       <SideBarIcon to='/app/grupos/' text='Grupos' icon={<BsFillLayersFill size="29" />} tipo={props.tipo} />
       <SideBarIcon to='/app/subgrupos/' text='Subgrupos' icon={<FaLayerGroup size="29" />} tipo={props.tipo} />
-      <SideBarIcon to='/' text='Sair' icon={<RiLogoutBoxFill size="29" />} tipo={props.tipo} />
+      <SideBarIcon to='/' onClick={() => toast.success("Até mais!", DEFAULT_TOAST_CONFIG)} text='Sair' icon={<RiLogoutBoxFill size="29" />} tipo={props.tipo} />
     </div>
   );
 };
 
-const SideBarIcon = ({ icon = <BsPlus size="32" />, text = 'tooltip 💡', to = '/', tipo = 'S' }) => (
-  <Link to={to} className="sidebar-icon group">
+const SideBarIcon = ({ icon = <BsPlus size="32" />, text = 'tooltip 💡', to = '/', tipo = 'S', onClick = () => {} }) => (
+  <Link to={to} className="sidebar-icon group" onClick={onClick}>
     {icon}
     <span className={
       tipo === 'S'

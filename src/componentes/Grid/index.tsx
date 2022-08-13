@@ -54,9 +54,9 @@ export function Grid(props: {
                     <div className="py-2 align-middle inline-block min-w-full">
                         <div className="shadow overflow-hidden rounded-lg">
 
-                            <table className="min-w-full divide-y divide-orange-900">
+                            <table className="min-w-full divide-y divide-blue-900">
 
-                                <thead className="bg-orange-600">
+                                <thead className="bg-blue-200">
                                     <tr>
                                         <th scope="col" className="px-6 py-3 text-left text-xs text-black font-extrabold uppercase tracking-wider whitespace-nowrap">Status</th>
                                         <th scope="col" className="px-6 py-3 text-left text-xs text-black font-extrabold uppercase tracking-wider whitespace-nowrap">Identificador</th>
@@ -72,10 +72,10 @@ export function Grid(props: {
                                     </tr>
                                 </thead>
 
-                                <tbody className="bg-white divide-y divide-orange-900">
+                                <tbody className="bg-white divide-y divide-blue-900">
                                     {
                                         query.data?.data.results.map((registro: any) => (
-                                            <motion.tr key={registro.uuid} className="bg-orange-400 hover:bg-orange-300 cursor-pointer"
+                                            <motion.tr key={registro.uuid} className="bg-blue-400 hover:bg-blue-300 cursor-pointer"
                                                 whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }} 
                                                 onClick={() => navigate(`editar/${registro.uuid}/`)}
                                             >
@@ -108,9 +108,9 @@ export function Grid(props: {
 
             <div className="grid grid-cols-12">
                 <div className="col-span-12 flex justify-center md:justify-end gap-14">
-                    <Button className="btn-l w-24 flex justify-center pt-3" title={<AiOutlineArrowLeft />} />
+                    <Button className="botao-blue-1 w-24 flex justify-center pt-3" title={<AiOutlineArrowLeft />} />
                     <span className='font-bold font-sans'>{paginalAtual} de {calcularQuantidadePaginas()}</span>
-                    <Button className="btn-l w-24 flex justify-center pt-3" title={<AiOutlineArrowRight />} />
+                    <Button className="botao-blue-1 w-24 flex justify-center pt-3" title={<AiOutlineArrowRight />} />
                 </div>
             </div>
 
