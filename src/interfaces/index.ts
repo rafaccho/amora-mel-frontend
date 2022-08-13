@@ -31,6 +31,7 @@ export interface Produto extends Base {
     unidade2: string
     quantidade1: number
     quantidade2: number
+    estoque_minimo: number
 }
 
 export interface Fornecedor extends Base, Endereco {
