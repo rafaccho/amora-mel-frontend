@@ -23,7 +23,7 @@ export function FormEstoque() {
 
     const { uuidEdit } = useParams()
     const { pathname } = useLocation()
-    const { criarRegistro, editarRegistro, umRegistro, todosRegistros } = useBackend('pedidos')
+    const { criarRegistro, editarRegistro, umRegistro, todosRegistros } = useBackend('estoques')
 
     const navigate = useNavigate()
 
@@ -35,13 +35,13 @@ export function FormEstoque() {
 
     const { data: dadosProduto, status: statusProduto } = useQuery(
         'produto',
-        () => umRegistro(uuidEdit ? uuidEdit : uuid),
+        () => umRegistro(uuidEdit ? uuidEdit : uuid, 'produtos'),
         { enabled: uuidEdit !== undefined }
     )
 
     const { data: dadosProdutos, status: statusProdutos } = useQuery(
         'produtos',
-        () => todosRegistros(),
+        () => todosRegistros('produtos'),
     )
 
     const queryClient = useQueryClient()
@@ -97,20 +97,23 @@ export function FormEstoque() {
 
 
     useEffect(() => {
-        statusProduto === "success" && setProdutos(dadosProdutos!.data.results as Produto[])
-    }, [statusProduto])
+        console.log(statusProdutos);
+        
+        statusProdutos === "success" && console.log(dadosProdutos!.data)
+        statusProdutos === "success" && setProdutos(dadosProdutos!.data.results as Produto[])
+    }, [statusProdutos])
 
     return (
         <div className="p-5">
 
             <div className="cabecalho-form">
                 <CabecalhoForm
-                    titulo={pathname.match('cadastrar/') ? "Cadastro de Pedido" : `Editar Pedido ${uuidEdit?.split('-')[0]}`}
+                    titulo={pathname.match('cadastrar/') ? "Cadastro de Estoque" : `Editar Estoque ${uuidEdit?.split('-')[0]}`}
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onDeletar: {
-                            endpoint: 'pedidos',
-                            textoSucesso: "Pedido deletado com sucesso!",
+                            endpoint: 'estoques',
+                            textoSucesso: "Estoque deletado com sucesso!",
                             textoErro: "Ocorreu um erro!",
                         },
                         validarCampos,

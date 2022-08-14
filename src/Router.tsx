@@ -13,6 +13,7 @@ import { FormFornecedor } from "./telas/Fornecedor/FormFornecedor";
 import { FormPedidos } from "./telas/Pedidos/FormPedidos";
 import { FormAgrupamentos } from "./telas/Agrupamentos/FormAgrupamentos";
 import { FormProduto } from "./telas/Produtos/FormProduto";
+import { FormEstoque } from "./telas/FormEstoque";
 
 export function Router() {
     return (
@@ -162,8 +163,8 @@ export function Router() {
                                 }}
                             />
                         } />
-                        <Route path="cadastrar" element={<FormAgrupamentos entidade="S" />} />
-                        <Route path="editar/:uuidEdit" element={<FormAgrupamentos entidade="S" />} />
+                        <Route path="cadastrar" element={<FormEstoque />} />
+                        <Route path="editar/:uuidEdit" element={<FormEstoque />} />
                     </Route>
 
                 </Route>
