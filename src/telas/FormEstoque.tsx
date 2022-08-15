@@ -95,11 +95,7 @@ export function FormEstoque() {
         pathname.match('editar/') && dadosEstoque && preencherDados()
     }, [dadosEstoque])
 
-
     useEffect(() => {
-        console.log(statusProdutos);
-        
-        statusProdutos === "success" && console.log(dadosProdutos!.data)
         statusProdutos === "success" && setProdutos(dadosProdutos!.data.results as Produto[])
     }, [statusProdutos])
 
