@@ -30,7 +30,7 @@ export function Router() {
                         <MenuBar />
                     </div>
                 }>
-                    {/* <Route index element={<Home />} /> */}
+                    <Route index element={<Home />} />
 
                     <Route path="produtos/*">
                         <Route index element={
