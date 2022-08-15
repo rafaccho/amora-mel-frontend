@@ -14,7 +14,7 @@ import { DEFAULT_TOAST_CONFIG } from '../../constantes';
 
 export const MenuBar = () => ( 
   <div className="sticky lg:absolute bottom-0 lg:top-0 flex lg:flex-col lg:left-0 h-18 w-full lg:h-screen lg:w-20 bg-blue-200 text-white shadow-lg px-3 lg:px-0">
-      {/* <SideBarIcon to='/app/' text='Home' icon={<HiHome size="29" />} /> */}
+      <SideBarIcon to='/app/' text='Home' icon={<HiHome size="29" />} />
       <SideBarIcon to='/app/fornecedores/' text='Fornecedores' icon={<FaTruckMoving size="28" />} />
       <SideBarIcon to='/app/produtos/' text='Produtos' icon={<FaBox size="22" />} />
       <SideBarIcon to='/app/estoques/' text='Estoque' icon={<FaSitemap size="29" />} />
