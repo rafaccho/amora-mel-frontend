@@ -40,8 +40,8 @@ export function Card(props: {
                 <div className="flex flex-col flex-wrap p-5">{dadosViews}</div>
 
                 <div className="self-center flex justify-center">
-                    {/* <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }} onClick={() => navigate(props.botao.url)} className="botao-blue-1 mb-5">{props.botao.titulo}</motion.button> */}
-                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }} onClick={() => props.botao.callbacks.padrao()} className="botao-blue-1 mb-5">{props.botao.titulo}</motion.button>
+                    {/* <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }} onClick={() => navigate(props.botao.url)} className="botao-azul-1 mb-5">{props.botao.titulo}</motion.button> */}
+                    <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }} onClick={() => props.botao.callbacks.padrao()} className="botao-azul-1 mb-5">{props.botao.titulo}</motion.button>
                 </div>
             </div>
         </motion.div>

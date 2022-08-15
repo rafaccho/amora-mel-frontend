@@ -55,13 +55,13 @@ export function CardRegistro(props: {
 
             <div id="rodape-card" className="p-4 bg-orange-700 sticky bottom-0">
                 <div className="w-full flex lg:hidden justify-center gap-6">
-                    <Button className="botao-blue-1 font-bold" title={"Editar"} onClick={() => {navigate(location);props.onEditar()}} />
-                    <Button className="botao-blue-1 font-bold" title={"Deletar"} onClick={() => deletar.mutate(props.uuid)} />
+                    <Button className="botao-azul-1 font-bold" titulo={"Editar"} onClick={() => {navigate(location);props.onEditar()}} />
+                    <Button className="botao-azul-1 font-bold" titulo={"Deletar"} onClick={() => deletar.mutate(props.uuid)} />
                 </div>
                 
                 <div className="w-full hidden lg:flex justify-center gap-6">
-                    <Button className="botao-blue-1 font-bold" title={"Editar"} onClick={() => props.onEditar()} />
-                    <Button className="botao-blue-1 font-bold" title={"Deletar"} onClick={() => deletar.mutate(props.uuid)} />
+                    <Button className="botao-azul-1 font-bold" titulo={"Editar"} onClick={() => props.onEditar()} />
+                    <Button className="botao-azul-1 font-bold" titulo={"Deletar"} onClick={() => deletar.mutate(props.uuid)} />
                 </div>
             </div>
 

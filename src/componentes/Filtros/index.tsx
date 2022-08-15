@@ -18,18 +18,18 @@ export function Filtros(props: { refresh: any }) {
                 </div>
 
                 <div className="col-span-2 md:col-span-4 lg:col-span-1 flex justify-center md:justify-end">
-                    <Button className="botao-blue-1 pb-3 w-full flex justify-center pt-3" title={<BsSearch />}
+                    <Button className="botao-azul-1 pb-3 w-full flex justify-center pt-3" titulo={<BsSearch />}
                         onClick={() => {
                         }}
                     />
                 </div>
 
                 <div className="col-span-8 md:col-span-4 lg:col-span-2 lg:order-last flex justify-center md:justify-end">
-                    <Button  className="botao-blue-1 w-full font-medium" title="Adicionar" onClick={() => navigate('cadastrar/')} />
+                    <Button  className="botao-azul-1 w-full font-medium" titulo="Adicionar" onClick={() => navigate('cadastrar/')} />
                 </div>
 
                 <div className="col-span-4 md:col-span-4 lg:col-span-1 flex justify-center md:justify-end">
-                    <Button className="botao-blue-1 pb-3 w-full flex justify-center pt-3" title={<FiRefreshCw />}
+                    <Button className="botao-azul-1 pb-3 w-full flex justify-center pt-3" titulo={<FiRefreshCw />}
                         onClick={() => {
                         }}
                     />
