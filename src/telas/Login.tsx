@@ -28,11 +28,9 @@ export function Login() {
 
         !document.querySelector('.invalidado')
             ? login({ usuario, senha }).then(res => {
-                if(res.status !== 200) return toast.error("Usuário ou senha inválidos", DEFAULT_TOAST_CONFIG)
-
                 navigate("/app/")
                 toast.success("Bem vindo!", DEFAULT_TOAST_CONFIG)
-            })
+            }).catch(err => toast.warn("Usuário ou senha inválidos", DEFAULT_TOAST_CONFIG) )
             : toast.error("Preencha todos os campos", DEFAULT_TOAST_CONFIG)
     }
 
@@ -68,7 +66,7 @@ export function Login() {
                         </div>
 
                         <div className="flex justify-center w-full mt-12">
-                            <Button onClick={() => logar()} className="botao-blue-1 w-full" title="Login" />
+                            <Button onClick={() => logar()} className="botao-azul-1 w-full" titulo="Login" />
                         </div>
                     </div>
 
