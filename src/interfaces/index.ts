@@ -54,6 +54,11 @@ export interface Pedido extends Base {
     status: PedidoStatus
 }
 
+export interface PedidoItem extends Base {
+    produto: string
+    quantidade: string
+}
+
 
 export interface Agrupamento extends Base {
     codigo: string
@@ -79,7 +84,7 @@ export interface ViacepResponse {
 
 /*  */
 
-export interface ExibicaoDadoConfig {
+export interface ExibicaoDadoGridConfig {
     coluna: string,
     chaveApi: string,
     mascara?: () => void,
