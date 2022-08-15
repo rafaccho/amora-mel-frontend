@@ -24,7 +24,7 @@ button {
 
 /* Botões */
 
-.botao-blue-1 {
+.botao-azul-1 {
     @apply bg-blue-200 hover:bg-blue-300 text-blue-800 hover:text-blue-700 font-bold;
 }
 
