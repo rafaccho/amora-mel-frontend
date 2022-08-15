@@ -1,13 +1,13 @@
 import { Grid } from "../../componentes/Grid";
 import { Endpoint } from "../../tipos";
-import { ExibicaoDadoConfig } from "../../interfaces";
+import { ExibicaoDadoGridConfig } from "../../interfaces";
 
 
 
 export function Painel(props: {
     titulo: string,
     grid: {
-        exibicaoDadosConfig: ExibicaoDadoConfig[],
+        exibicaoDadosConfig: ExibicaoDadoGridConfig[],
         requisicaoConfig: { endpoint: Endpoint, filtros?: string, }
     }
 }) {

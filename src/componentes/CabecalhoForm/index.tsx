@@ -5,6 +5,7 @@ export function CabecalhoForm(props: {
     titulo: string;
     botoesForm: {
         onSalvar: () => void,
+        onVoltar: () => void,
         onDeletar: {
             endpoint: Endpoint;
             textoSucesso: string;
@@ -19,6 +20,7 @@ export function CabecalhoForm(props: {
 
             <BotoesForm
                 onSalvar={props.botoesForm.onSalvar}
+                onVoltar={props.botoesForm.onVoltar}
                 onDeletar={props.botoesForm.onDeletar}
                 validarCampos={props.botoesForm.validarCampos}
             />

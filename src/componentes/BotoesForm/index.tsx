@@ -8,6 +8,7 @@ import { Endpoint } from "../../tipos";
 
 export function BotoesForm(props: {
     onSalvar: () => void;
+    onVoltar: () => void;
     onDeletar: {
         endpoint: Endpoint;
         textoSucesso: string;
@@ -38,14 +39,14 @@ export function BotoesForm(props: {
 
     return (
         <div id="botoes" className="flex justify-end gap-3 my-12">
-            <Button className="botao-blue-1" title="Salvar"
+            <Button className="botao-azul-1" titulo="Salvar"
                 onClick={() => !props.validarCampos() ? toast.error('Preencha todos os campos', DEFAULT_TOAST_CONFIG) : props.onSalvar()}
             />
-            <Button className="botao-blue-1" title="Deletar"
+            <Button className="botao-azul-1" titulo="Deletar"
                 onClick={() => mutation.mutate()}
             />
-            <Button className="botao-blue-1" title="Voltar"
-                onClick={() => navigate(urlVoltar)} 
+            <Button className="botao-azul-1" titulo="Voltar"
+                onClick={() => {navigate(urlVoltar); props.onVoltar()}} 
             />
         </div>
     )
