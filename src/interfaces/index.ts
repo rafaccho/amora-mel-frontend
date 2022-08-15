@@ -12,6 +12,9 @@ export interface Base {
     ativo: SimNao
     data_criacao: string
     hora_criacao: string
+
+    data_ultima_atualizacao: string
+    hora_ultima_atualizacao: string
 }
 
 export interface Endereco {
