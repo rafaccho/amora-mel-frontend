@@ -112,6 +112,9 @@ export function FormFornecedor() {
                     titulo={pathname.match('cadastrar/') ? "Cadastro de Fornecedor" : `Editar Fornecedor ${uuidEdit?.split('-')[0]}`}
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
+                        onVoltar: () => {
+                            
+                        },
                         onDeletar: {
                             endpoint: 'fornecedores',
                             textoSucesso: "Fornecedor deletado com sucesso!",

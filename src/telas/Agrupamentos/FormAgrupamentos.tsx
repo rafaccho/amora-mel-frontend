@@ -108,6 +108,9 @@ export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
                     // titulo={pathname.match('cadastrar/') ? `${props.entidade === "G" ? "Cadastro de Grupos" : ""}` : `Editar Produto ${uuidEdit?.split('-')[0]}`}
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
+                        onVoltar: () => {
+                            
+                        },
                         onDeletar: {
                             endpoint: 'agrupamentos',
                             textoSucesso: `${props.entidade === "G" ? 'Grupo' : "Subgrupo"} deletado com sucesso!`,

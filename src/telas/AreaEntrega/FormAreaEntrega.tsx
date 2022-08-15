@@ -124,6 +124,9 @@ export function FormAreaEntrega() {
                     titulo={pathname.match('cadastrar/') ? "Cadastro de Área de Entrega" : `Editar Área de Entrega ${uuidEdit?.split('-')[0]}`}
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
+                        onVoltar: () => {
+                            
+                        },
                         onDeletar: {
                             endpoint: 'areas_entregas',
                             textoSucesso: "Área de Entrega deletada com sucesso!",

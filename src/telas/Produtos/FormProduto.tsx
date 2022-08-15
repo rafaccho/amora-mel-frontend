@@ -104,6 +104,9 @@ export function FormProduto() {
                     titulo={pathname.match('cadastrar/') ? "Cadastro de Produtos" : `Editar Produto ${uuidEdit?.split('-')[0]}`}
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
+                        onVoltar: () => {
+                            queryClient.removeQueries('produtos')
+                        },
                         onDeletar: {
                             endpoint: 'produtos',
                             textoSucesso: "Produto deletado com sucesso!",

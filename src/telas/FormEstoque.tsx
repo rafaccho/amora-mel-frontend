@@ -111,6 +111,9 @@ export function FormEstoque() {
                     titulo={pathname.match('cadastrar/') ? "Cadastro de Estoque" : `Editar Estoque ${uuidEdit?.split('-')[0]}`}
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
+                        onVoltar: () => {
+                            
+                        },
                         onDeletar: {
                             endpoint: 'estoques',
                             textoSucesso: "Estoque deletado com sucesso!",
