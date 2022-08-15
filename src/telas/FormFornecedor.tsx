@@ -3,13 +3,13 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useQueryClient, useMutation, useQuery } from 'react-query'
 import { toast } from "react-toastify";
 
-import { DEFAULT_TOAST_CONFIG } from "../../constantes";
-import { useBackend } from "../../hooks/useBackend";
-import { AreaEntrega, Fornecedor, ViacepResponse } from "../../interfaces";
-import { criarUrlVoltar } from "../../utils/criarUrlVoltar";
-import { CabecalhoForm } from "../../componentes/CabecalhoForm";
-import { Loading } from "../../componentes/Loading";
-import { Error } from "../../componentes/Error";
+import { DEFAULT_TOAST_CONFIG } from "../constantes";
+import { useBackend } from "../hooks/useBackend";
+import { AreaEntrega, Fornecedor, ViacepResponse } from "../interfaces";
+import { criarUrlVoltar } from "../utils/criarUrlVoltar";
+import { CabecalhoForm } from "../componentes/CabecalhoForm";
+import { Loading } from "../componentes/Loading";
+import { Error } from "../componentes/Error";
 
 
 export function FormFornecedor() {

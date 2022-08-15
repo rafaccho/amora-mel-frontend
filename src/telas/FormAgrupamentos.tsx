@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { useQueryClient, useMutation, useQuery } from 'react-query'
 import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { Loading } from "../../componentes/Loading";
-import { Error } from "../../componentes/Error";
-import { CabecalhoForm } from "../../componentes/CabecalhoForm";
-import { DEFAULT_TOAST_CONFIG } from "../../constantes";
-import { useBackend } from "../../hooks/useBackend";
-import { criarUrlVoltar } from "../../utils/criarUrlVoltar";
-import { Agrupamento } from "../../interfaces";
+import { Loading } from "../componentes/Loading";
+import { Error } from "../componentes/Error";
+import { CabecalhoForm } from "../componentes/CabecalhoForm";
+import { DEFAULT_TOAST_CONFIG } from "../constantes";
+import { useBackend } from "../hooks/useBackend";
+import { criarUrlVoltar } from "../utils/criarUrlVoltar";
+import { Agrupamento } from "../interfaces";
 
 export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
     const [codigo, setCodigo] = useState('')

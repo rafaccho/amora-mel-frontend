@@ -6,12 +6,10 @@ import { Painel } from "./componentes/Painel";
 import { Login } from "./telas/Login";
 import { Home } from "./telas/Home";
 
-import { PainelAreaEntrega } from "./telas/AreaEntrega/PainelAreaEntrega";
-
-import { FormAreaEntrega } from "./telas/AreaEntrega/FormAreaEntrega";
-import { FormFornecedor } from "./telas/Fornecedor/FormFornecedor";
-import { FormPedidos } from "./telas/Pedidos/FormPedidos";
-import { FormAgrupamentos } from "./telas/Agrupamentos/FormAgrupamentos";
+import { FormAreaEntrega } from "./telas/FormAreaEntrega";
+import { FormFornecedor } from "./telas/FormFornecedor";
+import { FormPedidos } from "./telas/FormPedidos";
+import { FormAgrupamentos } from "./telas/FormAgrupamentos";
 import { FormProduto } from "./telas/Produtos/FormProduto";
 import { FormEstoque } from "./telas/FormEstoque";
 
@@ -56,7 +54,17 @@ export function Router() {
                     </Route>
 
                     <Route path="areas-entrega/*">
-                        <Route index element={<PainelAreaEntrega />} />
+                        <Route index element={<Painel
+                                titulo="Áreas de Entrega"
+                                grid={{
+                                    exibicaoDadosConfig: [
+                                        { coluna: 'CEP', chaveApi: 'cep' },
+                                    ],
+                                    requisicaoConfig: {
+                                        endpoint: 'pedidos',
+                                    }
+                                }}
+                            />} />
                         <Route path="cadastrar" element={<FormAreaEntrega />} />
                         <Route path="editar/:uuidEdit" element={<FormAreaEntrega />} />
                     </Route>

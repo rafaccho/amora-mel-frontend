@@ -4,14 +4,14 @@ import { toast } from "react-toastify";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { TiArrowBackOutline } from 'react-icons/ti'
 
-import { DEFAULT_TOAST_CONFIG } from "../../constantes";
-import { useBackend } from "../../hooks/useBackend";
-import { AreaEntrega, Fornecedor, ViacepResponse } from "../../interfaces";
-import { Button } from "../../tags";
-import { criarUrlVoltar } from "../../utils/criarUrlVoltar";
-import { CabecalhoForm } from "../../componentes/CabecalhoForm";
-import { Loading } from "../../componentes/Loading";
-import { Error } from "../../componentes/Error";
+import { DEFAULT_TOAST_CONFIG } from "../constantes";
+import { useBackend } from "../hooks/useBackend";
+import { AreaEntrega, Fornecedor, ViacepResponse } from "../interfaces";
+import { Button } from "../tags";
+import { criarUrlVoltar } from "../utils/criarUrlVoltar";
+import { CabecalhoForm } from "../componentes/CabecalhoForm";
+import { Loading } from "../componentes/Loading";
+import { Error } from "../componentes/Error";
 
 
 export function FormAreaEntrega() {
