@@ -12,17 +12,18 @@ import { Button } from "../tags";
 
 export function Home() {
     const [uuidPedidoExibicao, setUuidPedidoExibicao] = useState('');
-
+    
+    const [modalAberto, setModalAberto] = useState(false);
     const [modalPedidosAberto, setModalPedidosAberto] = useState(false);
     const [modalEstoqueAberto, setModalEstoqueAberto] = useState(false);
     const [modalComprasAberto, setModalComprasAberto] = useState(false);
-    const [modalAberto, setModalAberto] = useState(false);
+    const [andamentoPedidoAberto, setAndamentoPedidoAberto] = useState(false);
 
     const [pedidosEmitidos, setPedidosEmitidos] = useState<Pedido[]>([])
     const [pedidosAbertos, setPedidosAbertos] = useState<Pedido[]>([])
     const [itensExbicao, setItensExbicao] = useState<PedidoItem[]>([])
 
-    
+
     const exibicaoPedidosModal = useRef<HTMLDivElement>(null)
     const exibicaoItensPedidoModal = useRef<HTMLDivElement>(null)
     const tabelaPedidosAbertos = useRef<HTMLTableElement>(null)
@@ -53,7 +54,7 @@ export function Home() {
         { enabled: uuidPedidoExibicao != '' }
     )
 
-    const { mutate: emitirPedido } = useMutation((uuid: string) => editarRegistro(uuid, { status: "E"}), {
+    const { mutate: emitirPedido } = useMutation((uuid: string) => editarRegistro(uuid, { status: "E" }), {
         onSuccess: (response: any) => {
             const data = response.data as Pedido
 
@@ -68,10 +69,11 @@ export function Home() {
         },
     })
 
+    const abrirFecharModal = () => setModalAberto(!modalAberto)
     const abrirFecharModalPedidos = () => setModalPedidosAberto(!modalPedidosAberto)
     const abrirFecharModalEstoque = () => setModalEstoqueAberto(!modalEstoqueAberto)
     const abrirFecharModalCompras = () => setModalComprasAberto(!modalComprasAberto)
-    const abrirFecharModal = () => setModalAberto(!modalAberto)
+    const abrirFecharModalAndamentoPedidoAberto = () => setAndamentoPedidoAberto(!andamentoPedidoAberto)
 
     const badgesStatus = {
         "E": <span className="p-1 rounded-lg bg-yellow-200 font-bold text-yellow-900">Emitido</span>,
@@ -186,11 +188,11 @@ export function Home() {
                                             onClick={() => {
                                                 let inputs = tabelaPedidosAbertos.current?.querySelectorAll('input')
 
-                                                if(inputs) {
+                                                if (inputs) {
                                                     let inputsCheckados = Array.from(inputs)
-                                                    inputsCheckados = inputsCheckados.filter((input: HTMLInputElement) => input.checked == true )
+                                                    inputsCheckados = inputsCheckados.filter((input: HTMLInputElement) => input.checked == true)
 
-                                                    if(!inputsCheckados.length) toast.warn("Nenhum pedido foi selecionado", DEFAULT_TOAST_CONFIG)
+                                                    if (!inputsCheckados.length) toast.warn("Nenhum pedido foi selecionado", DEFAULT_TOAST_CONFIG)
 
                                                     for (let input = 0; input < inputsCheckados.length; input++) {
                                                         const uuidPedido = inputsCheckados[input].id
@@ -308,6 +310,19 @@ export function Home() {
                 </div>
 
                 <div id="modal-compra" className="flex flex-col items-center justify-center">
+                    {
+                        modalComprasAberto &&
+                        <Modal fecharModal={abrirFecharModalCompras} template={
+                            <div>
+
+                            </div>
+                        }
+                        />
+                    }
+
+                </div>
+
+                <div id="modal-andamento-pedido" className="flex flex-col items-center justify-center">
                     {
                         modalComprasAberto &&
                         <Modal fecharModal={abrirFecharModalCompras} template={
