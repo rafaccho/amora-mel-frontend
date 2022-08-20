@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
-import { ReponseStatus } from "../tipos";
+import { ReponseCodigoStatus } from "../tipos";
 
-export function promisseHandler(statusResponse: ReponseStatus, objCallbackStatus: { [Status in ReponseStatus]?: () => void }) {
+export function promisseHandler(statusResponse: ReponseCodigoStatus, objCallbackStatus: { [Status in ReponseCodigoStatus]?: () => void }) {
     const callback = objCallbackStatus[statusResponse]
 
     if (callback) callback();
