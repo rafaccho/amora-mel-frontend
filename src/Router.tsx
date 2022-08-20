@@ -10,8 +10,9 @@ import { FormAreaEntrega } from "./telas/FormAreaEntrega";
 import { FormFornecedor } from "./telas/FormFornecedor";
 import { FormPedidos } from "./telas/FormPedidos";
 import { FormAgrupamentos } from "./telas/FormAgrupamentos";
-import { FormProduto } from "./telas/Produtos/FormProduto";
+import { FormProduto } from "./telas/FormProduto";
 import { FormEstoque } from "./telas/FormEstoque";
+import { VisualizacaoPedido } from "./telas/VisualizacaoPedido";
 
 export function Router() {
     return (
@@ -28,7 +29,10 @@ export function Router() {
                         <MenuBar />
                     </div>
                 }>
+
                     <Route index element={<Home />} />
+
+                    <Route path="visualizar-pedido/:uuid/" element={<VisualizacaoPedido />} />
 
                     <Route path="produtos/*">
                         <Route index element={
