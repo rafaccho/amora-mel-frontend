@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Button } from "../../tags";
 import Backdrop from "../Backdrop/index";
 
 const dropIn = {
@@ -22,37 +23,22 @@ const dropIn = {
   },
 };
 
-export const Modal = ({ handleClose, text, type }: { handleClose: any, text: string, type: any }) => {
+export const Modal = ({ fecharModal, template }: { fecharModal: any, text?: string, template?: any }) => {
   return (
-    <Backdrop onClick={handleClose}>
-    {/* <Backdrop onClick={handleClose}> */}
+    <Backdrop onClick={fecharModal}>
       <motion.div
-        onClick={(e) => e.stopPropagation()}  // Prevent click from closing modal
+        onClick={(e) => e.stopPropagation()}
         className="modal"
         variants={dropIn}
         initial="hidden"
         animate="visible"
         exit="exit"
       >
-        <ModalText text={text} />
-        <ModalButton onClick={handleClose} label="Close" />
+        {template}
       </motion.div>
-
-    {/* </Backdrop> */}
     </Backdrop>
   );
 };
-
-const ModalText = ({ text }: { text: string }) => (
-  <div className="modal-text">
-    <h3>{text}</h3>
-    <h5>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius laboriosam labore, totam
-      expedita voluptates tempore asperiores sequi, alias cum veritatis, minima dolor iste similique
-      eos id. Porro, culpa? Officiis, placeat?
-    </h5>
-  </div>
-);
 
 const ModalButton = ({ onClick, label }: { onClick: any, label: any }) => (
   <motion.button
