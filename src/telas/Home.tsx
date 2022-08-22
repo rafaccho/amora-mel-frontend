@@ -347,13 +347,13 @@ export function Home() {
                                     <div className="flex justify-between">
                                         <h1 className="t-2 ml-3">Itens pedido {uuidPedidoExibicao.split('-')[0]}</h1>
 
-                                        {/* <Button titulo="Voltar" className="relative bottom-0 botao-azul-1"
-                                            onClick={() => {
-                                                queryClient.removeQueries([['pedido-exibicao', `pedido=${uuidPedidoExibicao}`], 'pedido-exibicao', `pedido=${uuidPedidoExibicao}`])
-                                                exibicaoItensPedidoModal.current?.classList.remove("hidden")
-                                                exibicaoPedidosModal.current?.classList.add("hidden")
-                                            }}
-                                        /> */}
+                                        {
+                                            false &&
+                                            <Button titulo="Finalizar" className="relative bottom-0 botao-azul-1"
+                                                onClick={() => {
+                                                }}
+                                            />
+                                        }
                                     </div>
 
                                     <div className="shadow rounded-lg mt-10 overflow-auto">
@@ -362,16 +362,21 @@ export function Home() {
                                             <thead className="bg-blue-200">
                                                 <tr>
                                                     <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Produto</th>
-                                                    <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Quantidade</th>
+                                                    <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Quantidade</th>
+                                                    <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Comprado</th>
                                                 </tr>
                                             </thead>
 
                                             <tbody className="bg-white divide-y divide-blue-900">
                                                 {
                                                     dadosPedidoExibicao?.data.results.map((pedido: PedidoItem) => (
-                                                        <motion.tr key={pedido.uuid} className="bg-blue-200 text-blue-900 font-medium cursor-pointer" >
+                                                        <motion.tr key={pedido.uuid} className="bg-blue-200 text-blue-900 font-medium" >
                                                             <td className="coluna-grid text-left">{pedido.produto}</td>
-                                                            <td className="coluna-grid text-left">{pedido.quantidade}</td>
+                                                            <td className="coluna-grid text-center">{pedido.quantidade}</td>
+                                                            <td className="coluna-grid flex justify-start cursor-pointer" onClick={() => {
+                                                                const input = document.querySelector("#`produto-${pedido.produto}-comprado`") as HTMLInputElement
+                                                                if( input ) input.checked = !input.checked
+                                                            }}><input className="cursor-pointer" id={`produto-${pedido.produto}-comprado`} type="checkbox" /></td>
                                                         </motion.tr>
                                                     ))
                                                 }
