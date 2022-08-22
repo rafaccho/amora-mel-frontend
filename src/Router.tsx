@@ -163,7 +163,7 @@ export function Router() {
                     <Route path="estoques/*">
                         <Route index element={
                             <Painel
-                                titulo="Produtos em Estoque"
+                                titulo="Estoque"
                                 grid={{
                                     exibicaoDadosConfig: [
                                         { coluna: 'Produto', chaveApi: 'produto' },
