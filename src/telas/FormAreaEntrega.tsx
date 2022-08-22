@@ -37,7 +37,7 @@ export function FormAreaEntrega() {
     const navigate = useNavigate()
 
     const { data: dadosAreaEntrega, status: statusAreaEntrega } = useQuery(
-        'areaEntrega',
+        ['areaEntrega', uuidEdit],
         () => umRegistro(uuidEdit ? uuidEdit : uuid),
         { enabled: uuidEdit !== undefined }
     )

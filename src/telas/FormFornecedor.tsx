@@ -35,7 +35,7 @@ export function FormFornecedor() {
     const navigate = useNavigate()
 
     const { data: dadosAreaEntrega, status: statusAreaEntrega } = useQuery(
-        'fornecedor',
+        ['fornecedor', uuidEdit],
         () => umRegistro(uuidEdit ? uuidEdit : uuid),
         { enabled: uuidEdit !== undefined }
     )

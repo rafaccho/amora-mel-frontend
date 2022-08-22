@@ -28,7 +28,7 @@ export function FormEstoque() {
     const navigate = useNavigate()
 
     const { data: dadosEstoque, status: statusEstoque } = useQuery(
-        'estoque',
+        ['estoque', uuidEdit],
         () => umRegistro(uuidEdit ? uuidEdit : uuid),
         { enabled: uuidEdit !== undefined }
     )

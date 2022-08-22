@@ -49,7 +49,7 @@ export function FormPedidos() {
     const { criarRegistro, editarRegistro, umRegistro, todosRegistros, deletarRegistro } = useBackend('pedidos')
 
     const { data: dadosProdutos, status: statusProdutos, isRefetching: refreshingProdutos } = useQuery('produtos', () => todosRegistros('produtos'))
-    const { data: dadosPedido, status: statusPedido } = useQuery('pedido', () => umRegistro(uuidEdit ? uuidEdit : uuid), { enabled: uuidEdit !== undefined })
+    const { data: dadosPedido, status: statusPedido } = useQuery(['pedido', uuidEdit], () => umRegistro(uuidEdit ? uuidEdit : uuid), { enabled: uuidEdit !== undefined })
     const { data: dadosItensPedidos, status: statusItensPedidos, isRefetching: refreshingItensPedido } = useQuery(['produtos-pedido', `pedido=${uuid}`], () => todosRegistros("pedidos_itens", `pedido=${uuid}`), { enabled: uuid !== "" })
 
     const mutation = useMutation(() => uuidEdit ? editarRegistro(uuid, dados) : criarRegistro(dados), {

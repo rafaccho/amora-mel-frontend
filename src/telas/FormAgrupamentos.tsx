@@ -26,7 +26,7 @@ export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
     const navigate = useNavigate()
 
     const { data: dadosAgrupamento, status: statusAgrupamento } = useQuery(
-        props.entidade === "G" ? 'grupo' : "subgrupo",
+        [props.entidade === "G" ? 'grupo' : "subgrupo", uuidEdit],
         () => umRegistro(uuidEdit ? uuidEdit : uuid),
         { enabled: uuidEdit !== undefined }
     )
