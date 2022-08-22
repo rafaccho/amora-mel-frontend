@@ -12,12 +12,12 @@ import { Button } from "../tags";
 
 export function Home() {
     const [uuidPedidoExibicao, setUuidPedidoExibicao] = useState('');
-    
+
     const [modalAberto, setModalAberto] = useState(false);
     const [modalPedidosAberto, setModalPedidosAberto] = useState(false);
     const [modalEstoqueAberto, setModalEstoqueAberto] = useState(false);
     const [modalComprasAberto, setModalComprasAberto] = useState(false);
-    const [andamentoPedidoAberto, setAndamentoPedidoAberto] = useState(false);
+    const [modalAndamentoPedidoAberto, setModalAndamentoPedidoAberto] = useState(false);
 
     const [pedidosEmitidos, setPedidosEmitidos] = useState<Pedido[]>([])
     const [pedidosAbertos, setPedidosAbertos] = useState<Pedido[]>([])
@@ -73,7 +73,7 @@ export function Home() {
     const abrirFecharModalPedidos = () => setModalPedidosAberto(!modalPedidosAberto)
     const abrirFecharModalEstoque = () => setModalEstoqueAberto(!modalEstoqueAberto)
     const abrirFecharModalCompras = () => setModalComprasAberto(!modalComprasAberto)
-    const abrirFecharModalAndamentoPedidoAberto = () => setAndamentoPedidoAberto(!andamentoPedidoAberto)
+    const abrirFecharModalAndamentoPedidoAberto = () => setModalAndamentoPedidoAberto(!modalAndamentoPedidoAberto)
 
     const badgesStatus = {
         "E": <span className="p-1 rounded-lg bg-yellow-200 font-bold text-yellow-900">Emitido</span>,
@@ -123,7 +123,22 @@ export function Home() {
                             <tbody className="bg-white divide-y divide-blue-900">
                                 {
                                     dadosPedidosEmitidos?.data.results.map((pedido: Pedido) => (
-                                        <motion.tr key={pedido.uuid} className="bg-blue-200 text-blue-900 font-medium cursor-pointer" onClick={() => abrirFecharModal()}>
+                                        <motion.tr key={pedido.uuid} className="bg-blue-200 text-blue-900 font-medium cursor-pointer"
+                                            onClick={async () => {
+                                                abrirFecharModalAndamentoPedidoAberto()
+
+                                                setUuidPedidoExibicao(pedido.uuid)
+                                                const requisicao = toast.loading(`Buscando dados pedido ${pedido.uuid.split('-')[0]}`)
+                                                await refreshPedidoExibicao()
+
+                                                toast.update(requisicao, {
+                                                    type: 'success',
+                                                    render: 'Dados carregados!',
+                                                    ...DEFAULT_TOAST_CONFIG
+                                                })
+
+                                            }}
+                                        >
                                             <td className="coluna-grid">{badgesStatus[pedido.status]}</td>
                                             <td className="coluna-grid text-right">{pedido.data_criacao.split('-').reverse().join('/')}</td>
                                             <td className="coluna-grid truncate"><span className="w-12 trucante">{pedido.uuid}</span></td>
@@ -324,9 +339,47 @@ export function Home() {
 
                 <div id="modal-andamento-pedido" className="flex flex-col items-center justify-center">
                     {
-                        modalComprasAberto &&
-                        <Modal fecharModal={abrirFecharModalCompras} template={
+                        modalAndamentoPedidoAberto &&
+                        <Modal fecharModal={abrirFecharModalAndamentoPedidoAberto} template={
                             <div>
+
+                                <div className="h-full">
+                                    <div className="flex justify-between">
+                                        <h1 className="t-2 ml-3">Itens pedido {uuidPedidoExibicao.split('-')[0]}</h1>
+
+                                        {/* <Button titulo="Voltar" className="relative bottom-0 botao-azul-1"
+                                            onClick={() => {
+                                                queryClient.removeQueries([['pedido-exibicao', `pedido=${uuidPedidoExibicao}`], 'pedido-exibicao', `pedido=${uuidPedidoExibicao}`])
+                                                exibicaoItensPedidoModal.current?.classList.remove("hidden")
+                                                exibicaoPedidosModal.current?.classList.add("hidden")
+                                            }}
+                                        /> */}
+                                    </div>
+
+                                    <div className="shadow rounded-lg mt-10 overflow-auto">
+                                        <table className="min-w-full divide-y divide-blue-900">
+
+                                            <thead className="bg-blue-200">
+                                                <tr>
+                                                    <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Produto</th>
+                                                    <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Quantidade</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody className="bg-white divide-y divide-blue-900">
+                                                {
+                                                    dadosPedidoExibicao?.data.results.map((pedido: PedidoItem) => (
+                                                        <motion.tr key={pedido.uuid} className="bg-blue-200 text-blue-900 font-medium cursor-pointer" >
+                                                            <td className="coluna-grid text-left">{pedido.produto}</td>
+                                                            <td className="coluna-grid text-left">{pedido.quantidade}</td>
+                                                        </motion.tr>
+                                                    ))
+                                                }
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div>
 
                             </div>
                         }
