@@ -100,8 +100,8 @@ export function Home() {
 
             <div className="w-full flex gap-5 justify-end mt-8">
                 <Button titulo="Pedidos" className="botao-azul-1" onClick={abrirFecharModalPedidos} />
-                <Button titulo="Estoque" className="botao-azul-1" onClick={abrirFecharModalEstoque} />
-                <Button titulo="Compras" className="botao-azul-1" onClick={abrirFecharModalCompras} />
+                {/* <Button titulo="Estoque" className="botao-azul-1" onClick={abrirFecharModalEstoque} /> */}
+                {/* <Button titulo="Compras" className="botao-azul-1" onClick={abrirFecharModalCompras} /> */}
             </div>
 
             <div className="grid grid-cols-12 gap-8 mt-12">
