@@ -19,16 +19,32 @@ export function Grid(props: {
     refresh?: () => void,
     naoExibirCodigo?: boolean,
 }) {
-    const [ filtros, setFiltros ] = useState('')
+    const [ filtro, setFiltro ] = useState('')
     const [ paginalAtual, setPaginalAtual ] = useState(1)
-    const [ totalPaginas, setTotalPaginas ] = useState('')
+    const [ totalPaginas, setTotalPaginas ] = useState(0)
     
     const navigate = useNavigate()
+
     const { todosRegistros } = useBackend(props.requisicaoConfig.endpoint)
-    const query = useQuery([props.requisicaoConfig.endpoint, props.requisicaoConfig.filtros], () => todosRegistros(undefined, props.requisicaoConfig.filtros))
+    const {
+        data,
+        refetch
+    } = useQuery(
+        [props.requisicaoConfig.endpoint, props.requisicaoConfig.filtros || '', `&search=${filtro}`],
+        () => todosRegistros(undefined, props.requisicaoConfig.filtros ? props.requisicaoConfig.filtros + `&search=${filtro}` : /* queryClient.invalidateQueries([props.endpoint])
+        props.refresh()
+        const requisicao = toast.loading(`Pesquisando...`)
+
+        toast.update(requisicao, {
+            type: 'success',
+            render: 'Dados atualizados!',
+            ...DEFAULT_TOAST_CONFIG
+        }) */'' + `&search=${filtro}`),
+    )
+
 
     function calcularQuantidadePaginas() {
-        const dadosResponse = query.data?.data as BackendResponse
+        const dadosResponse = data?.data as BackendResponse
         let quantidadeTotalPaginas;
 
         if(dadosResponse) {
@@ -43,8 +59,12 @@ export function Grid(props: {
 
     return (
         <div id={`grid-${props.requisicaoConfig.endpoint}`} className="w-full">
+
             <Filtros
-                refresh={props.refresh}
+                refresh={refetch}
+                endpoint={props.requisicaoConfig.endpoint}
+                filtro={filtro}
+                setFiltro={setFiltro}
             />
 
             <div className="my-8" />
@@ -74,7 +94,7 @@ export function Grid(props: {
 
                                 <tbody className="bg-white divide-y divide-blue-900">
                                     {
-                                        query.data?.data.results.map((registro: any) => (
+                                        data?.data.results.map((registro: any) => (
                                             <motion.tr key={registro.uuid} className="bg-blue-200 cursor-pointer"
                                                 whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }} 
                                                 onClick={() => navigate(`editar/${registro.uuid}/`)}
@@ -109,7 +129,7 @@ export function Grid(props: {
             <div className="grid grid-cols-12">
                 <div className="col-span-12 flex justify-center md:justify-end gap-14">
                     <Button className="botao-azul-1 w-24 flex justify-center pt-3" titulo={<AiOutlineArrowLeft />} />
-                    <span className='font-bold font-sans text-blue-700'>{paginalAtual} de {calcularQuantidadePaginas()}</span>
+                    <span className='font-bold font-sans text-blue-700'>{paginalAtual} de {calcularQuantidadePaginas() || 0}</span>
                     <Button className="botao-azul-1 w-24 flex justify-center pt-3" titulo={<AiOutlineArrowRight />} />
                 </div>
             </div>
