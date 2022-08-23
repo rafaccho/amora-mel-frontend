@@ -70,10 +70,9 @@ export interface Agrupamento extends Base {
 }
 
 export interface ProdutoAbaixoEstoqueMinimo extends Base {
-    codigo: string
-    nome: string
-    descricao: string
-    grupo: string
+    produto: string
+    estoque_minimo: string
+    em_estoque: string
 }
 
 /*  */
