@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { Modal } from "../componentes/Modal";
 import { DEFAULT_TOAST_CONFIG } from "../constantes";
 import { useBackend } from "../hooks/useBackend";
-import { Pedido, PedidoItem } from "../interfaces";
+import { Pedido, PedidoItem, ProdutoAbaixoEstoqueMinimo } from "../interfaces";
 import { Button } from "../tags";
 
 export function Home() {
@@ -22,6 +22,7 @@ export function Home() {
     const [pedidosEmitidos, setPedidosEmitidos] = useState<Pedido[]>([])
     const [pedidosAbertos, setPedidosAbertos] = useState<Pedido[]>([])
     const [itensExbicao, setItensExbicao] = useState<PedidoItem[]>([])
+    const [produtosAbaixoEstoqueMinimo, setProdutosAbaixoEstoqueMinimo] = useState<ProdutoAbaixoEstoqueMinimo[]>([])
 
 
     const exibicaoPedidosModal = useRef<HTMLDivElement>(null)
@@ -38,20 +39,42 @@ export function Home() {
         () => todosRegistros(undefined, `status=E`)
     )
 
-    const { data: dadosPedidosAbertos, status: statusPedidosAbertos, refetch: refreshPedidosAbertos } = useQuery(
+    const {
+        data: dadosPedidosAbertos,
+        status: statusPedidosAbertos,
+        refetch: refreshPedidosAbertos
+    } = useQuery(
         'pedidos-abertos',
         () => todosRegistros(undefined, `status=A`)
     )
 
-    const { data: dadosPedidosCancelados, status: statusPedidosCancelados, refetch: refreshPedidosCancelados } = useQuery(
+    const {
+        data: dadosPedidosCancelados,
+        status: statusPedidosCancelados,
+        refetch: refreshPedidosCancelados
+    } = useQuery(
         'pedidos-cancelados',
         () => todosRegistros(undefined, `status=C`)
     )
 
-    const { data: dadosPedidoExibicao, status: statusPedidoExibicao, refetch: refreshPedidoExibicao, isRefetching: estaRefreshingPedidoExibicao } = useQuery(
+    const {
+        data: dadosPedidoExibicao, status: statusPedidoExibicao,
+        refetch: refreshPedidoExibicao,
+        isRefetching: estaRefreshingPedidoExibicao
+    } = useQuery(
         ['pedido-exibicao', `pedido=${uuidPedidoExibicao}`],
         () => todosRegistros("pedidos_itens", `pedido=${uuidPedidoExibicao}`),
         { enabled: uuidPedidoExibicao != '' }
+    )
+
+    const {
+        data: dadosProdutosAbaixoEstoqueMinimo,
+        status: statusProdutosAbaixoEstoqueMinimo,
+        refetch: refreshProdutosAbaixoEstoqueMinimo,
+        isRefetching: estaRefreshingProdutosAbaixoEstoqueMinimo
+    } = useQuery(
+        ['produtos-abaixo-estoque-minimo'],
+        () => todosRegistros("produtos_abaixo_estoque_minimo"),
     )
 
     const { mutate: emitirPedido } = useMutation((uuid: string) => editarRegistro(uuid, { status: "E" }), {
@@ -94,13 +117,17 @@ export function Home() {
         statusPedidoExibicao === "success" && setItensExbicao(dadosPedidosEmitidos!.data.results as PedidoItem[])
     }, [statusPedidoExibicao, estaRefreshingPedidoExibicao, uuidPedidoExibicao])
 
+    useEffect(() => {
+        statusProdutosAbaixoEstoqueMinimo === "success" && setProdutosAbaixoEstoqueMinimo(dadosProdutosAbaixoEstoqueMinimo!.data.results as ProdutoAbaixoEstoqueMinimo[])
+    }, [statusProdutosAbaixoEstoqueMinimo, estaRefreshingProdutosAbaixoEstoqueMinimo])
+
     return (
         <div className="p-5">
             <h1 className="t-1">Home</h1>
 
             <div className="w-full flex gap-5 justify-end mt-8">
                 <Button titulo="Pedidos" className="botao-azul-1" onClick={abrirFecharModalPedidos} />
-                {/* <Button titulo="Estoque" className="botao-azul-1" onClick={abrirFecharModalEstoque} /> */}
+                <Button titulo="Estoque" className="botao-azul-1" onClick={abrirFecharModalEstoque} />
                 {/* <Button titulo="Compras" className="botao-azul-1" onClick={abrirFecharModalCompras} /> */}
             </div>
 
@@ -317,7 +344,53 @@ export function Home() {
                         modalEstoqueAberto &&
                         <Modal fecharModal={abrirFecharModalEstoque} template={
                             <div>
+                                <h1 className="t-2 ml-3">Produtos abaixo do estoque mínimo</h1>
 
+                                <div className="flex justify-end">
+                                    <Button titulo="Atualizar" className="mt-10 md:mt-0 relative bottom-0 botao-azul-1"
+                                        onClick={async () => {
+                                            const requisicao = toast.loading(`Atualizando...`)
+
+                                            await refreshProdutosAbaixoEstoqueMinimo()
+
+                                            toast.update(requisicao, {
+                                                type: 'success',
+                                                render: 'Dados atualizados!',
+                                                ...DEFAULT_TOAST_CONFIG
+                                            })
+                                        }}
+                                    />
+                                </div>
+
+                                <div className="shadow rounded-lg mt-10 overflow-auto">
+                                    <table ref={tabelaPedidosAbertos} className="min-w-full divide-y divide-blue-900">
+
+                                        <thead className="bg-blue-200">
+                                            <tr>
+                                                <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Nome</th>
+                                                <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Estoque mínimo</th>
+                                                <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Em estoque</th>
+                                                {/* <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Identificador</th> */}
+                                            </tr>
+                                        </thead>
+
+                                        <tbody className="bg-white divide-y divide-blue-900">
+                                            {
+                                                produtosAbaixoEstoqueMinimo.map((produtoEstoque: ProdutoAbaixoEstoqueMinimo) => {
+                                                    console.log(produtoEstoque)
+                                                    return (
+                                                        <motion.tr key={produtoEstoque.uuid} className="bg-blue-200 text-blue-900 font-medium" /* whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }} */>
+                                                            <td className="coluna-grid">{produtoEstoque.produto}</td>
+                                                            <td className="coluna-grid">{produtoEstoque.estoque_minimo}</td>
+                                                            <td className="coluna-grid">{produtoEstoque.em_estoque}</td>
+                                                        </motion.tr>
+                                                    )
+                                                })
+                                            }
+                                        </tbody>
+
+                                    </table>
+                                </div>
                             </div>
                         }
                         />
@@ -376,7 +449,7 @@ export function Home() {
                                                             <td className="coluna-grid text-center">{pedido.quantidade}</td>
                                                             <td className="coluna-grid flex justify-start cursor-pointer" onClick={() => {
                                                                 const input = document.querySelector("#`produto-${pedido.produto}-comprado`") as HTMLInputElement
-                                                                if( input ) input.checked = !input.checked
+                                                                if (input) input.checked = !input.checked
                                                             }}><input className="cursor-pointer" id={`produto-${pedido.produto}-comprado`} type="checkbox" /></td>
                                                         </motion.tr>
                                                     ))
