@@ -8,7 +8,7 @@ import { useBackend } from "../../hooks/useBackend"
 import { Button } from '../../tags'
 import { Endpoint } from "../../tipos"
 import { BackendResponse, ExibicaoDadoGridConfig } from "../../interfaces";
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export function Grid(props: {
     exibicaoDadosConfig: ExibicaoDadoGridConfig[],
@@ -23,7 +23,10 @@ export function Grid(props: {
     const [ paginalAtual, setPaginalAtual ] = useState(1)
     const [ totalPaginas, setTotalPaginas ] = useState(0)
     
+    const inputFiltro = useRef<HTMLInputElement>(null)
+    
     const navigate = useNavigate()
+    const location = useLocation()
 
     const { todosRegistros } = useBackend(props.requisicaoConfig.endpoint)
     const {
@@ -31,17 +34,8 @@ export function Grid(props: {
         refetch
     } = useQuery(
         [props.requisicaoConfig.endpoint, props.requisicaoConfig.filtros || '', `&search=${filtro}`],
-        () => todosRegistros(undefined, props.requisicaoConfig.filtros ? props.requisicaoConfig.filtros + `&search=${filtro}` : /* queryClient.invalidateQueries([props.endpoint])
-        props.refresh()
-        const requisicao = toast.loading(`Pesquisando...`)
-
-        toast.update(requisicao, {
-            type: 'success',
-            render: 'Dados atualizados!',
-            ...DEFAULT_TOAST_CONFIG
-        }) */'' + `&search=${filtro}`),
+        () => todosRegistros(undefined, props.requisicaoConfig.filtros ? props.requisicaoConfig.filtros + `&search=${filtro}` : `&search=${filtro}`),
     )
-
 
     function calcularQuantidadePaginas() {
         const dadosResponse = data?.data as BackendResponse
@@ -57,6 +51,11 @@ export function Grid(props: {
         return quantidadeTotalPaginas
     }
 
+    useEffect(() => {
+        setFiltro('')
+        if( inputFiltro.current ) inputFiltro.current.value = ''
+    }, [location.pathname])
+
     return (
         <div id={`grid-${props.requisicaoConfig.endpoint}`} className="w-full">
 
@@ -65,6 +64,7 @@ export function Grid(props: {
                 endpoint={props.requisicaoConfig.endpoint}
                 filtro={filtro}
                 setFiltro={setFiltro}
+                refInputFiltro={inputFiltro}
             />
 
             <div className="my-8" />
