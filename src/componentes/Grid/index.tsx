@@ -22,10 +22,6 @@ export function Grid(props: {
     naoExibirCodigo?: boolean,
 }) {
     const [filtroInput, setFiltroInput] = useState('')
-    const [filtroTotal, setFiltroTotal] = useState('')
-    const [endpoint, setEndpoint] = useState('')
-    const [endpointProximo, setEndpointProximo] = useState<string | null>('1')
-    const [paginaAnterior, setPaginaAnterior] = useState<string | null>(null)
     const [paginalAtual, setPaginalAtual] = useState(1)
     const [pagina, setPagina] = useState('1')
 
@@ -41,7 +37,7 @@ export function Grid(props: {
         data,
         refetch
     } = useQuery(
-        [endpoint, filtro],
+        [props.requisicaoConfig.endpoint, filtro],
         () => todosRegistros(undefined, filtro),
     )
 
@@ -50,7 +46,7 @@ export function Grid(props: {
         let quantidadeTotalPaginas;
 
         if (dadosResponse) {
-            const divisao = dadosResponse.count / 1 // / 8
+            const divisao = dadosResponse.count / 8
 
             if (divisao < 1) quantidadeTotalPaginas = 1
             else if (divisao % 1 === 0) quantidadeTotalPaginas = divisao
@@ -61,20 +57,8 @@ export function Grid(props: {
 
     useEffect(() => {
         setFiltroInput('')
-        setEndpoint(props.requisicaoConfig.endpoint)
         if (inputFiltro.current) inputFiltro.current.value = ''
     }, [location.pathname])
-
-    useEffect(() => {
-        if (data) {
-            const dados = data.data as BackendResponse
-            /* dados.previous && setPaginaAnterior(dados.previous?.split('?')[1])
-            dados.next && setEndpointProximo(dados.next?.split('?')[1])
-
-            dados.previous && console.log(dados.previous.split('?')[1])
-            dados.next && console.log(dados.next.split('?')[1]) */
-        }
-    }, [data])
 
     return (
         <div id={`grid-${props.requisicaoConfig.endpoint}`} className="w-full">
@@ -153,11 +137,8 @@ export function Grid(props: {
                             if (paginalAtual === 1 || !numPagina) return toast.warn('Você está na primeira página', DEFAULT_TOAST_CONFIG)
                             if (numPagina) {
                                 setPaginalAtual(paginalAtual - 1)
-                                try {
-                                    setPagina(numPagina.split('?')[1].match(/\d/)[0])
-                                } catch (e) {
-                                    setPagina('1')
-                                }
+                                try { setPagina(numPagina.split('?')[1].match(/\d/)[0]) }
+                                catch (e) { setPagina('1') }
                             }
                         }}
                     />
