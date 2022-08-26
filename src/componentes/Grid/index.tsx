@@ -9,6 +9,8 @@ import { Button } from '../../tags'
 import { Endpoint } from "../../tipos"
 import { BackendResponse, ExibicaoDadoGridConfig } from "../../interfaces";
 import { useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify'
+import { DEFAULT_TOAST_CONFIG } from '../../constantes'
 
 export function Grid(props: {
     exibicaoDadosConfig: ExibicaoDadoGridConfig[],
@@ -19,30 +21,36 @@ export function Grid(props: {
     refresh?: () => void,
     naoExibirCodigo?: boolean,
 }) {
-    const [ filtro, setFiltro ] = useState('')
-    const [ paginalAtual, setPaginalAtual ] = useState(1)
-    const [ totalPaginas, setTotalPaginas ] = useState(0)
-    
+    const [filtroInput, setFiltroInput] = useState('')
+    const [filtroTotal, setFiltroTotal] = useState('')
+    const [endpoint, setEndpoint] = useState('')
+    const [endpointProximo, setEndpointProximo] = useState<string | null>('1')
+    const [paginaAnterior, setPaginaAnterior] = useState<string | null>(null)
+    const [paginalAtual, setPaginalAtual] = useState(1)
+    const [pagina, setPagina] = useState('1')
+
     const inputFiltro = useRef<HTMLInputElement>(null)
-    
+
     const navigate = useNavigate()
     const location = useLocation()
+
+    let filtro = props.requisicaoConfig.filtros ? props.requisicaoConfig.filtros + `&search=${filtroInput}` : `page=${pagina}&search=${filtroInput}`
 
     const { todosRegistros } = useBackend(props.requisicaoConfig.endpoint)
     const {
         data,
         refetch
     } = useQuery(
-        [props.requisicaoConfig.endpoint, props.requisicaoConfig.filtros || '', `&search=${filtro}`],
-        () => todosRegistros(undefined, props.requisicaoConfig.filtros ? props.requisicaoConfig.filtros + `&search=${filtro}` : `&search=${filtro}`),
+        [endpoint, filtro],
+        () => todosRegistros(undefined, filtro),
     )
 
     function calcularQuantidadePaginas() {
         const dadosResponse = data?.data as BackendResponse
         let quantidadeTotalPaginas;
 
-        if(dadosResponse) {
-            const divisao = dadosResponse.count / 8
+        if (dadosResponse) {
+            const divisao = dadosResponse.count / 1 // / 8
 
             if (divisao < 1) quantidadeTotalPaginas = 1
             else if (divisao % 1 === 0) quantidadeTotalPaginas = divisao
@@ -52,9 +60,21 @@ export function Grid(props: {
     }
 
     useEffect(() => {
-        setFiltro('')
-        if( inputFiltro.current ) inputFiltro.current.value = ''
+        setFiltroInput('')
+        setEndpoint(props.requisicaoConfig.endpoint)
+        if (inputFiltro.current) inputFiltro.current.value = ''
     }, [location.pathname])
+
+    useEffect(() => {
+        if (data) {
+            const dados = data.data as BackendResponse
+            /* dados.previous && setPaginaAnterior(dados.previous?.split('?')[1])
+            dados.next && setEndpointProximo(dados.next?.split('?')[1])
+
+            dados.previous && console.log(dados.previous.split('?')[1])
+            dados.next && console.log(dados.next.split('?')[1]) */
+        }
+    }, [data])
 
     return (
         <div id={`grid-${props.requisicaoConfig.endpoint}`} className="w-full">
@@ -62,8 +82,8 @@ export function Grid(props: {
             <Filtros
                 refresh={refetch}
                 endpoint={props.requisicaoConfig.endpoint}
-                filtro={filtro}
-                setFiltro={setFiltro}
+                filtro={filtroInput}
+                setFiltro={setFiltroInput}
                 refInputFiltro={inputFiltro}
             />
 
@@ -96,13 +116,13 @@ export function Grid(props: {
                                     {
                                         data?.data.results.map((registro: any) => (
                                             <motion.tr key={registro.uuid} className="bg-blue-200 cursor-pointer"
-                                                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }} 
+                                                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }}
                                                 onClick={() => navigate(`editar/${registro.uuid}/`)}
                                             >
 
                                                 <td className="coluna-grid" />
                                                 <td className="coluna-grid truncate">{registro.uuid}</td>
-                                                { props.naoExibirCodigo && <td className="coluna-grid truncate">{registro.codigo}</td> }
+                                                {props.naoExibirCodigo && <td className="coluna-grid truncate">{registro.codigo}</td>}
 
                                                 {
                                                     props.exibicaoDadosConfig.map((dadoExibicao: ExibicaoDadoGridConfig) => (
@@ -111,7 +131,6 @@ export function Grid(props: {
                                                         </td>
                                                     ))
                                                 }
-
                                             </motion.tr>
                                         ))
                                     }
@@ -128,9 +147,31 @@ export function Grid(props: {
 
             <div className="grid grid-cols-12">
                 <div className="col-span-12 flex justify-center md:justify-end gap-14">
-                    <Button className="botao-azul-1 w-24 flex justify-center pt-3" titulo={<AiOutlineArrowLeft />} />
+                    <Button className="botao-azul-1 w-24 flex justify-center pt-3" titulo={<AiOutlineArrowLeft />}
+                        onClick={() => {
+                            const numPagina = data?.data.previous
+                            if (paginalAtual === 1 || !numPagina) return toast.warn('Você está na primeira página', DEFAULT_TOAST_CONFIG)
+                            if (numPagina) {
+                                setPaginalAtual(paginalAtual - 1)
+                                try {
+                                    setPagina(numPagina.split('?')[1].match(/\d/)[0])
+                                } catch (e) {
+                                    setPagina('1')
+                                }
+                            }
+                        }}
+                    />
                     <span className='font-bold font-sans text-blue-700'>{paginalAtual} de {calcularQuantidadePaginas() || 0}</span>
-                    <Button className="botao-azul-1 w-24 flex justify-center pt-3" titulo={<AiOutlineArrowRight />} />
+                    <Button className="botao-azul-1 w-24 flex justify-center pt-3" titulo={<AiOutlineArrowRight />}
+                        onClick={() => {
+                            const numPagina = data?.data.next
+                            if (paginalAtual === calcularQuantidadePaginas() || !numPagina) return toast.warn('Você está na última página', DEFAULT_TOAST_CONFIG)
+                            if (numPagina) {
+                                setPaginalAtual(paginalAtual + 1)
+                                setPagina(numPagina.split('?')[1].match(/\d/)[0])
+                            }
+                        }}
+                    />
                 </div>
             </div>
 
