@@ -67,7 +67,7 @@ export function FormEstoque() {
             const dados = dadosEstoque.data as Pedido
 
             setUuid(dados.uuid)
-            setProduto(dados.produto)
+            setProduto(dados.produto.uuid)
             setQuantidade(`${dados.quantidade}`)
         }
     }
@@ -143,7 +143,7 @@ export function FormEstoque() {
 
                         <div className="col-span-8 md:col-span-3">
                             <label>Produto <i className="text-rose-700">*</i></label>
-                            <select name="fornecedor" id="uf" value={produto} onChange={e => setProduto(e.target.value)} required>
+                            <select name="produto" id="produto" value={produto} onChange={e => setProduto(e.target.value)} required>
                                 <option value="">
                                     {
                                         statusProdutos === "loading"

@@ -53,7 +53,7 @@ export function VisualizacaoPedido() {
                                         dadosPedido?.data.results.map((pedido: Pedido) => (
                                             <motion.tr key={pedido.uuid} className="bg-blue-200 text-blue-900 font-medium cursor-pointer" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }} onClick={abrirFecharModal}>
                                                 <td className="coluna-grid"><span className="p-1 rounded-lg bg-green-200 font-bold text-green-900">Sim</span></td>
-                                                <td className="coluna-grid text-right">{pedido.produto}</td>
+                                                <td className="coluna-grid text-right">{pedido.produto.nome}</td>
                                                 <td className="coluna-grid truncate"><span className="w-12 trucante">{pedido.quantidade}</span></td>
                                             </motion.tr>
                                         ))
@@ -62,7 +62,7 @@ export function VisualizacaoPedido() {
                                         dadosPedido?.data.results.map((pedido: Pedido) => (
                                             <motion.tr key={pedido.uuid} className="bg-blue-200 text-blue-900 font-medium cursor-pointer" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }} onClick={abrirFecharModal}>
                                                 <td className="coluna-grid"><span className="p-1 rounded-lg bg-rose-200 font-bold text-rose-900">Não</span></td>
-                                                <td className="coluna-grid text-right">{pedido.produto}</td>
+                                                <td className="coluna-grid text-right">{pedido.produto.nome}</td>
                                                 <td className="coluna-grid truncate"><span className="w-12 trucante">{pedido.quantidade}</span></td>
                                             </motion.tr>
                                         ))

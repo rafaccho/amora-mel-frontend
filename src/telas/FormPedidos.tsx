@@ -272,12 +272,12 @@ export function FormPedidos() {
                                     itensPedido.map((itemPedido: PedidoItem, index: number) => (
                                         <tr key={itemPedido.uuid} className="bg-blue-200 cursor-pointer">
                                             <td className="coluna-grid truncate">{index}</td>
-                                            <td className="coluna-grid">{itemPedido.produto}</td>
+                                            <td className="coluna-grid">{'itemPedido.produto'}</td>
                                             <td className="coluna-grid">{itemPedido.quantidade}</td>
                                             <td className="coluna-grid"
                                                 onClick={() => {
                                                     setUuidItemPedido(itemPedido.uuid)
-                                                    setProduto(itemPedido.produto)
+                                                    setProduto(itemPedido.produto.nome)
                                                     setQuantidade(itemPedido.quantidade)
                                                 }}
                                             >Editar</td>

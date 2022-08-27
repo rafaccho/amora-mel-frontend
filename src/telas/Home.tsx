@@ -19,6 +19,9 @@ export function Home() {
     const [modalComprasAberto, setModalComprasAberto] = useState(false);
     const [modalAndamentoPedidoAberto, setModalAndamentoPedidoAberto] = useState(false);
 
+    const [produtoCompra, setProdutoCompra] = useState("");
+    const [precoProdutoCompra, setPrecoProdutoCompra] = useState("");
+
     const [pedidosEmitidos, setPedidosEmitidos] = useState<Pedido[]>([])
     const [pedidosAbertos, setPedidosAbertos] = useState<Pedido[]>([])
     const [itensExbicao, setItensExbicao] = useState<PedidoItem[]>([])
@@ -29,6 +32,8 @@ export function Home() {
     const exibicaoItensPedidoModal = useRef<HTMLDivElement>(null)
     const tabelaPedidosAbertos = useRef<HTMLTableElement>(null)
 
+    const inputs = useRef<HTMLDivElement>(null)
+    
 
     const { todosRegistros, umRegistro, editarRegistro } = useBackend('pedidos')
 
@@ -319,7 +324,7 @@ export function Home() {
                                                 {
                                                     dadosPedidoExibicao?.data.results.map((pedido: PedidoItem) => (
                                                         <motion.tr key={pedido.uuid} className="bg-blue-200 text-blue-900 font-medium cursor-pointer" >
-                                                            <td className="coluna-grid text-left">{pedido.produto}</td>
+                                                            <td className="coluna-grid text-left">{pedido.produto.nome}</td>
                                                             <td className="coluna-grid text-left">{pedido.quantidade}</td>
                                                         </motion.tr>
                                                     ))
@@ -380,7 +385,7 @@ export function Home() {
                                                     console.log(produtoEstoque)
                                                     return (
                                                         <motion.tr key={produtoEstoque.uuid} className="bg-blue-200 text-blue-900 font-medium" /* whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }} */>
-                                                            <td className="coluna-grid">{produtoEstoque.produto}</td>
+                                                            <td className="coluna-grid">{produtoEstoque.produto.nome}</td>
                                                             <td className="coluna-grid">{produtoEstoque.estoque_minimo}</td>
                                                             <td className="coluna-grid">{produtoEstoque.em_estoque}</td>
                                                         </motion.tr>
@@ -418,17 +423,58 @@ export function Home() {
                             <div>
 
                                 <div className="h-full">
-                                    <div className="flex justify-between">
+                                    <div className="flex justify-between mb-12">
                                         <h1 className="t-2 ml-3">Itens pedido {uuidPedidoExibicao.split('-')[0]}</h1>
 
-                                        {
-                                            false &&
-                                            <Button titulo="Finalizar" className="relative bottom-0 botao-azul-1"
+                                    </div>
+
+                                    <h1 className="t-3 ml-6">Realizar Compra</h1>
+
+                                    <div ref={inputs} className="inputs mt-12 ml-6">
+
+                                        <div className="col-span-6 lg:col-span-3">
+                                            <label>Produto</label>
+                                            <select value={produtoCompra} onChange={e => setProdutoCompra(e.target.value)} required>
+                                                <option value="">Selecione</option>
+                                                {
+                                                    dadosPedidoExibicao?.data.results.map((pedido: PedidoItem) => (
+                                                        <option value={pedido.produto.uuid}>{pedido.produto.nome}</option>
+                                                    ))
+                                                }
+                                            </select>
+                                        </div>
+
+                                        <div className="col-span-6 lg:col-span-2">
+                                            <label>Preço Compra</label>
+                                            <input type="input" className="text-end" value={precoProdutoCompra} onChange={e => setPrecoProdutoCompra(e.target.value)} required />
+                                        </div>
+
+                                        <div className="col-span-6 lg:col-span-1">
+                                            <Button titulo="Comprar" className="botao-azul-1 mt-6"
                                                 onClick={() => {
+                                                    const todosInputs = inputs.current!.querySelectorAll('input')
+                                                    const todosSelects = inputs.current!.querySelectorAll('select')
+                                            
+                                                    Array.from(todosInputs).forEach(input => {
+                                                        const inputEstaValido = input.checkValidity()
+                                                        !inputEstaValido ? input.classList.add('invalidado') : input.classList.remove('invalidado')
+                                                        return inputEstaValido
+                                                    })
+                                            
+                                                    Array.from(todosSelects).forEach(select => {
+                                                        const inputEstaValido = select.checkValidity()
+                                                        !inputEstaValido ? select.classList.add('invalidado') : select.classList.remove('invalidado')
+                                                        return inputEstaValido
+                                                    })
+
+                                                    if(!produtoCompra || !precoProdutoCompra) return toast.warn("Preencha todos os campos!", DEFAULT_TOAST_CONFIG)
                                                 }}
                                             />
-                                        }
+                                        </div>
+
                                     </div>
+
+                                    <div className="border-b-4 border-blue-900 mt-12" />
 
                                     <div className="shadow rounded-lg mt-10 overflow-auto">
                                         <table className="min-w-full divide-y divide-blue-900">
@@ -445,12 +491,12 @@ export function Home() {
                                                 {
                                                     dadosPedidoExibicao?.data.results.map((pedido: PedidoItem) => (
                                                         <motion.tr key={pedido.uuid} className="bg-blue-200 text-blue-900 font-medium" >
-                                                            <td className="coluna-grid text-left">{pedido.produto}</td>
+                                                            <td className="coluna-grid text-left">{pedido.produto.nome}</td>
                                                             <td className="coluna-grid text-center">{pedido.quantidade}</td>
                                                             <td className="coluna-grid flex justify-start cursor-pointer" onClick={() => {
-                                                                const input = document.querySelector("#`produto-${pedido.produto}-comprado`") as HTMLInputElement
+                                                                const input = document.querySelector(`#produto-${pedido.produto.uuid}-comprado`) as HTMLInputElement
                                                                 if (input) input.checked = !input.checked
-                                                            }}><input className="cursor-pointer" id={`produto-${pedido.produto}-comprado`} type="checkbox" /></td>
+                                                            }}><input className="cursor-pointer" id={`produto-${'pedido.produto'}-comprado`} type="checkbox" /></td>
                                                         </motion.tr>
                                                     ))
                                                 }
