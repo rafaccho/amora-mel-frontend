@@ -12,6 +12,7 @@ export function CabecalhoForm(props: {
             textoErro: string;
         },
         validarCampos: () => boolean,
+        mensagemFormInvalido?: string;
     }
 }) {
     return (
@@ -23,6 +24,7 @@ export function CabecalhoForm(props: {
                 onVoltar={props.botoesForm.onVoltar}
                 onDeletar={props.botoesForm.onDeletar}
                 validarCampos={props.botoesForm.validarCampos}
+                mensagemFormInvalido={props.botoesForm.mensagemFormInvalido}
             />
 
             <div className="mb-8 border-b-4 border-blue-900" />

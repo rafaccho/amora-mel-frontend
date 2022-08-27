@@ -82,7 +82,7 @@ export function Grid(props: {
 
                                 <thead className="bg-blue-200">
                                     <tr>
-                                        <th scope="col" className="px-6 py-3 text-left text-xs text-black font-extrabold uppercase tracking-wider whitespace-nowrap">Status</th>
+                                        {/* <th scope="col" className="px-6 py-3 text-left text-xs text-black font-extrabold uppercase tracking-wider whitespace-nowrap">Status</th> */}
                                         <th scope="col" className="px-6 py-3 text-left text-xs text-black font-extrabold uppercase tracking-wider whitespace-nowrap">Identificador</th>
 
                                         {
@@ -104,7 +104,7 @@ export function Grid(props: {
                                                 onClick={() => navigate(`editar/${registro.uuid}/`)}
                                             >
 
-                                                <td className="coluna-grid" />
+                                                {/* <td className="coluna-grid" /> */}
                                                 <td className="coluna-grid truncate">{registro.uuid}</td>
                                                 {props.naoExibirCodigo && <td className="coluna-grid truncate">{registro.codigo}</td>}
 

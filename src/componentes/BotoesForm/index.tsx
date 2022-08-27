@@ -15,6 +15,7 @@ export function BotoesForm(props: {
         textoErro: string;
     }
     validarCampos: () => boolean;
+    mensagemFormInvalido?: string;
 }) {
     const queryClient = useQueryClient()
     const navigate = useNavigate()
@@ -40,7 +41,7 @@ export function BotoesForm(props: {
     return (
         <div id="botoes" className="flex justify-end gap-3 my-12">
             <Button className="botao-azul-1" titulo="Salvar"
-                onClick={() => !props.validarCampos() ? toast.error('Preencha todos os campos', DEFAULT_TOAST_CONFIG) : props.onSalvar()}
+                onClick={() => !props.validarCampos() ? toast.error(props.mensagemFormInvalido ? props.mensagemFormInvalido : 'Preencha todos os campos', DEFAULT_TOAST_CONFIG) : props.onSalvar()}
             />
             <Button className="botao-azul-1" titulo="Deletar"
                 onClick={() => mutation.mutate()}

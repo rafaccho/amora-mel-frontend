@@ -4,22 +4,21 @@ import { useQueryClient, useMutation, useQuery } from 'react-query'
 import { toast } from "react-toastify";
 import { DEFAULT_TOAST_CONFIG } from "../constantes";
 import { useBackend } from "../hooks/useBackend";
-import { AreaEntrega, Pedido, PedidoItem, Produto } from "../interfaces";
+import { Pedido, PedidoItem, Produto } from "../interfaces";
 import { criarUrlVoltar } from "../utils/criarUrlVoltar";
 import { CabecalhoForm } from "../componentes/CabecalhoForm";
 import { Loading } from "../componentes/Loading";
 import { Error } from "../componentes/Error";
 import { Button } from "../tags";
+import { BsPencilSquare, BsTrashFill } from "react-icons/bs";
 
 
 export function FormPedidos() {
     const [uuid, setUuid] = useState('')
-    const [numeroPedido, setNumeroPedido] = useState('')
     const [loja, setLoja] = useState('')
     const [produto, setProduto] = useState('')
     const [quantidade, setQuantidade] = useState('')
     const [areaEntrega, setAreaEntrega] = useState('')
-    const [status, setStatus] = useState('')
     const [uuidItemPedido, setUuidItemPedido] = useState('')
 
     const [produtos, setProdutos] = useState<Produto[]>([])
@@ -40,6 +39,7 @@ export function FormPedidos() {
         pedido: uuidPedidoPai,
     })
 
+    const location = useLocation()
     const navigate = useNavigate()
     const queryClient = useQueryClient()
 
@@ -124,9 +124,10 @@ export function FormPedidos() {
         })
 
         Array.from(todosSelects).forEach(select => {
-            const inputEstaValido = select.checkValidity()
-            !inputEstaValido ? select.classList.add('invalidado') : select.classList.remove('invalidado')
-            return inputEstaValido
+            const selectEstaValido = select.checkValidity()
+            !selectEstaValido ? select.classList.add('invalidado') : select.classList.remove('invalidado')
+            
+            return selectEstaValido
         })
 
         return !(document.querySelector('.invalidado'))
@@ -144,9 +145,9 @@ export function FormPedidos() {
         statusItensPedidos === "success" && setItensPedido(dadosItensPedidos!.data.results as PedidoItem[])
     }, [statusItensPedidos, refreshingItensPedido])
 
-    console.log(dadosItensPedidos);
     queryClient.removeQueries(['produtos-pedido', 'pedidos', 'pedidos_itens'])
 
+    const estaEditando = location.pathname.match('editar') ? true : false
 
     return (
         <div className="p-5">
@@ -155,17 +156,15 @@ export function FormPedidos() {
                 <CabecalhoForm
                     titulo={pathname.match('cadastrar/') ? "Cadastro de Pedido" : `Editar Pedido ${uuidEdit?.split('-')[0]}`}
                     botoesForm={{
-                        onSalvar: () => mutation.mutate(),
-                        onVoltar: () => {
-                            // queryClient.invalidateQueries(['pedidos', 'produtos-pedido', 'pedido'])
-                            queryClient.removeQueries(['pedidos', 'produtos-pedido', 'pedido', 'produtos'])
-                        },
+                        onSalvar: () => {toast.success("Pedido salvo com sucesso", DEFAULT_TOAST_CONFIG);navigate(criarUrlVoltar(pathname))},
+                        onVoltar: () => queryClient.removeQueries(['pedidos', 'produtos-pedido', 'pedido', 'produtos']),
                         onDeletar: {
                             endpoint: 'pedidos',
                             textoSucesso: "Pedido deletado com sucesso!",
-                            textoErro: "Ocorreu um erro!",
+                            textoErro: "Este pedido não pode ser deletado!",
                         },
-                        validarCampos,
+                        validarCampos: () => (dadosItensPedidos && dadosItensPedidos.data.results.length > 0) ? true : false,
+                        mensagemFormInvalido: "Cadastre pelo menos um produto"
                     }}
                 />
             </div>
@@ -193,7 +192,7 @@ export function FormPedidos() {
 
                         <div className="col-span-7 md:col-span-4 lg:col-span-2">
                             <label>Loja <i className="text-rose-700">*</i></label>
-                            <select name="loja" id="loja" value={loja} required
+                            <select name="loja" id="loja" value={loja} disabled={estaEditando}
                                 onChange={e => {
                                     setLoja(e.target.value)
                                     e.target.disabled = true
@@ -207,12 +206,16 @@ export function FormPedidos() {
                             </select>
                         </div>
 
+                        <div className="col-span-4 md:col-span-2">
+                            <label>Item</label>
+                            <input type="number" className="text-right" value={uuidItemPedido} disabled />
+                        </div>
+
                         <div className="col-span-8 md:col-span-4">
                             <label>Produto <i className="text-rose-700">*</i></label>
                             <select name="fornecedor" id="uf" value={produto} onChange={e => setProduto(e.target.value)} required>
                                 <option value="">Selecione</option>
-                                {produtos.map((produto: Produto) => <option key={produto.uuid} value={produto.uuid}>{produto.nome}</option>)}
-                                {/* {produtos.map((produto: Produto) => <option key={produto.uuid} value={`${produto.uuid}_${produto.nome}`}>{produto.nome}</option>)} */}
+                                { produtos.map((produto: Produto) => <option key={produto.uuid} value={produto.uuid}>{produto.nome}</option>) }
                             </select>
                         </div>
 
@@ -230,22 +233,18 @@ export function FormPedidos() {
 
                     <Button titulo={uuidItemPedido ? "Salvar produto" : "Incluir produto"} className="botao-azul-1 m"
                         onClick={() => {
-                            if (!validarCampos()) {
-                                toast.error("Preencha os campos obrigatórios!", DEFAULT_TOAST_CONFIG)
-                                console.log("ENTREI 1")
-                            }
-                            else if (!uuid) {
-                                mutationCriarPedidoEPedidoItem.mutate()
-                                console.log("ENTREI 2")
-                            }
-                            else {
-                                mutationItem.mutate()
-                                console.log("ENTREI 3")
-                            }
+                            const produtoItens = itensPedido.find(item => item.produto.uuid === produto)
+
+                            if (produtoItens) toast.warn("Este produto já foi incluído!", DEFAULT_TOAST_CONFIG)
+                            else if (!validarCampos()) toast.warn("Preencha os campos obrigatórios!", DEFAULT_TOAST_CONFIG)
+                            else if (!uuid) mutationCriarPedidoEPedidoItem.mutate()
+                            else mutationItem.mutate()
                         }}
                     />
 
-                    <br /><br /><br />
+                    <br />
+                    <br />
+                    <br />
 
                     <div>
                         <table className="min-w-full divide-y divide-blue-900">
@@ -263,7 +262,6 @@ export function FormPedidos() {
 
                                     <th scope="col" className="px-6 py-3 text-left text-xs text-black font-extrabold uppercase tracking-wider whitespace-nowrap" />
                                     <th scope="col" className="px-6 py-3 text-left text-xs text-black font-extrabold uppercase tracking-wider whitespace-nowrap" />
-
                                 </tr>
                             </thead>
 
@@ -271,16 +269,18 @@ export function FormPedidos() {
                                 {
                                     itensPedido.map((itemPedido: PedidoItem, index: number) => (
                                         <tr key={itemPedido.uuid} className="bg-blue-200 cursor-pointer">
-                                            <td className="coluna-grid truncate">{index}</td>
-                                            <td className="coluna-grid">{'itemPedido.produto'}</td>
+                                            <td className="coluna-grid truncate">{index + 1}</td>
+                                            <td className="coluna-grid">{itemPedido.produto.nome}</td>
                                             <td className="coluna-grid">{itemPedido.quantidade}</td>
                                             <td className="coluna-grid"
                                                 onClick={() => {
                                                     setUuidItemPedido(itemPedido.uuid)
-                                                    setProduto(itemPedido.produto.nome)
+                                                    setProduto(itemPedido.produto.uuid)
                                                     setQuantidade(itemPedido.quantidade)
+
+                                                    console.log(uuidItemPedido)
                                                 }}
-                                            >Editar</td>
+                                            ><BsPencilSquare /></td>
 
                                             <td className="coluna-grid"
                                                 onClick={() => {
@@ -292,7 +292,7 @@ export function FormPedidos() {
 
                                                     mutationExcluirItem.mutate(itemPedido.uuid)
                                                 }}
-                                            >Excluir</td>
+                                            ><BsTrashFill /></td>
 
                                         </tr>
                                     ))

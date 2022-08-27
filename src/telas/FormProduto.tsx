@@ -174,20 +174,18 @@ export function FormProduto() {
                     </div>
 
                     <div className="col-span-6 md:col-span-3 lg:col-span-2">
-                        <label>Unidade 2 <i className="text-rose-700">*</i></label>
+                        <label>Unidade 2</label>
                         <input type="text"
                             value={unidade2}
                             onChange={e => setUnidade2(e.target.value)}
-                            required
                         />
                     </div>
 
                     <div className="col-span-6 md:col-span-4 lg:col-span-2">
-                        <label>Quantidade 2 <i className="text-rose-700">*</i></label>
+                        <label>Quantidade 2</label>
                         <input type="number" className="text-right"
                             value={quantidade2}
                             onChange={e => setQuantidade2(e.target.value)}
-                            required
                         />
                     </div>
 

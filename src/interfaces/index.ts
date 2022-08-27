@@ -59,6 +59,8 @@ export interface Pedido extends Base {
 
 export interface PedidoItem extends Base {
     produto: Produto
+    comprado: SimNao
+    fornecedor: Fornecedor
     quantidade: string
 }
 
@@ -67,6 +69,11 @@ export interface Agrupamento extends Base {
     nome: string
     descricao: string
     grupo: string
+}
+
+export interface ProdutoFornecedor extends Base {
+    produto: Produto
+    fornecedor: Fornecedor
 }
 
 export interface ProdutoAbaixoEstoqueMinimo extends Base {
