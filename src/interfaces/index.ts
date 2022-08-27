@@ -51,14 +51,14 @@ export interface AreaEntrega extends Base, Endereco {
 
 export interface Pedido extends Base {
     loja: UnidadeLoja
-    produto: string
+    produto: Produto
     quantidade: number
     area_entrega: string
     status: PedidoStatus
 }
 
 export interface PedidoItem extends Base {
-    produto: string
+    produto: Produto
     quantidade: string
 }
 
@@ -70,12 +70,12 @@ export interface Agrupamento extends Base {
 }
 
 export interface ProdutoAbaixoEstoqueMinimo extends Base {
-    produto: string
+    produto: Produto
     estoque_minimo: string
     em_estoque: string
 }
 
-/*  */
+/* Interfaces de response de API's externas */
 
 export interface ViacepResponse {
     cep: string;
@@ -90,7 +90,7 @@ export interface ViacepResponse {
     siafi: string;
 }
 
-/*  */
+/* Interfaces de componenntes */
 
 export interface ExibicaoDadoGridConfig {
     coluna: string,
