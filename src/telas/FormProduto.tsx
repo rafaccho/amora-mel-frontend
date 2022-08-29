@@ -8,7 +8,9 @@ import { CabecalhoForm } from "../componentes/CabecalhoForm";
 import { DEFAULT_TOAST_CONFIG } from "../constantes";
 import { useBackend } from "../hooks/useBackend";
 import { criarUrlVoltar } from "../utils/criarUrlVoltar";
-import { Agrupamento, Fornecedor, Produto } from "../interfaces";
+import { Agrupamento, Fornecedor, Produto, ProdutoFornecedor } from "../interfaces";
+import { Button } from "../tags";
+import { BsTrashFill } from "react-icons/bs";
 
 export function FormProduto() {
     const [codigo, setCodigo] = useState('')
@@ -21,18 +23,20 @@ export function FormProduto() {
     const [estoqueMinimo, setEstoqueMinimo] = useState<string | number>('')
     const [grupo, setGrupo] = useState('')
     const [subgrupo, setSubgrupo] = useState('')
+    const [fornecedor, setFornecedor] = useState('')
 
     const inputs = useRef<HTMLDivElement>(null)
 
     const { uuidEdit } = useParams()
     const { pathname } = useLocation()
-    const { criarRegistro, editarRegistro, umRegistro, todosRegistros } = useBackend('produtos')
+    const { criarRegistro, editarRegistro, umRegistro, todosRegistros, deletarRegistro } = useBackend('produtos')
     const navigate = useNavigate()
 
     const { data: dadosProduto, status: statusProduto } = useQuery(['produto', uuidEdit], () => umRegistro(uuidEdit ? uuidEdit : uuid), { enabled: uuidEdit !== undefined })
     const { data: dadosGrupos } = useQuery('grupo', () => todosRegistros('agrupamentos', 'entidade=G'))
     const { data: dadosSubgrupos } = useQuery('subgrupo', () => todosRegistros('agrupamentos', 'entidade=S'))
-    const { data: dadosProdutoFornecedores } = useQuery('produto_fornecedores', () => todosRegistros('produto_fornecedores', `produto=${uuid}`))
+    const { data: dadosProdutoFornecedores } = useQuery(['produto_fornecedores', uuidEdit], () => todosRegistros('produto_fornecedores', `produto=${uuidEdit}`))
+    const { data: dadosFornecedores } = useQuery('fornecedores', () => todosRegistros('fornecedores'))
 
     const queryClient = useQueryClient()
 
@@ -40,9 +44,9 @@ export function FormProduto() {
         codigo,
         nome,
         unidade1,
-        unidade2,
+        unidade2: quantidade2 || null,
         quantidade1,
-        quantidade2,
+        quantidade2: quantidade2 || null,
         grupo,
         subgrupo,
         estoque_minimo: estoqueMinimo,
@@ -56,6 +60,31 @@ export function FormProduto() {
         },
         onError: () => {
             toast.error("Ocorreu um erro!", DEFAULT_TOAST_CONFIG)
+        }
+    })
+
+    const dadosProdutoFornecedor = {
+        produto: uuidEdit,
+        fornecedor: fornecedor,
+    }
+
+    const associarProdutoFornecedor = useMutation(() => criarRegistro(dadosProdutoFornecedor, "produto_fornecedores"), {
+        onSuccess: () => {
+            queryClient.invalidateQueries(['produto_fornecedores'])
+            toast.success('Fornecedor associado com sucesso!', DEFAULT_TOAST_CONFIG)
+        },
+        onError: () => {
+            toast.warn("Este fornecedor já foi associado!", DEFAULT_TOAST_CONFIG)
+        }
+    })
+
+    const desassociarProdutoFornecedor = useMutation((uuid: string) => deletarRegistro(uuid, "produto_fornecedores"), {
+        onSuccess: () => {
+            queryClient.invalidateQueries(['produto_fornecedores', uuidEdit])
+            toast.success('Fornecedor desassociado com sucesso!', DEFAULT_TOAST_CONFIG)
+        },
+        onError: () => {
+            toast.warn("Ocorreu um erro!", DEFAULT_TOAST_CONFIG)
         }
     })
 
@@ -101,7 +130,6 @@ export function FormProduto() {
     useEffect(() => {
         pathname.match('editar/') && dadosProduto && preencherDados()
     }, [dadosProduto])
-
 
     return (
         <div className="p-5">
@@ -221,42 +249,71 @@ export function FormProduto() {
                         </select>
                     </div>
 
-                    <div className="col-span-12 shadow rounded-lg mt-10 overflow-auto">
-                        <table className="min-w-full divide-y divide-blue-900">
+                    {
+                        uuidEdit &&
+                        <div className="col-span-12 md:col-span-2">
+                            <label>Fornecedor</label>
+                            <select value={fornecedor} onChange={e => setFornecedor(e.target.value)}>
+                                <option value="">Selecione</option>
+                                {dadosFornecedores?.data.results.map((fornecedor: Fornecedor) => <option key={fornecedor.uuid} value={fornecedor.uuid}>{fornecedor.nome}</option>)}
+                            </select>
+                        </div>
+                    }
 
-                            <thead className="bg-blue-200">
-                                <tr>
-                                    <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">#</th>
-                                    <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Nome</th>
-                                    <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">CPF/CNPJ</th>
-                                    <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">CEP</th>
-                                    <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Cidade</th>
-                                    <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Bairro</th>
-                                    <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Área de Entrega</th>
-                                </tr>
-                            </thead>
+                    {
+                        uuidEdit &&
+                        <div className="col-span-12">
+                            <Button titulo="Adicionar fornecedor" className="botao-azul-1"
+                                onClick={() => {
+                                    if (fornecedor === "") return toast.warn('Selecione um fornecedor', DEFAULT_TOAST_CONFIG)
+                                    else if (uuidEdit) return associarProdutoFornecedor.mutate()
+                                }}
+                            />
+                        </div>
+                    }
 
-                            <tbody className="bg-white divide-y divide-blue-900">
-                                {
-                                    dadosProdutoFornecedores?.data.results.map((fornecedor: Fornecedor, index: number) => (
-                                        <tr key={fornecedor.uuid} className="bg-blue-200 text-blue-900 font-medium">
-                                            <td className="coluna-grid text-center">{index + 1}</td>
-                                            <td className="coluna-grid text-center">{fornecedor.nome}</td>
-                                            <td className="coluna-grid text-center">{fornecedor.cpf_cnpj}</td>
-                                            <td className="coluna-grid text-center">{fornecedor.cep}</td>
-                                            <td className="coluna-grid text-center">{fornecedor.cidade}</td>
-                                            <td className="coluna-grid text-center">{fornecedor.bairro}</td>
-                                            <td className="coluna-grid text-center">{'fornecedor.area_entrega.nome'}</td>
-                                        </tr>
+                    {
+                        uuidEdit &&
+                        <div className="col-span-12 shadow rounded-lg mt-4 overflow-auto">
+                            <table className="min-w-full divide-y divide-blue-900">
 
-                                        
-                                    ))
-                                }
+                                <thead className="bg-blue-200">
+                                    <tr>
+                                        <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">#</th>
+                                        <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Nome</th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">CPF/CNPJ</th>
+                                        <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">CEP</th>
+                                        <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Cidade</th>
+                                        <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Bairro</th>
+                                        <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Área de Entrega</th>
+                                        <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap"></th>
+                                    </tr>
+                                </thead>
 
-                            </tbody>
+                                <tbody className="bg-white divide-y divide-blue-900">
+                                    {
+                                        dadosProdutoFornecedores?.data.results.map((produtoFornecedor: ProdutoFornecedor, index: number) => (
+                                            <tr key={produtoFornecedor.uuid} className="bg-blue-200 text-blue-900 font-medium">
+                                                <td className="coluna-grid text-center">{index + 1}</td>
+                                                <td className="coluna-grid text-center">{produtoFornecedor.fornecedor.nome}</td>
+                                                <td className="coluna-grid text-center">{produtoFornecedor.fornecedor.cpf_cnpj}</td>
+                                                <td className="coluna-grid text-center">{produtoFornecedor.fornecedor.cep}</td>
+                                                <td className="coluna-grid text-center">{produtoFornecedor.fornecedor.cidade}</td>
+                                                <td className="coluna-grid text-center">{produtoFornecedor.fornecedor.bairro}</td>
+                                                <td className="coluna-grid text-center">{produtoFornecedor.fornecedor.area_entrega.nome}</td>
+                                                <td className="coluna-grid text-center"
+                                                    onClick={() => {
+                                                        desassociarProdutoFornecedor.mutate(produtoFornecedor.uuid)
+                                                    }}
+                                                ><BsTrashFill /></td>
+                                            </tr>
+                                        ))
+                                    }
+                                </tbody>
 
-                        </table>
-                    </div>
+                            </table>
+                        </div>
+                    }
 
                 </div>
             }
