@@ -60,6 +60,8 @@ export function Grid(props: {
         if (inputFiltro.current) inputFiltro.current.value = ''
     }, [location.pathname])
 
+    useEffect(() => { refetch() }, [])
+    
     return (
         <div id={`grid-${props.requisicaoConfig.endpoint}`} className="w-full">
 
