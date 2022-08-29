@@ -32,7 +32,7 @@ export function FormProduto() {
     const { data: dadosProduto, status: statusProduto } = useQuery(['produto', uuidEdit], () => umRegistro(uuidEdit ? uuidEdit : uuid), { enabled: uuidEdit !== undefined })
     const { data: dadosGrupos } = useQuery('grupo', () => todosRegistros('agrupamentos', 'entidade=G'))
     const { data: dadosSubgrupos } = useQuery('subgrupo', () => todosRegistros('agrupamentos', 'entidade=S'))
-    const { data: dadosFornecedores } = useQuery('fornecedores', () => todosRegistros('fornecedores', `produto=${uuid}`))
+    const { data: dadosProdutoFornecedores } = useQuery('produto_fornecedores', () => todosRegistros('produto_fornecedores', `produto=${uuid}`))
 
     const queryClient = useQueryClient()
 
@@ -238,7 +238,7 @@ export function FormProduto() {
 
                             <tbody className="bg-white divide-y divide-blue-900">
                                 {
-                                    dadosFornecedores?.data.results.map((fornecedor: Fornecedor, index: number) => (
+                                    dadosProdutoFornecedores?.data.results.map((fornecedor: Fornecedor, index: number) => (
                                         <tr key={fornecedor.uuid} className="bg-blue-200 text-blue-900 font-medium">
                                             <td className="coluna-grid text-center">{index + 1}</td>
                                             <td className="coluna-grid text-center">{fornecedor.nome}</td>
@@ -246,7 +246,7 @@ export function FormProduto() {
                                             <td className="coluna-grid text-center">{fornecedor.cep}</td>
                                             <td className="coluna-grid text-center">{fornecedor.cidade}</td>
                                             <td className="coluna-grid text-center">{fornecedor.bairro}</td>
-                                            <td className="coluna-grid text-center">{fornecedor.area_entrega.nome}</td>
+                                            <td className="coluna-grid text-center">{'fornecedor.area_entrega.nome'}</td>
                                         </tr>
 
                                         
@@ -264,3 +264,5 @@ export function FormProduto() {
         </div>
     )
 }
+
+
