@@ -62,10 +62,12 @@ export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
         if (dadosAgrupamento) {
             const dados = dadosAgrupamento.data as Agrupamento
 
-            setUuid(dados.uuid)
-            setCodigo(dados.codigo)
-            setNome(dados.nome)
-            setDescricao(dados.descricao)
+            if (!uuid) {
+                setUuid(dados.uuid)
+                setCodigo(dados.codigo)
+                setNome(dados.nome)
+                setDescricao(dados.descricao)
+            }
 
             if (props.entidade === "S" && dados.grupo) setGrupo(dados.grupo)
         }
@@ -97,19 +99,19 @@ export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
 
     useEffect(() => {
         pathname.match('editar/') && dadosAgrupamento && preencherDados()
-    }, [statusAgrupamento])
+    }, [dadosAgrupamento])
 
     return (
         <div className="p-5">
 
             <div className="cabecalho-form">
                 <CabecalhoForm
-                    titulo={pathname.match('cadastrar/') ? `Cadastro de ${ props.entidade === "G" ? "Grupo" : "Subgrupo" }` : `Editar ${ props.entidade === "G" ? "Grupo" : "Subgrupo" } ${uuidEdit?.split('-')[0]}`}
+                    titulo={pathname.match('cadastrar/') ? `Cadastro de ${props.entidade === "G" ? "Grupo" : "Subgrupo"}` : `Editar ${props.entidade === "G" ? "Grupo" : "Subgrupo"} ${uuidEdit?.split('-')[0]}`}
                     // titulo={pathname.match('cadastrar/') ? `${props.entidade === "G" ? "Cadastro de Grupos" : ""}` : `Editar Produto ${uuidEdit?.split('-')[0]}`}
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onVoltar: () => {
-                            
+
                         },
                         onDeletar: {
                             endpoint: 'agrupamentos',
@@ -171,20 +173,20 @@ export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
                     {
                         props.entidade === "S" &&
                         <div className="col-span-12 md:col-span-4">
-                        <label>Grupo <i className="text-rose-700">*</i></label>
-                        <select name="grupo" id="grupo" value={grupo} onChange={e => setGrupo(e.target.value)} required>
-                            <option value="">
-                                {
-                                    statusGrupos === "loading"
-                                        ? "Carregando..."
-                                        : grupos!.length === 0
-                                            ? "Não existem grupos cadastrados"
-                                            : "Selecione"
-                                }
-                            </option>
-                            {grupos.map((grupo: Agrupamento) => <option key={grupo.uuid} value={grupo.uuid}>{grupo.nome}</option>)}
-                        </select>
-                    </div>
+                            <label>Grupo <i className="text-rose-700">*</i></label>
+                            <select name="grupo" id="grupo" value={grupo} onChange={e => setGrupo(e.target.value)} required>
+                                <option value="">
+                                    {
+                                        statusGrupos === "loading"
+                                            ? "Carregando..."
+                                            : grupos!.length === 0
+                                                ? "Não existem grupos cadastrados"
+                                                : "Selecione"
+                                    }
+                                </option>
+                                {grupos.map((grupo: Agrupamento) => <option key={grupo.uuid} value={grupo.uuid}>{grupo.nome}</option>)}
+                            </select>
+                        </div>
                     }
 
                 </div>

@@ -35,14 +35,15 @@ export interface Produto extends Base {
     quantidade1: number
     quantidade2: number
     estoque_minimo: number
-    grupo: Agrupamento
-    subgrupo: Agrupamento
+    grupo?: Agrupamento
+    subgrupo?: Agrupamento
 }
 
 export interface Fornecedor extends Base, Endereco {
     codigo: string
     nome: string
     cpf_cnpj: string
+    area_entrega: AreaEntrega
 }
 
 export interface AreaEntrega extends Base, Endereco {
@@ -62,7 +63,7 @@ export interface Pedido extends Base {
 export interface PedidoItem extends Base {
     produto: Produto
     comprado: SimNao
-    fornecedor: Fornecedor
+    fornecedor?: Fornecedor
     quantidade: string
 }
 

@@ -66,9 +66,11 @@ export function FormEstoque() {
         if (dadosEstoque) {
             const dados = dadosEstoque.data as Pedido
 
-            setUuid(dados.uuid)
+            if(!uuid) {
+                setUuid(dados.uuid)
             setProduto(dados.produto.uuid)
             setQuantidade(`${dados.quantidade}`)
+            }
         }
     }
 
@@ -93,7 +95,7 @@ export function FormEstoque() {
 
     useEffect(() => {
         pathname.match('editar/') && dadosEstoque && preencherDados()
-    }, [statusEstoque])
+    }, [dadosEstoque])
 
     useEffect(() => {
         statusProdutos === "success" && setProdutos(dadosProdutos!.data.results as Produto[])

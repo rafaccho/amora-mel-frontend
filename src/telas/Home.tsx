@@ -28,6 +28,7 @@ export function Home() {
     const [produtoEstaSendoSelecionadoFornecedor, setProdutoEstaSendoSelecionadoFornecedor] = useState('');
     const [uuidprodutoEstaSendoSelecionadoFornecedor, setUuidProdutoEstaSendoSelecionadoFornecedor] = useState('');
     const [uuidPedidoItemEstaSendoSelecionadoFornecedor, setUuidPedidoItemEstaSendoSelecionadoFornecedor] = useState('');
+    const [areaEntregaExibicaoCompra, setAreaEntregaExibicaoCompra] = useState('');
     // const [fornecedorProdutoItemPedido, setFornecedorProdutoItemPedido] = useState<{}>({});
 
     // refs do modais
@@ -39,6 +40,7 @@ export function Home() {
     const inputsCompra = useRef<HTMLDivElement>(null)
     const exibicaoDadosCompra = useRef<HTMLDivElement>(null)
     const exibicaoSelecaoFornecedorCompra = useRef<HTMLDivElement>(null)
+    const exibicaoAreaEntregaFornecedorCompra = useRef<HTMLDivElement>(null)
 
     const btnEmitirPedido = useRef<HTMLButtonElement>(null)
 
@@ -175,7 +177,7 @@ export function Home() {
 
     /* const someHtml = '<div><strong>blablabla<strong><p>another blbla</p/></div>'
     <div className="Container" dangerouslySetInnerHTML={{__html: someHtml}}></div> */
-    
+
     return (
         <div className="p-5">
             <h1 className="t-1">Home</h1>
@@ -315,7 +317,7 @@ export function Home() {
                                     <div className="flex justify-end">
                                         <Button ref={btnEmitirPedido} titulo="Emitir" className="mt-10 md:mt-0 relative bottom-0 botao-azul-1"
                                             onClick={() => {
-                                                if(estaEmitindoPedido) return
+                                                if (estaEmitindoPedido) return
 
                                                 let inputs = tabelaPedidosAbertos.current?.querySelectorAll('input')
                                                 if (inputs) {
@@ -542,12 +544,7 @@ export function Home() {
                                                 <select value={produtoCompra} onChange={e => setProdutoCompra(e.target.value)} required>
                                                     <option value="">Selecione</option>
                                                     {
-                                                        dadosPedidoExibicao?.data.results.map((pedido: PedidoItem) => {
-                                                            return pedido.comprado === "N"
-                                                                ? <option value={pedido.produto.uuid}>{pedido.produto.nome}</option>
-                                                                : <></>
-                                                        }
-                                                        )
+                                                        dadosPedidoExibicao?.data.results.map((pedido: PedidoItem) => pedido.comprado === "N" ? <option value={pedido.produto.uuid}>{pedido.produto.nome}</option> : <></>)
                                                     }
                                                 </select>
                                             </div>
@@ -597,7 +594,8 @@ export function Home() {
                                                         <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Comprado</th>
                                                         <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Produto</th>
                                                         <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Quantidade</th>
-                                                        <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">fornecedor</th>
+                                                        <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Fornecedor</th>
+                                                        <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Área de Entrega</th>
                                                     </tr>
                                                 </thead>
 
@@ -625,6 +623,14 @@ export function Home() {
                                                                             : <AiOutlineSelect />
                                                                     }
                                                                 </td>
+                                                                <td className="coluna-grid text-center cursor-pointer"
+                                                                    onClick={() => {
+                                                                        if( pedido.fornecedor ) {
+                                                                            setAreaEntregaExibicaoCompra(pedido.fornecedor.area_entrega.nome)
+                                                                            exibicaoDadosCompra.current?.classList.add("hidden")
+                                                                            exibicaoAreaEntregaFornecedorCompra.current?.classList.remove("hidden")
+                                                                        }
+                                                                    }}>{pedido.fornecedor ? pedido.fornecedor.area_entrega.nome : '-'}</td>
                                                             </motion.tr>
                                                         ))
                                                     }
@@ -686,6 +692,16 @@ export function Home() {
                                         </table>
                                     </div>
 
+                                </div>
+
+                                <div ref={exibicaoAreaEntregaFornecedorCompra} className="hidden">
+                                    <h1 className="t-2">Área de Entrega {areaEntregaExibicaoCompra}</h1>
+                                    <Button titulo="Voltar" className="relative bottom-0 botao-azul-1"
+                                            onClick={() => {
+                                                exibicaoAreaEntregaFornecedorCompra.current?.classList.add("hidden")
+                                                exibicaoDadosCompra.current?.classList.remove("hidden")
+                                            }}
+                                        />
                                 </div>
 
                             </div>

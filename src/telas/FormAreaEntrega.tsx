@@ -69,7 +69,8 @@ export function FormAreaEntrega() {
         if (dadosAreaEntrega) {
             const dados = dadosAreaEntrega.data as AreaEntrega
 
-            setCodigo(dados.codigo)
+            if(!uuid) {
+                setCodigo(dados.codigo)
             setUuid(dados.uuid)
             setNome(dados.nome)
 
@@ -80,6 +81,7 @@ export function FormAreaEntrega() {
             setCep(dados.cep)
             setComplemento(dados.complemento)
             setEstado(dados.estado)
+            }
         }
     }
 
@@ -102,14 +104,9 @@ export function FormAreaEntrega() {
         return !(document.querySelector('.invalidado'))
     }
 
-    /* useEffect(() => {
-        statusFornecedores === "success" && setFornecedores(registrosFornecedores.data.results as Fornecedor[])
-    }, [statusFornecedores, carregandoFornecedores]) */
-
-
     useEffect(() => {
         pathname.match('editar/') && dadosAreaEntrega && preencherDados()
-    }, [statusAreaEntrega])
+    }, [dadosAreaEntrega])
 
     return (
         <div className="p-5">

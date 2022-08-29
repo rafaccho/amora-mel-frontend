@@ -107,8 +107,10 @@ export function FormPedidos() {
         if (dadosPedido) {
             const dados = dadosPedido.data as Pedido
 
-            setUuid(dados.uuid)
-            setLoja(dados.loja)
+            if (!uuid) {
+                setUuid(dados.uuid)
+                setLoja(dados.loja)
+            }
             // setStatus(dados.status)
         }
     }
@@ -126,7 +128,7 @@ export function FormPedidos() {
         Array.from(todosSelects).forEach(select => {
             const selectEstaValido = select.checkValidity()
             !selectEstaValido ? select.classList.add('invalidado') : select.classList.remove('invalidado')
-            
+
             return selectEstaValido
         })
 
@@ -135,7 +137,7 @@ export function FormPedidos() {
 
     useEffect(() => {
         pathname.match('editar/') && dadosPedido && preencherDados()
-    }, [statusPedido])
+    }, [dadosPedido])
 
     useEffect(() => {
         statusProdutos === "success" && setProdutos(dadosProdutos!.data.results as Produto[])
@@ -156,7 +158,7 @@ export function FormPedidos() {
                 <CabecalhoForm
                     titulo={pathname.match('cadastrar/') ? "Cadastro de Pedido" : `Editar Pedido ${uuidEdit?.split('-')[0]}`}
                     botoesForm={{
-                        onSalvar: () => {toast.success("Pedido salvo com sucesso", DEFAULT_TOAST_CONFIG);navigate(criarUrlVoltar(pathname))},
+                        onSalvar: () => { toast.success("Pedido salvo com sucesso", DEFAULT_TOAST_CONFIG); navigate(criarUrlVoltar(pathname)) },
                         onVoltar: () => queryClient.removeQueries(['pedidos', 'produtos-pedido', 'pedido', 'produtos']),
                         onDeletar: {
                             endpoint: 'pedidos',
@@ -215,7 +217,7 @@ export function FormPedidos() {
                             <label>Produto <i className="text-rose-700">*</i></label>
                             <select name="fornecedor" id="uf" value={produto} onChange={e => setProduto(e.target.value)} required>
                                 <option value="">Selecione</option>
-                                { produtos.map((produto: Produto) => <option key={produto.uuid} value={produto.uuid}>{produto.nome}</option>) }
+                                {produtos.map((produto: Produto) => <option key={produto.uuid} value={produto.uuid}>{produto.nome}</option>)}
                             </select>
                         </div>
 

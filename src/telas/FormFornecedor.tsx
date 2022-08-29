@@ -64,7 +64,8 @@ export function FormFornecedor() {
         if (dadosAreaEntrega) {
             const dados = dadosAreaEntrega.data as AreaEntrega
 
-            setCodigo(dados.codigo)
+            if(!uuid) {
+                setCodigo(dados.codigo)
             setUuid(dados.uuid)
             setNome(dados.nome)
 
@@ -75,6 +76,7 @@ export function FormFornecedor() {
             setCep(dados.cep)
             setComplemento(dados.complemento)
             setEstado(dados.estado)
+            }
         }
     }
 
@@ -99,7 +101,7 @@ export function FormFornecedor() {
 
     useEffect(() => {
         pathname.match('editar/') && dadosAreaEntrega && preencherDados()
-    }, [statusAreaEntrega])
+    }, [dadosAreaEntrega])
 
     const { data: registrosFornecedores, isLoading: carregandoForneeregistrosFornecedores, status: statusForneeregistrosFornecedores } = useQuery('fornecedores', () => todosRegistros("fornecedores"))
 

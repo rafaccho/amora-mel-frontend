@@ -62,16 +62,18 @@ export function FormProduto() {
         if (dadosProduto) {
             const dados = dadosProduto.data as Produto
 
-            setCodigo(dados.codigo)
-            setUuid(dados.uuid)
-            setNome(dados.nome)
-            setQuantidade1(dados.quantidade1)
-            setUnidade1(dados.unidade1)
-            setQuantidade2(dados.quantidade2)
-            setUnidade2(dados.unidade2)
-            setEstoqueMinimo(dados.estoque_minimo)
-            dados.grupo && setGrupo(dados.grupo.uuid)
-            dados.subgrupo && setSubgrupo(dados.subgrupo.uuid)
+            if (!uuid) {
+                setCodigo(dados.codigo)
+                setUuid(dados.uuid)
+                setNome(dados.nome)
+                setQuantidade1(dados.quantidade1)
+                setUnidade1(dados.unidade1)
+                setQuantidade2(dados.quantidade2)
+                setUnidade2(dados.unidade2)
+                setEstoqueMinimo(dados.estoque_minimo)
+                setGrupo(dados.grupo ? dados.grupo.uuid : "")
+                setSubgrupo(dados.subgrupo ? dados.subgrupo.uuid : "")
+            }
         }
     }
 
@@ -97,7 +99,7 @@ export function FormProduto() {
 
     useEffect(() => {
         pathname.match('editar/') && dadosProduto && preencherDados()
-    }, [statusProduto, dadosProduto])
+    }, [dadosProduto])
 
 
     return (
@@ -203,20 +205,20 @@ export function FormProduto() {
                     </div>
 
                     <div className="col-span-12 md:col-span-2">
-                            <label>Grupo</label>
-                            <select value={grupo} onChange={e => setGrupo(e.target.value)}>
-                                <option value="">Selecione</option>
-                                {dadosGrupos?.data.results.map((grupo: Agrupamento) => <option key={grupo.uuid} value={grupo.uuid}>{grupo.nome}</option>)}
-                            </select>
-                        </div>
+                        <label>Grupo</label>
+                        <select value={grupo} onChange={e => setGrupo(e.target.value)}>
+                            <option value="">Selecione</option>
+                            {dadosGrupos?.data.results.map((grupo: Agrupamento) => <option key={grupo.uuid} value={grupo.uuid}>{grupo.nome}</option>)}
+                        </select>
+                    </div>
 
                     <div className="col-span-12 md:col-span-2">
-                            <label>Subgrupo</label>
-                            <select value={subgrupo} onChange={e => setSubgrupo(e.target.value)}>
-                                <option value="">Selecione</option>
-                                {dadosSubgrupos?.data.results.map((subgrupo: Agrupamento) => <option key={subgrupo.uuid} value={subgrupo.uuid}>{subgrupo.nome}</option>)}
-                            </select>
-                        </div>
+                        <label>Subgrupo</label>
+                        <select value={subgrupo} onChange={e => setSubgrupo(e.target.value)}>
+                            <option value="">Selecione</option>
+                            {dadosSubgrupos?.data.results.map((subgrupo: Agrupamento) => <option key={subgrupo.uuid} value={subgrupo.uuid}>{subgrupo.nome}</option>)}
+                        </select>
+                    </div>
 
                 </div>
             }
