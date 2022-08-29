@@ -34,7 +34,9 @@ export function FormFornecedor() {
     const { criarRegistro, editarRegistro, umRegistro, todosRegistros } = useBackend('fornecedores')
     const navigate = useNavigate()
 
-    const { data: dadosAreaEntrega, status: statusAreaEntrega } = useQuery(['area_entregas'], () => todosRegistros('areas_entregas') )
+    const { data: dadosAreaEntrega, status: statusAreaEntrega } = useQuery(['area_entregas'], () => todosRegistros('areas_entregas'))
+    const { data: dadosFornecedor, status: statusFornecedadosFornecedor } = useQuery(['fornecedor', uuidEdit], () => umRegistro(uuidEdit ? uuidEdit : ''))
+    
 
     const queryClient = useQueryClient()
 
@@ -61,21 +63,22 @@ export function FormFornecedor() {
     })
 
     function preencherDados(): void {
-        if (dadosAreaEntrega) {
-            const dados = dadosAreaEntrega.data as AreaEntrega
+        if (dadosFornecedor) {
+            const dados = dadosFornecedor.data as Fornecedor
 
-            if(!uuid) {
+            if (!uuid) {
                 setCodigo(dados.codigo)
-            setUuid(dados.uuid)
-            setNome(dados.nome)
+                setUuid(dados.uuid)
+                setNome(dados.nome)
 
-            setCpfCnpj(dados.fornecedor)
-            setRua(dados.rua)
-            setBairro(dados.bairro)
-            setNumero(dados.numero)
-            setCep(dados.cep)
-            setComplemento(dados.complemento)
-            setEstado(dados.estado)
+                setCpfCnpj(dados.cpf_cnpj)
+                setRua(dados.rua)
+                setBairro(dados.bairro)
+                setNumero(dados.numero)
+                setCep(dados.cep)
+                setComplemento(dados.complemento)
+                setEstado(dados.estado)
+                setAreaEntrega(dados.area_entrega.uuid)
             }
         }
     }
@@ -100,10 +103,8 @@ export function FormFornecedor() {
     }
 
     useEffect(() => {
-        pathname.match('editar/') && dadosAreaEntrega && preencherDados()
-    }, [dadosAreaEntrega])
-
-    const { data: registrosFornecedores, isLoading: carregandoForneeregistrosFornecedores, status: statusForneeregistrosFornecedores } = useQuery('fornecedores', () => todosRegistros("fornecedores"))
+        pathname.match('editar/') && dadosFornecedor && preencherDados()
+    }, [dadosFornecedor])
 
     return (
         <div className="p-5">
@@ -114,7 +115,7 @@ export function FormFornecedor() {
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onVoltar: () => {
-                            
+
                         },
                         onDeletar: {
                             endpoint: 'fornecedores',
@@ -126,13 +127,13 @@ export function FormFornecedor() {
                 />
             </div>
 
-            {statusAreaEntrega === 'loading' && <Loading />}
-            {statusAreaEntrega === 'error' && <Error />}
+            {statusFornecedadosFornecedor === 'loading' && <Loading />}
+            {statusFornecedadosFornecedor === 'error' && <Error />}
 
             {
                 (
                     uuidEdit !== undefined
-                        ? statusAreaEntrega === 'success'
+                        ? statusFornecedadosFornecedor === 'success'
                         : pathname.match('cadastrar/')
                 ) &&
                 <div ref={inputs} id="formulario" className="p-5">

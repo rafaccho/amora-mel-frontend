@@ -8,7 +8,7 @@ import { CabecalhoForm } from "../componentes/CabecalhoForm";
 import { DEFAULT_TOAST_CONFIG } from "../constantes";
 import { useBackend } from "../hooks/useBackend";
 import { criarUrlVoltar } from "../utils/criarUrlVoltar";
-import { Agrupamento, Produto } from "../interfaces";
+import { Agrupamento, Fornecedor, Produto } from "../interfaces";
 
 export function FormProduto() {
     const [codigo, setCodigo] = useState('')
@@ -32,6 +32,7 @@ export function FormProduto() {
     const { data: dadosProduto, status: statusProduto } = useQuery(['produto', uuidEdit], () => umRegistro(uuidEdit ? uuidEdit : uuid), { enabled: uuidEdit !== undefined })
     const { data: dadosGrupos } = useQuery('grupo', () => todosRegistros('agrupamentos', 'entidade=G'))
     const { data: dadosSubgrupos } = useQuery('subgrupo', () => todosRegistros('agrupamentos', 'entidade=S'))
+    const { data: dadosFornecedores } = useQuery('fornecedores', () => todosRegistros('fornecedores', `produto=${uuid}`))
 
     const queryClient = useQueryClient()
 
@@ -218,6 +219,43 @@ export function FormProduto() {
                             <option value="">Selecione</option>
                             {dadosSubgrupos?.data.results.map((subgrupo: Agrupamento) => <option key={subgrupo.uuid} value={subgrupo.uuid}>{subgrupo.nome}</option>)}
                         </select>
+                    </div>
+
+                    <div className="col-span-12 shadow rounded-lg mt-10 overflow-auto">
+                        <table className="min-w-full divide-y divide-blue-900">
+
+                            <thead className="bg-blue-200">
+                                <tr>
+                                    <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">#</th>
+                                    <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Nome</th>
+                                    <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">CPF/CNPJ</th>
+                                    <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">CEP</th>
+                                    <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Cidade</th>
+                                    <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Bairro</th>
+                                    <th scope="col" className="px-6 py-3 text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Área de Entrega</th>
+                                </tr>
+                            </thead>
+
+                            <tbody className="bg-white divide-y divide-blue-900">
+                                {
+                                    dadosFornecedores?.data.results.map((fornecedor: Fornecedor, index: number) => (
+                                        <tr key={fornecedor.uuid} className="bg-blue-200 text-blue-900 font-medium">
+                                            <td className="coluna-grid text-center">{index + 1}</td>
+                                            <td className="coluna-grid text-center">{fornecedor.nome}</td>
+                                            <td className="coluna-grid text-center">{fornecedor.cpf_cnpj}</td>
+                                            <td className="coluna-grid text-center">{fornecedor.cep}</td>
+                                            <td className="coluna-grid text-center">{fornecedor.cidade}</td>
+                                            <td className="coluna-grid text-center">{fornecedor.bairro}</td>
+                                            <td className="coluna-grid text-center">{fornecedor.area_entrega.nome}</td>
+                                        </tr>
+
+                                        
+                                    ))
+                                }
+
+                            </tbody>
+
+                        </table>
                     </div>
 
                 </div>
