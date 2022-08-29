@@ -9,8 +9,8 @@ export function useBackend(endpointPrimario: Endpoint) {
         body?: any,
         filtros?: string,
     }) {
-        // const urlBase = 'http://localhost:8000/api/v1'
-        const urlBase = 'http://192.168.0.216:8000/api/v1'
+        const urlBase = 'http://localhost:8000/api/v1'
+        // const urlBase = 'http://192.168.0.216:8000/api/v1'
         // const urlBase = 'https://cors-everywhere-me.herokuapp.com/http://54.224.33.185:8000/api/v1'
 
         const url = `${urlBase}/${config.endpointSecundario ? config.endpointSecundario : endpointPrimario}/${config.uuid ? `${config.uuid}/` : config.filtros ? `?${config.filtros}` : ''}`

@@ -42,11 +42,6 @@ export function FormAreaEntrega() {
         { enabled: uuidEdit !== undefined }
     )
 
-    const { data: registrosFornecedores, isLoading: carregandoFornecedores, status: statusFornecedores } = useQuery(
-        'fornecedores',
-        () => todosRegistros("fornecedores")
-    )
-
     const queryClient = useQueryClient()
 
     const dados = {
@@ -61,7 +56,7 @@ export function FormAreaEntrega() {
 
     const mutation = useMutation(() => uuidEdit ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
-            queryClient.invalidateQueries(['areasEntregas'])
+            queryClient.invalidateQueries(['area_entregas', uuidEdit])
             toast.success('Área de Entrega salva com sucesso!', DEFAULT_TOAST_CONFIG)
             navigate(criarUrlVoltar(pathname))
         },
@@ -107,14 +102,14 @@ export function FormAreaEntrega() {
         return !(document.querySelector('.invalidado'))
     }
 
-    useEffect(() => {
+    /* useEffect(() => {
         statusFornecedores === "success" && setFornecedores(registrosFornecedores.data.results as Fornecedor[])
-    }, [statusFornecedores, carregandoFornecedores])
+    }, [statusFornecedores, carregandoFornecedores]) */
 
 
     useEffect(() => {
         pathname.match('editar/') && dadosAreaEntrega && preencherDados()
-    }, [dadosAreaEntrega])
+    }, [statusAreaEntrega])
 
     return (
         <div className="p-5">
@@ -172,22 +167,6 @@ export function FormAreaEntrega() {
                                 value={nome}
                                 onChange={e => setNome(e.target.value)}
                             />
-                        </div>
-
-                        <div className="col-span-12 md:col-span-5">
-                            <label>Fornecedor <i className="text-rose-700">*</i></label>
-                            <select name="fornecedor" id="uf" value={fornecedor} onChange={e => setFornecedor(e.target.value)} required>
-                                <option value="">
-                                    {
-                                        statusFornecedores === "loading"
-                                            ? "Carregando..."
-                                            : fornecedores.length === 0
-                                                ? "Não existem Fornecedores cadastrados"
-                                                : "Selecione"
-                                    }
-                                </option>
-                                {fornecedores.map((fornecedor: Fornecedor) => <option key={fornecedor.uuid} value={fornecedor.uuid}>{fornecedor.nome}</option>)}
-                            </select>
                         </div>
 
                         <div className="col-span-4 md:col-span-3 lg:col-span-2">

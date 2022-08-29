@@ -53,7 +53,7 @@ export function FormEstoque() {
 
     const mutation = useMutation(() => uuidEdit ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
-            queryClient.invalidateQueries(['pedidos'])
+            queryClient.invalidateQueries(['pedidos', uuidEdit])
             toast.success('Pedido salvo com sucesso!', DEFAULT_TOAST_CONFIG)
             navigate(criarUrlVoltar(pathname))
         },
@@ -93,7 +93,7 @@ export function FormEstoque() {
 
     useEffect(() => {
         pathname.match('editar/') && dadosEstoque && preencherDados()
-    }, [dadosEstoque])
+    }, [statusEstoque])
 
     useEffect(() => {
         statusProdutos === "success" && setProdutos(dadosProdutos!.data.results as Produto[])

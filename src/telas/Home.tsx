@@ -173,6 +173,9 @@ export function Home() {
     const abrirToastAssociarFornecedorAoProdutoCompra = (nome: string) => toastAssociarFornecedorAoProdutoCompra.current = toast.loading(`Associando Fornecedor ${nome}...`)
     const atualizarToastAssociarFornecedorAoProdutoCompra = () => toast.update(toastAssociarFornecedorAoProdutoCompra.current, { type: 'success', render: `Fornecedor Associado!`, ...DEFAULT_TOAST_CONFIG })
 
+    /* const someHtml = '<div><strong>blablabla<strong><p>another blbla</p/></div>'
+    <div className="Container" dangerouslySetInnerHTML={{__html: someHtml}}></div> */
+    
     return (
         <div className="p-5">
             <h1 className="t-1">Home</h1>

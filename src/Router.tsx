@@ -65,7 +65,7 @@ export function Router() {
                                         { coluna: 'CEP', chaveApi: 'cep' },
                                     ],
                                     requisicaoConfig: {
-                                        endpoint: 'pedidos',
+                                        endpoint: 'areas_entregas',
                                     }
                                 }}
                             />} />

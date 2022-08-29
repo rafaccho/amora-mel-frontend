@@ -49,7 +49,7 @@ export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
 
     const mutation = useMutation(() => uuidEdit ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
-            queryClient.invalidateQueries(['agrupamentos'])
+            queryClient.invalidateQueries(['agrupamentos', uuidEdit])
             toast.success(`${props.entidade === "G" ? 'Grupo' : "Subgrupo"} salvo com sucesso!`, DEFAULT_TOAST_CONFIG)
             navigate(criarUrlVoltar(pathname))
         },
@@ -97,7 +97,7 @@ export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
 
     useEffect(() => {
         pathname.match('editar/') && dadosAgrupamento && preencherDados()
-    }, [dadosAgrupamento])
+    }, [statusAgrupamento])
 
     return (
         <div className="p-5">

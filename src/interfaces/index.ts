@@ -35,6 +35,8 @@ export interface Produto extends Base {
     quantidade1: number
     quantidade2: number
     estoque_minimo: number
+    grupo: Agrupamento
+    subgrupo: Agrupamento
 }
 
 export interface Fornecedor extends Base, Endereco {

@@ -25,7 +25,7 @@ export function FormFornecedor() {
     const [complemento, setComplemento] = useState('')
     const [estado, setEstado] = useState('MG')
 
-    // const [fornecedores, setCpfCnpjes] = useState<Fornecedor[]>([])
+    const [areaEntrega, setAreaEntrega] = useState('')
 
     const inputs = useRef<HTMLDivElement>(null)
 
@@ -34,11 +34,7 @@ export function FormFornecedor() {
     const { criarRegistro, editarRegistro, umRegistro, todosRegistros } = useBackend('fornecedores')
     const navigate = useNavigate()
 
-    const { data: dadosAreaEntrega, status: statusAreaEntrega } = useQuery(
-        ['fornecedor', uuidEdit],
-        () => umRegistro(uuidEdit ? uuidEdit : uuid),
-        { enabled: uuidEdit !== undefined }
-    )
+    const { data: dadosAreaEntrega, status: statusAreaEntrega } = useQuery(['area_entregas'], () => todosRegistros('areas_entregas') )
 
     const queryClient = useQueryClient()
 
@@ -50,11 +46,12 @@ export function FormFornecedor() {
         bairro,
         numero,
         cep,
+        area_entrega: areaEntrega
     }
 
     const mutation = useMutation(() => uuidEdit ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
-            queryClient.invalidateQueries(['fornecedores'])
+            queryClient.invalidateQueries(['fornecedores', uuidEdit])
             toast.success('Área de Entrega salva com sucesso!', DEFAULT_TOAST_CONFIG)
             navigate(criarUrlVoltar(pathname))
         },
@@ -102,7 +99,9 @@ export function FormFornecedor() {
 
     useEffect(() => {
         pathname.match('editar/') && dadosAreaEntrega && preencherDados()
-    }, [dadosAreaEntrega])
+    }, [statusAreaEntrega])
+
+    const { data: registrosFornecedores, isLoading: carregandoForneeregistrosFornecedores, status: statusForneeregistrosFornecedores } = useQuery('fornecedores', () => todosRegistros("fornecedores"))
 
     return (
         <div className="p-5">
@@ -252,6 +251,14 @@ export function FormFornecedor() {
                         <div className="col-span-12 md:col-span-5">
                             <label>Complemento</label>
                             <input type="text" value={complemento} onChange={e => setComplemento(e.target.value)} />
+                        </div>
+
+                        <div className="col-span-12 md:col-span-5">
+                            <label>Área de Entrega <i className="text-rose-700">*</i></label>
+                            <select name="fornecedor" id="uf" value={areaEntrega} onChange={e => setAreaEntrega(e.target.value)} required>
+                                <option value="">Selecione</option>
+                                {dadosAreaEntrega?.data.results.map((areaEntrega: AreaEntrega) => <option key={areaEntrega.uuid} value={areaEntrega.uuid}>{areaEntrega.nome}</option>)}
+                            </select>
                         </div>
 
                     </div>

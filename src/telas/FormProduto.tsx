@@ -8,7 +8,7 @@ import { CabecalhoForm } from "../componentes/CabecalhoForm";
 import { DEFAULT_TOAST_CONFIG } from "../constantes";
 import { useBackend } from "../hooks/useBackend";
 import { criarUrlVoltar } from "../utils/criarUrlVoltar";
-import { Produto } from "../interfaces";
+import { Agrupamento, Produto } from "../interfaces";
 
 export function FormProduto() {
     const [codigo, setCodigo] = useState('')
@@ -19,19 +19,19 @@ export function FormProduto() {
     const [quantidade2, setQuantidade2] = useState<string | number>('')
     const [unidade2, setUnidade2] = useState('')
     const [estoqueMinimo, setEstoqueMinimo] = useState<string | number>('')
+    const [grupo, setGrupo] = useState('')
+    const [subgrupo, setSubgrupo] = useState('')
 
     const inputs = useRef<HTMLDivElement>(null)
 
     const { uuidEdit } = useParams()
     const { pathname } = useLocation()
-    const { criarRegistro, editarRegistro, umRegistro } = useBackend('produtos')
+    const { criarRegistro, editarRegistro, umRegistro, todosRegistros } = useBackend('produtos')
     const navigate = useNavigate()
 
-    const { data: dadosProduto, status: statusProduto } = useQuery(
-        ['produto', uuidEdit],
-        () => umRegistro(uuidEdit ? uuidEdit : uuid),
-        { enabled: uuidEdit !== undefined }
-    )
+    const { data: dadosProduto, status: statusProduto } = useQuery(['produto', uuidEdit], () => umRegistro(uuidEdit ? uuidEdit : uuid), { enabled: uuidEdit !== undefined })
+    const { data: dadosGrupos } = useQuery('grupo', () => todosRegistros('agrupamentos', 'entidade=G'))
+    const { data: dadosSubgrupos } = useQuery('subgrupo', () => todosRegistros('agrupamentos', 'entidade=S'))
 
     const queryClient = useQueryClient()
 
@@ -42,12 +42,14 @@ export function FormProduto() {
         unidade2,
         quantidade1,
         quantidade2,
-        estoque_minimo: estoqueMinimo
+        grupo,
+        subgrupo,
+        estoque_minimo: estoqueMinimo,
     }
 
     const mutation = useMutation(() => uuidEdit ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
-            queryClient.invalidateQueries(['produtos'])
+            queryClient.invalidateQueries(['produtos', uuidEdit])
             toast.success('Produto salvo com sucesso!', DEFAULT_TOAST_CONFIG)
             navigate(criarUrlVoltar(pathname))
         },
@@ -68,6 +70,8 @@ export function FormProduto() {
             setQuantidade2(dados.quantidade2)
             setUnidade2(dados.unidade2)
             setEstoqueMinimo(dados.estoque_minimo)
+            dados.grupo && setGrupo(dados.grupo.uuid)
+            dados.subgrupo && setSubgrupo(dados.subgrupo.uuid)
         }
     }
 
@@ -93,7 +97,7 @@ export function FormProduto() {
 
     useEffect(() => {
         pathname.match('editar/') && dadosProduto && preencherDados()
-    }, [dadosProduto])
+    }, [statusProduto, dadosProduto])
 
 
     return (
@@ -155,6 +159,15 @@ export function FormProduto() {
                         />
                     </div>
 
+                    <div className="col-span-6 md:col-span-4 lg:col-span-2">
+                        <label>Estoque Mínimo <i className="text-rose-700">*</i></label>
+                        <input type="number" className="text-right"
+                            value={estoqueMinimo}
+                            onChange={e => setEstoqueMinimo(e.target.value)}
+                            required
+                        />
+                    </div>
+
                     <div className="col-span-6 md:col-span-3 lg:col-span-2">
                         <label>Unidade 1 <i className="text-rose-700">*</i></label>
                         <input type="text"
@@ -189,14 +202,21 @@ export function FormProduto() {
                         />
                     </div>
 
-                    <div className="col-span-6 md:col-span-4 lg:col-span-2">
-                        <label>Estoque Mínimo <i className="text-rose-700">*</i></label>
-                        <input type="number" className="text-right"
-                            value={estoqueMinimo}
-                            onChange={e => setEstoqueMinimo(e.target.value)}
-                            required
-                        />
-                    </div>
+                    <div className="col-span-12 md:col-span-2">
+                            <label>Grupo</label>
+                            <select value={grupo} onChange={e => setGrupo(e.target.value)}>
+                                <option value="">Selecione</option>
+                                {dadosGrupos?.data.results.map((grupo: Agrupamento) => <option key={grupo.uuid} value={grupo.uuid}>{grupo.nome}</option>)}
+                            </select>
+                        </div>
+
+                    <div className="col-span-12 md:col-span-2">
+                            <label>Subgrupo</label>
+                            <select value={subgrupo} onChange={e => setSubgrupo(e.target.value)}>
+                                <option value="">Selecione</option>
+                                {dadosSubgrupos?.data.results.map((subgrupo: Agrupamento) => <option key={subgrupo.uuid} value={subgrupo.uuid}>{subgrupo.nome}</option>)}
+                            </select>
+                        </div>
 
                 </div>
             }
