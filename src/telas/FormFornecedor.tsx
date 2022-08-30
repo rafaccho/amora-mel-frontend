@@ -139,7 +139,7 @@ export function FormFornecedor() {
                 <div ref={inputs} id="formulario" className="p-5">
                     <div className="inputs">
 
-                        <div className="col-span-7 md:col-span-4 lg:col-span-4">
+                        <div className="col-span-12 md:col-span-4 lg:col-span-4">
                             <label>Identificador</label>
                             <input type="text"
                                 value={uuid}
@@ -148,26 +148,23 @@ export function FormFornecedor() {
                             />
                         </div>
 
-                        <div className="col-span-5 md:col-span-3 lg:col-span-3">
+                        <div className="col-span-12 md:col-span-3 lg:col-span-3">
                             <label>Código</label>
-                            <input type="number"
-                                value={codigo}
-                                onChange={e => setCodigo(e.target.value)}
-                            />
+                            <input type="number" value={codigo} onChange={e => setCodigo(e.target.value)} />
                         </div>
 
-                        <div className="col-span-6 md:col-span-5">
+                        <div className="col-span-12 md:col-span-5">
                             <label>Nome <i className="text-rose-700">*</i></label>
                             <input type="text" value={nome} onChange={e => setNome(e.target.value)} required />
                         </div>
 
-                        <div className="col-span-6 md:col-span-5">
+                        <div className="col-span-12 md:col-span-3">
                             <label>CPF\CNPJ <i className="text-rose-700">*</i></label>
                             <input type="text" value={cpfCnpj} onChange={e => setCpfCnpj(e.target.value)} required />
                         </div>
 
 
-                        <div className="col-span-4 md:col-span-3 lg:col-span-2">
+                        <div className="col-span-12 md:col-span-3 lg:col-span-2">
                             <label>CEP <i className="text-rose-700">*</i></label>
                             <input type="number" required
                                 value={cep}
@@ -202,12 +199,12 @@ export function FormFornecedor() {
                             />
                         </div>
 
-                        <div className="col-span-8 md:col-span-5 lg:col-span-4">
+                        <div className="col-span-12 md:col-span-6 lg:col-span-4">
                             <label>Rua <i className="text-rose-700">*</i></label>
                             <input type="text" value={rua} onChange={e => setRua(e.target.value)} required />
                         </div>
 
-                        <div className="col-span-7 md:col-span-4 lg:col-span-3">
+                        <div className="col-span-12 md:col-span-4 lg:col-span-3">
                             <label>Estado <i className="text-rose-700">*</i></label>
                             <select name="uf" id="uf" value={estado} onChange={e => setEstado(e.target.value)} required >
                                 <option value="AC">Acre</option>
@@ -241,12 +238,12 @@ export function FormFornecedor() {
                             </select>
                         </div>
 
-                        <div className="col-span-5 md:col-span-3">
+                        <div className="col-span-12 md:col-span-3">
                             <label>Número <i className="text-rose-700">*</i></label>
                             <input type="text" value={numero} onChange={e => setNumero(e.target.value)} required />
                         </div>
 
-                        <div className="col-span-12 md:col-span-4">
+                        <div className="col-span-12 md:col-span-5 lg:col-span-4">
                             <label>Bairro <i className="text-rose-700">*</i></label>
                             <input type="text" value={bairro} onChange={e => setBairro(e.target.value)} required />
                         </div>

@@ -24,23 +24,18 @@ export function FormAreaEntrega() {
     const [bairro, setBairro] = useState('')
     const [numero, setNumero] = useState('')
     const [cep, setCep] = useState('')
-    const [complemento, setComplemento] = useState('')
     const [estado, setEstado] = useState('MG')
-
-    const [fornecedores, setFornecedores] = useState<Fornecedor[]>([])
+    const [complemento, setComplemento] = useState('')
+    const [linkGoogleMaps, setLinkGoogleMaps] = useState('')
 
     const inputs = useRef<HTMLDivElement>(null)
 
     const { uuidEdit } = useParams()
     const { pathname } = useLocation()
-    const { criarRegistro, editarRegistro, umRegistro, todosRegistros } = useBackend('areas_entregas')
+    const { criarRegistro, editarRegistro, umRegistro } = useBackend('areas_entregas')
     const navigate = useNavigate()
 
-    const { data: dadosAreaEntrega, status: statusAreaEntrega } = useQuery(
-        ['areaEntrega', uuidEdit],
-        () => umRegistro(uuidEdit ? uuidEdit : uuid),
-        { enabled: uuidEdit !== undefined }
-    )
+    const { data: dadosAreaEntrega, status: statusAreaEntrega } = useQuery(['areaEntrega', uuidEdit],() => umRegistro(uuidEdit ? uuidEdit : uuid),{ enabled: uuidEdit !== undefined })
 
     const queryClient = useQueryClient()
 
@@ -52,6 +47,8 @@ export function FormAreaEntrega() {
         bairro,
         numero,
         cep,
+        complemento,
+        google_maps_url: linkGoogleMaps.replace(/"/g, "'")
     }
 
     const mutation = useMutation(() => uuidEdit ? editarRegistro(uuid, dados) : criarRegistro(dados), {
@@ -69,18 +66,19 @@ export function FormAreaEntrega() {
         if (dadosAreaEntrega) {
             const dados = dadosAreaEntrega.data as AreaEntrega
 
-            if(!uuid) {
+            if (!uuid) {
                 setCodigo(dados.codigo)
-            setUuid(dados.uuid)
-            setNome(dados.nome)
+                setUuid(dados.uuid)
+                setNome(dados.nome)
 
-            setFornecedor(dados.fornecedor)
-            setRua(dados.rua)
-            setBairro(dados.bairro)
-            setNumero(dados.numero)
-            setCep(dados.cep)
-            setComplemento(dados.complemento)
-            setEstado(dados.estado)
+                setFornecedor(dados.fornecedor)
+                setRua(dados.rua)
+                setBairro(dados.bairro)
+                setNumero(dados.numero)
+                setCep(dados.cep)
+                setComplemento(dados.complemento)
+                setEstado(dados.estado)
+                setLinkGoogleMaps(dados.google_maps_url)
             }
         }
     }
@@ -117,7 +115,7 @@ export function FormAreaEntrega() {
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onVoltar: () => {
-                            
+
                         },
                         onDeletar: {
                             endpoint: 'areas_entregas',
@@ -141,7 +139,7 @@ export function FormAreaEntrega() {
                 <div ref={inputs} id="formulario" className="p-5">
                     <div className="inputs">
 
-                        <div className="col-span-7 md:col-span-4 lg:col-span-4">
+                        <div className="col-span-12 md:col-span-4 lg:col-span-4">
                             <label>Identificador</label>
                             <input type="text"
                                 value={uuid}
@@ -150,7 +148,7 @@ export function FormAreaEntrega() {
                             />
                         </div>
 
-                        <div className="col-span-5 md:col-span-3 lg:col-span-3">
+                        <div className="col-span-12 md:col-span-3 lg:col-span-3">
                             <label>Código</label>
                             <input type="number"
                                 value={codigo}
@@ -158,7 +156,7 @@ export function FormAreaEntrega() {
                             />
                         </div>
 
-                        <div className="col-span-12 md:col-span-3 lg:col-span-3">
+                        <div className="col-span-12 md:col-span-5 lg:col-span-3">
                             <label>Nome</label>
                             <input type="text"
                                 value={nome}
@@ -166,7 +164,7 @@ export function FormAreaEntrega() {
                             />
                         </div>
 
-                        <div className="col-span-4 md:col-span-3 lg:col-span-2">
+                        <div className="col-span-12 md:col-span-3 lg:col-span-2">
                             <label>CEP <i className="text-rose-700">*</i></label>
                             <input type="number" required
                                 value={cep}
@@ -201,12 +199,12 @@ export function FormAreaEntrega() {
                             />
                         </div>
 
-                        <div className="col-span-8 md:col-span-5 lg:col-span-4">
+                        <div className="col-span-12 md:col-span-5 lg:col-span-4">
                             <label>Rua <i className="text-rose-700">*</i></label>
                             <input type="text" value={rua} onChange={e => setRua(e.target.value)} required />
                         </div>
 
-                        <div className="col-span-7 md:col-span-4 lg:col-span-3">
+                        <div className="col-span-12 md:col-span-4 lg:col-span-3">
                             <label>Estado <i className="text-rose-700">*</i></label>
                             <select name="uf" id="uf" value={estado} onChange={e => setEstado(e.target.value)} required >
                                 <option value="AC">Acre</option>
@@ -239,12 +237,12 @@ export function FormAreaEntrega() {
                                 <option value="TO">Tocantins</option></select>
                         </div>
 
-                        <div className="col-span-5 md:col-span-3">
+                        <div className="col-span-12 md:col-span-2">
                             <label>Número <i className="text-rose-700">*</i></label>
                             <input type="text" value={numero} onChange={e => setNumero(e.target.value)} required />
                         </div>
 
-                        <div className="col-span-12 md:col-span-4">
+                        <div className="col-span-12 md:col-span-3">
                             <label>Bairro <i className="text-rose-700">*</i></label>
                             <input type="text" value={bairro} onChange={e => setBairro(e.target.value)} required />
                         </div>
@@ -252,6 +250,11 @@ export function FormAreaEntrega() {
                         <div className="col-span-12 md:col-span-5">
                             <label>Complemento</label>
                             <input type="text" value={complemento} onChange={e => setComplemento(e.target.value)} />
+                        </div>
+
+                        <div className="col-span-12 md:col-span-5">
+                            <label>Link Google Maps <i className="text-rose-700">*</i></label>
+                            <input type="text" value={linkGoogleMaps} onChange={e => setLinkGoogleMaps(e.target.value)} required />
                         </div>
 
                     </div>

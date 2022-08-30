@@ -72,9 +72,11 @@ export function FormProduto() {
         onSuccess: () => {
             queryClient.invalidateQueries(['produto_fornecedores'])
             toast.success('Fornecedor associado com sucesso!', DEFAULT_TOAST_CONFIG)
+            setFornecedor('')
         },
         onError: () => {
             toast.warn("Este fornecedor já foi associado!", DEFAULT_TOAST_CONFIG)
+            setFornecedor('')
         }
     })
 
@@ -173,7 +175,7 @@ export function FormProduto() {
                         />
                     </div>
 
-                    <div className="col-span-5 md:col-span-2 lg:col-span-2">
+                    <div className="col-span-5 md:col-span-3 lg:col-span-2">
                         <label>Código</label>
                         <input type="number"
                             value={codigo}
@@ -181,7 +183,7 @@ export function FormProduto() {
                         />
                     </div>
 
-                    <div className="col-span-12 md:col-span-5 lg:col-span-5">
+                    <div className="col-span-12 md:col-span-7 lg:col-span-5">
                         <label>Nome <i className="text-rose-700">*</i></label>
                         <input type="text"
                             value={nome}
@@ -190,7 +192,7 @@ export function FormProduto() {
                         />
                     </div>
 
-                    <div className="col-span-6 md:col-span-4 lg:col-span-2">
+                    <div className="col-span-12 md:col-span-3 lg:col-span-2">
                         <label>Estoque Mínimo <i className="text-rose-700">*</i></label>
                         <input type="number" className="text-right"
                             value={estoqueMinimo}
@@ -208,7 +210,7 @@ export function FormProduto() {
                         />
                     </div>
 
-                    <div className="col-span-6 md:col-span-4 lg:col-span-2">
+                    <div className="col-span-6 md:col-span-3 lg:col-span-2">
                         <label>Quantidade 1 <i className="text-rose-700">*</i></label>
                         <input type="number" className="text-right"
                             value={quantidade1}
@@ -233,7 +235,7 @@ export function FormProduto() {
                         />
                     </div>
 
-                    <div className="col-span-12 md:col-span-2">
+                    <div className="col-span-12 md:col-span-4">
                         <label>Grupo</label>
                         <select value={grupo} onChange={e => setGrupo(e.target.value)}>
                             <option value="">Selecione</option>
@@ -241,7 +243,7 @@ export function FormProduto() {
                         </select>
                     </div>
 
-                    <div className="col-span-12 md:col-span-2">
+                    <div className="col-span-12 md:col-span-4">
                         <label>Subgrupo</label>
                         <select value={subgrupo} onChange={e => setSubgrupo(e.target.value)}>
                             <option value="">Selecione</option>
@@ -251,7 +253,12 @@ export function FormProduto() {
 
                     {
                         uuidEdit &&
-                        <div className="col-span-12 md:col-span-2">
+                        <div className="col-span-12" />
+
+                    }
+                    {
+                        uuidEdit &&
+                        <div className="col-span-12 md:col-span-4">
                             <label>Fornecedor</label>
                             <select value={fornecedor} onChange={e => setFornecedor(e.target.value)}>
                                 <option value="">Selecione</option>
@@ -262,8 +269,8 @@ export function FormProduto() {
 
                     {
                         uuidEdit &&
-                        <div className="col-span-12">
-                            <Button titulo="Adicionar fornecedor" className="botao-azul-1"
+                        <div className="col-span-12 md:col-span-4 lg:col-span-3 flex items-center pt-5">
+                            <Button titulo="Associar fornecedor" className="botao-azul-1 w-full"
                                 onClick={() => {
                                     if (fornecedor === "") return toast.warn('Selecione um fornecedor', DEFAULT_TOAST_CONFIG)
                                     else if (uuidEdit) return associarProdutoFornecedor.mutate()

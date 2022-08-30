@@ -50,6 +50,7 @@ export interface AreaEntrega extends Base, Endereco {
     codigo: string
     nome: string
     fornecedor: string //| Fornecedor
+    google_maps_url: string
 }
 
 export interface Pedido extends Base {
@@ -80,7 +81,7 @@ export interface ProdutoFornecedor extends Base {
 }
 
 export interface ProdutoAbaixoEstoqueMinimo extends Base {
-    produto: Produto
+    produto: string// produto: Produto
     estoque_minimo: string
     em_estoque: string
 }

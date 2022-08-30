@@ -29,7 +29,7 @@ export function Home() {
     const [uuidprodutoEstaSendoSelecionadoFornecedor, setUuidProdutoEstaSendoSelecionadoFornecedor] = useState('');
     const [uuidPedidoItemEstaSendoSelecionadoFornecedor, setUuidPedidoItemEstaSendoSelecionadoFornecedor] = useState('');
     const [areaEntregaExibicaoCompra, setAreaEntregaExibicaoCompra] = useState('');
-    // const [fornecedorProdutoItemPedido, setFornecedorProdutoItemPedido] = useState<{}>({});
+    const [stringIframAreaEntrega, setStringIframAreaEntrega] = useState('');
 
     // refs do modais
     const exibicaoPedidosModal = useRef<HTMLDivElement>(null)
@@ -176,7 +176,7 @@ export function Home() {
     const atualizarToastAssociarFornecedorAoProdutoCompra = () => toast.update(toastAssociarFornecedorAoProdutoCompra.current, { type: 'success', render: `Fornecedor Associado!`, ...DEFAULT_TOAST_CONFIG })
 
     /* const someHtml = '<div><strong>blablabla<strong><p>another blbla</p/></div>'
-    <div className="Container" dangerouslySetInnerHTML={{__html: someHtml}}></div> */
+     */
 
     return (
         <div className="p-5">
@@ -460,7 +460,7 @@ export function Home() {
 
                                         <thead className="bg-blue-200">
                                             <tr>
-                                                <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Nome</th>
+                                                <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Produto</th>
                                                 <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Estoque mínimo</th>
                                                 <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Em estoque</th>
                                                 {/* <th scope="col" className="px-6 py-3 text-left text-xs text-blue-900 font-extrabold uppercase tracking-wider whitespace-nowrap">Identificador</th> */}
@@ -471,7 +471,7 @@ export function Home() {
                                             {
                                                 dadosProdutosAbaixoEstoqueMinimo?.data.results.map((produtoEstoque: ProdutoAbaixoEstoqueMinimo) => (
                                                     <motion.tr key={produtoEstoque.uuid} className="bg-blue-200 text-blue-900 font-medium" /* whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }} */>
-                                                        <td className="coluna-grid">{produtoEstoque.produto.nome}</td>
+                                                        <td className="coluna-grid">{produtoEstoque.produto}</td>
                                                         <td className="coluna-grid">{produtoEstoque.estoque_minimo}</td>
                                                         <td className="coluna-grid">{produtoEstoque.em_estoque}</td>
                                                     </motion.tr>
@@ -535,11 +535,11 @@ export function Home() {
                                             </div>
                                         </div>
 
-                                        <h1 className="t-3 ml-6">Compra dos Produtos</h1>
+                                        <h1 className="t-3 ml-4">Compra dos Produtos</h1>
 
-                                        <div ref={inputsCompra} className="inputs mt-12 ml-6">
+                                        <div ref={inputsCompra} className="inputs mt-12">
 
-                                            <div className="col-span-6 lg:col-span-3">
+                                            <div className="col-span-12 lg:col-span-3">
                                                 <label>Produto <i className="text-rose-700">*</i></label>
                                                 <select value={produtoCompra} onChange={e => setProdutoCompra(e.target.value)} required>
                                                     <option value="">Selecione</option>
@@ -549,13 +549,13 @@ export function Home() {
                                                 </select>
                                             </div>
 
-                                            <div className="col-span-6 lg:col-span-2">
+                                            <div className="col-span-12 lg:col-span-2">
                                                 <label>Preço <i className="text-rose-700">*</i></label>
                                                 <input type="number" className="text-end" value={precoProdutoCompra} onChange={e => setPrecoProdutoCompra(e.target.value)} required />
                                             </div>
 
-                                            <div className="col-span-6 lg:col-span-1">
-                                                <Button titulo="Realizar Compra" className="botao-azul-1 mt-6"
+                                            <div className="col-span-12 lg:col-span-1">
+                                                <Button titulo="Realizar Compra" className="botao-azul-1 w-full mt-6"
                                                     onClick={() => {
                                                         const todosInputs = inputsCompra.current!.querySelectorAll('input')
                                                         const todosSelects = inputsCompra.current!.querySelectorAll('select')
@@ -602,7 +602,7 @@ export function Home() {
                                                 <tbody className="bg-white divide-y divide-blue-900">
                                                     {
                                                         dadosPedidoExibicao?.data.results.map((pedido: PedidoItem) => (
-                                                            <motion.tr key={pedido.uuid} className="bg-blue-200 text-blue-900 font-medium" >
+                                                            <motion.tr key={pedido.uuid} className="bg-blue-200 text-blue-900" >
                                                                 <td className="coluna-grid flex justify-center">{pedido.comprado === "S" ? <AiOutlineCheck /> : <BsXLg />}</td>
                                                                 <td className="coluna-grid text-left">{pedido.produto.nome}</td>
                                                                 <td className="coluna-grid text-center">{pedido.quantidade}</td>
@@ -625,7 +625,8 @@ export function Home() {
                                                                 </td>
                                                                 <td className="coluna-grid text-center cursor-pointer"
                                                                     onClick={() => {
-                                                                        if( pedido.fornecedor ) {
+                                                                        if (pedido.fornecedor) {
+                                                                            setStringIframAreaEntrega(pedido.fornecedor.area_entrega.google_maps_url)
                                                                             setAreaEntregaExibicaoCompra(pedido.fornecedor.area_entrega.nome)
                                                                             exibicaoDadosCompra.current?.classList.add("hidden")
                                                                             exibicaoAreaEntregaFornecedorCompra.current?.classList.remove("hidden")
@@ -695,13 +696,20 @@ export function Home() {
                                 </div>
 
                                 <div ref={exibicaoAreaEntregaFornecedorCompra} className="hidden">
-                                    <h1 className="t-2">Área de Entrega {areaEntregaExibicaoCompra}</h1>
-                                    <Button titulo="Voltar" className="relative bottom-0 botao-azul-1"
+                                    <div className="flex justify-between">
+                                        <h1 className="t-2">Área de Entrega {areaEntregaExibicaoCompra}</h1>
+
+                                        <Button titulo="Voltar" className="relative bottom-0 botao-azul-1"
                                             onClick={() => {
                                                 exibicaoAreaEntregaFornecedorCompra.current?.classList.add("hidden")
                                                 exibicaoDadosCompra.current?.classList.remove("hidden")
                                             }}
                                         />
+                                    </div>
+
+                                    <div className="iframe-container w-full h-full flex justify-center items-center pt-14" dangerouslySetInnerHTML={{__html: stringIframAreaEntrega}}>
+
+                                    </div>
                                 </div>
 
                             </div>
