@@ -86,6 +86,11 @@ export interface ProdutoAbaixoEstoqueMinimo extends Base {
     em_estoque: string
 }
 
+export interface Estoque extends Base {
+    produto: Produto
+    quantidade:  number
+}
+
 /* Interfaces de response de API's externas */
 
 export interface ViacepResponse {
@@ -106,5 +111,5 @@ export interface ViacepResponse {
 export interface ExibicaoDadoGridConfig {
     coluna: string,
     chaveApi: string,
-    mascara?: () => void,
+    mascara?: (a:any) => string,
 }

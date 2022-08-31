@@ -33,13 +33,7 @@ export function Grid(props: {
     let filtro = props.requisicaoConfig.filtros ? props.requisicaoConfig.filtros + `&search=${filtroInput}` : `page=${pagina}&search=${filtroInput}`
 
     const { todosRegistros } = useBackend(props.requisicaoConfig.endpoint)
-    const {
-        data,
-        refetch
-    } = useQuery(
-        [props.requisicaoConfig.endpoint, filtro],
-        () => todosRegistros(undefined, filtro),
-    )
+    const { data, refetch } = useQuery([props.requisicaoConfig.endpoint, filtro], () => todosRegistros(undefined, filtro))
 
     function calcularQuantidadePaginas() {
         const dadosResponse = data?.data as BackendResponse
@@ -52,6 +46,7 @@ export function Grid(props: {
             else if (divisao % 1 === 0) quantidadeTotalPaginas = divisao
             else quantidadeTotalPaginas = Math.floor(divisao) + 1
         }
+
         return quantidadeTotalPaginas
     }
 
@@ -84,17 +79,14 @@ export function Grid(props: {
 
                                 <thead className="bg-blue-200">
                                     <tr>
-                                        {/* <th scope="col" className="px-6 py-3 text-left text-xs text-black font-extrabold uppercase tracking-wider whitespace-nowrap">Status</th> */}
                                         <th scope="col" className="px-6 py-3 text-left text-xs text-black font-extrabold uppercase tracking-wider whitespace-nowrap">Identificador</th>
-
                                         {
                                             props.exibicaoDadosConfig.map((dadoExibicao: ExibicaoDadoGridConfig) => (
                                                 <th key={dadoExibicao.coluna + dadoExibicao.chaveApi} scope="col" className="px-6 py-3 text-left text-xs text-black font-extrabold uppercase tracking-wider whitespace-nowrap">
-                                                    {dadoExibicao.coluna}
+                                                    { dadoExibicao.coluna }
                                                 </th>
                                             ))
                                         }
-
                                     </tr>
                                 </thead>
 
@@ -105,15 +97,16 @@ export function Grid(props: {
                                                 whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }}
                                                 onClick={() => navigate(`editar/${registro.uuid}/`)}
                                             >
-
-                                                {/* <td className="coluna-grid" /> */}
                                                 <td className="coluna-grid truncate">{registro.uuid}</td>
                                                 {props.naoExibirCodigo && <td className="coluna-grid truncate">{registro.codigo}</td>}
-
                                                 {
                                                     props.exibicaoDadosConfig.map((dadoExibicao: ExibicaoDadoGridConfig) => (
                                                         <td key={dadoExibicao.chaveApi + dadoExibicao.coluna} className="coluna-grid">
-                                                            {registro[dadoExibicao.chaveApi]}
+                                                            { 
+                                                                dadoExibicao.mascara
+                                                                    ? dadoExibicao.mascara(registro)
+                                                                    : registro[dadoExibicao.chaveApi]
+                                                            }
                                                         </td>
                                                     ))
                                                 }

@@ -4,12 +4,11 @@ import { useQueryClient, useMutation, useQuery } from 'react-query'
 import { toast } from "react-toastify";
 import { DEFAULT_TOAST_CONFIG } from "../constantes";
 import { useBackend } from "../hooks/useBackend";
-import { AreaEntrega, Pedido, Produto } from "../interfaces";
+import { Estoque, Produto } from "../interfaces";
 import { criarUrlVoltar } from "../utils/criarUrlVoltar";
 import { CabecalhoForm } from "../componentes/CabecalhoForm";
 import { Loading } from "../componentes/Loading";
 import { Error } from "../componentes/Error";
-
 
 export function FormEstoque() {
     const [uuid, setUuid] = useState('')
@@ -17,7 +16,6 @@ export function FormEstoque() {
     const [quantidade, setQuantidade] = useState('')
 
     const [produtos, setProdutos] = useState<Produto[]>([])
-    const [areasEntregas, setAreasEntregas] = useState<AreaEntrega[]>([])
 
     const inputs = useRef<HTMLDivElement>(null)
 
@@ -27,29 +25,12 @@ export function FormEstoque() {
 
     const navigate = useNavigate()
 
-    const { data: dadosEstoque, status: statusEstoque } = useQuery(
-        ['estoque', uuidEdit],
-        () => umRegistro(uuidEdit ? uuidEdit : uuid),
-        { enabled: uuidEdit !== undefined }
-    )
-
-    const { data: dadosProduto, status: statusProduto } = useQuery(
-        'produto',
-        () => umRegistro(uuidEdit ? uuidEdit : uuid, 'produtos'),
-        { enabled: uuidEdit !== undefined }
-    )
-
-    const { data: dadosProdutos, status: statusProdutos } = useQuery(
-        'produtos',
-        () => todosRegistros('produtos'),
-    )
+    const { data: dadosEstoque, status: statusEstoque } = useQuery(['estoque', uuidEdit], () => umRegistro(uuidEdit ? uuidEdit : uuid), { enabled: uuidEdit !== undefined })
+    const { data: dadosProdutos, status: statusProdutos } = useQuery('produtos', () => todosRegistros('produtos'))
 
     const queryClient = useQueryClient()
 
-    const dados = {
-        produto,
-        quantidade,
-    }
+    const dados = { produto, quantidade }
 
     const mutation = useMutation(() => uuidEdit ? editarRegistro(uuid, dados) : criarRegistro(dados), {
         onSuccess: () => {
@@ -58,18 +39,18 @@ export function FormEstoque() {
             navigate(criarUrlVoltar(pathname))
         },
         onError: () => {
-            toast.error("Ocorreu um erro!", DEFAULT_TOAST_CONFIG)
+            toast.error("Este produto já foi cadastrado!", DEFAULT_TOAST_CONFIG)
         }
     })
 
     function preencherDados(): void {
         if (dadosEstoque) {
-            const dados = dadosEstoque.data as Pedido
+            const dados = dadosEstoque.data as Estoque
 
-            if(!uuid) {
+            if (!uuid) {
                 setUuid(dados.uuid)
-            setProduto(dados.produto.uuid)
-            setQuantidade(`${dados.quantidade}`)
+                setProduto(dados.produto.uuid)
+                setQuantidade(`${dados.quantidade}`)
             }
         }
     }
@@ -110,7 +91,6 @@ export function FormEstoque() {
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onVoltar: () => {
-                            
                         },
                         onDeletar: {
                             endpoint: 'estoques',

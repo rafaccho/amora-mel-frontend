@@ -55,17 +55,13 @@ export function Home() {
     const queryClient = useQueryClient()
 
     // querys dos pedidos e dos dados dos pedidos
-    const { data: dadosPedidosEmitidos, refetch: refreshPedidosEmitidos } = useQuery('pedidos-emitidos', () => todosRegistros(undefined, `status=E`))
-    const { data: dadosPedidosAbertos, refetch: refreshPedidosAbertos } = useQuery('pedidos-abertos', () => todosRegistros(undefined, `status=A`))
-    const { data: dadosPedidosFinalizados } = useQuery('pedidos-finalizados', () => todosRegistros(undefined, `status=F`))
-    const { data: dadosProdutosAbaixoEstoqueMinimo, refetch: refreshProdutosAbaixoEstoqueMinimo } = useQuery('produtos-abaixo-estoque-minimo', () => todosRegistros("produtos_abaixo_estoque_minimo"))
+    const { data: dadosPedidoExibicao, refetch: refreshPedidoExibicao } = useQuery(['pedido-exibicao', `pedido=${uuidPedidoExibicao}`], () => todosRegistros("pedidos_itens", `pedido=${uuidPedidoExibicao}`), { enabled: uuidPedidoExibicao != '' })
     const { data: dadosFornecedoresProduto } = useQuery(['produto-fornecedores', `produto=${uuidprodutoEstaSendoSelecionadoFornecedor}`], () => todosRegistros("produto_fornecedores", `produto=${uuidprodutoEstaSendoSelecionadoFornecedor}`))
-    const { data: dadosPedidosCancelados } = useQuery('pedidos-cancelados', () => todosRegistros(undefined, `status=C`))
-    const { data: dadosPedidoExibicao, refetch: refreshPedidoExibicao } = useQuery(
-        ['pedido-exibicao', `pedido=${uuidPedidoExibicao}`],
-        () => todosRegistros("pedidos_itens", `pedido=${uuidPedidoExibicao}`),
-        { enabled: uuidPedidoExibicao != '' }
-    )
+    const { data: dadosProdutosAbaixoEstoqueMinimo, refetch: refreshProdutosAbaixoEstoqueMinimo } = useQuery(['produtos-abaixo-estoque-minimo'], () => todosRegistros("produtos_abaixo_estoque_minimo"))
+    const { data: dadosPedidosEmitidos, refetch: refreshPedidosEmitidos } = useQuery(['pedidos-emitidos'], () => todosRegistros(undefined, `status=E`))
+    const { data: dadosPedidosAbertos, refetch: refreshPedidosAbertos } = useQuery(['pedidos-abertos'], () => todosRegistros(undefined, `status=A`))
+    const { data: dadosPedidosFinalizados, refetch: refreshPedidosFinalizados } = useQuery(['pedidos-finalizados'], () => todosRegistros(undefined, `status=F`))
+    const { data: dadosPedidosCancelados, refetch: refreshPedidosCancelados } = useQuery(['pedidos-cancelados'], () => todosRegistros(undefined, `status=C`))
 
     // mutations quanto aos status dos pedidos
     const { mutate: emitirPedido, isLoading: estaEmitindoPedido } = useMutation((uuid: string) => editarRegistro(uuid, { status: "E" }), {
@@ -73,7 +69,9 @@ export function Home() {
             const uuid = response.data.uuid
             refreshPedidosAbertos()
             refreshPedidosEmitidos()
-            queryClient.removeQueries(['pedidos-emitidos', 'pedidos-abertos'])
+            refreshPedidosCancelados()
+            refreshPedidosFinalizados()
+
             atualizarToastEmissaoPedido(uuid)
             zerarFormCompra()
         },
@@ -86,7 +84,9 @@ export function Home() {
             const uuid = response.data.uuid
             refreshPedidosAbertos()
             refreshPedidosEmitidos()
-            queryClient.removeQueries(['pedidos-cancelados', 'pedidos-emitidos'])
+            refreshPedidosCancelados()
+            refreshPedidosFinalizados()
+
             atualizarToastCancelamentoPedido(uuid)
             zerarFormCompra()
         },
@@ -99,7 +99,9 @@ export function Home() {
             const uuid = response.data.uuid
             refreshPedidosAbertos()
             refreshPedidosEmitidos()
-            queryClient.removeQueries(['pedidos-finalizados', 'pedidos-emitidos'])
+            refreshPedidosCancelados()
+            refreshPedidosFinalizados()
+
             atualizarToastFinalizacaoPedido(uuid)
             zerarFormCompra()
         },
@@ -118,7 +120,7 @@ export function Home() {
     }, 'compra_pedido_item'), {
         onSuccess: (response: any) => {
             const data = response.data as Pedido
-            toast.success(`Pedido ${data.uuid} emitido com sucesso`, DEFAULT_TOAST_CONFIG)
+            toast.success(`Produto ${data.produto.nome} emitido com sucesso`, DEFAULT_TOAST_CONFIG)
 
             refreshPedidosAbertos()
             refreshPedidosEmitidos()
@@ -174,9 +176,6 @@ export function Home() {
 
     const abrirToastAssociarFornecedorAoProdutoCompra = (nome: string) => toastAssociarFornecedorAoProdutoCompra.current = toast.loading(`Associando Fornecedor ${nome}...`)
     const atualizarToastAssociarFornecedorAoProdutoCompra = () => toast.update(toastAssociarFornecedorAoProdutoCompra.current, { type: 'success', render: `Fornecedor Associado!`, ...DEFAULT_TOAST_CONFIG })
-
-    /* const someHtml = '<div><strong>blablabla<strong><p>another blbla</p/></div>'
-     */
 
     return (
         <div className="p-5">
@@ -554,7 +553,7 @@ export function Home() {
                                                 <input type="number" className="text-end" value={precoProdutoCompra} onChange={e => setPrecoProdutoCompra(e.target.value)} required />
                                             </div>
 
-                                            <div className="col-span-12 lg:col-span-1">
+                                            <div className="col-span-12 lg:col-span-2">
                                                 <Button titulo="Realizar Compra" className="botao-azul-1 w-full mt-6"
                                                     onClick={() => {
                                                         const todosInputs = inputsCompra.current!.querySelectorAll('input')
@@ -707,7 +706,7 @@ export function Home() {
                                         />
                                     </div>
 
-                                    <div className="iframe-container w-full h-full flex justify-center items-center pt-14" dangerouslySetInnerHTML={{__html: stringIframAreaEntrega}}>
+                                    <div className="iframe-container w-full h-full flex justify-center items-center pt-14" dangerouslySetInnerHTML={{ __html: stringIframAreaEntrega }}>
 
                                     </div>
                                 </div>
