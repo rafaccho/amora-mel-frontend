@@ -64,8 +64,8 @@ export function App() {
               titulo="Áreas de Entrega"
               grid={{
                 exibicaoDadosConfig: [
-                  { coluna: 'NOME', chaveApi: 'nome' },
-                  { coluna: 'CEP', chaveApi: 'cep' },
+                  { coluna: 'Nome', chaveApi: 'nome' },
+                  { coluna: 'Cep', chaveApi: 'cep' },
                 ],
                 requisicaoConfig: {
                   endpoint: 'areas_entregas',
