@@ -91,6 +91,7 @@ export function FormEstoque() {
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onVoltar: () => {
+                            queryClient.invalidateQueries('estoques')
                         },
                         onDeletar: {
                             endpoint: 'estoques',

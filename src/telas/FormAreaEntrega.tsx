@@ -115,7 +115,7 @@ export function FormAreaEntrega() {
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onVoltar: () => {
-
+                            queryClient.invalidateQueries('areas_entregas')
                         },
                         onDeletar: {
                             endpoint: 'areas_entregas',

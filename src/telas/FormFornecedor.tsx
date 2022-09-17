@@ -115,7 +115,7 @@ export function FormFornecedor() {
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onVoltar: () => {
-
+                            queryClient.invalidateQueries('fornecedores')
                         },
                         onDeletar: {
                             endpoint: 'fornecedores',

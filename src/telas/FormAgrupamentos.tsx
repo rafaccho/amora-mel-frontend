@@ -111,7 +111,7 @@ export function FormAgrupamentos(props: { entidade: "G" | "S" }) {
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onVoltar: () => {
-
+                            queryClient.invalidateQueries(['grupos', 'subgrupos'])
                         },
                         onDeletar: {
                             endpoint: 'agrupamentos',
