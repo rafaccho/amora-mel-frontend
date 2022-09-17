@@ -23,6 +23,7 @@ export function Grid(props: {
 }) {
     const [filtroInput, setFiltroInput] = useState('')
     const [paginalAtual, setPaginalAtual] = useState(1)
+    const [totalPaginas, setTotalPaginas] = useState(1)
     const [pagina, setPagina] = useState('1')
 
     const inputFiltro = useRef<HTMLInputElement>(null)
@@ -37,7 +38,7 @@ export function Grid(props: {
 
     function calcularQuantidadePaginas() {
         const dadosResponse = data?.data as BackendResponse
-        let quantidadeTotalPaginas;
+        let quantidadeTotalPaginas = 0
 
         if (dadosResponse) {
             const divisao = dadosResponse.count / 8
@@ -47,6 +48,7 @@ export function Grid(props: {
             else quantidadeTotalPaginas = Math.floor(divisao) + 1
         }
 
+        setTotalPaginas(quantidadeTotalPaginas)
         return quantidadeTotalPaginas
     }
 
@@ -56,6 +58,10 @@ export function Grid(props: {
     }, [location.pathname])
 
     useEffect(() => { refetch() }, [])
+
+    useEffect(() => {
+        data && calcularQuantidadePaginas()
+    }, [data])
     
     return (
         <div id={`grid-${props.requisicaoConfig.endpoint}`} className="w-full">
@@ -129,6 +135,8 @@ export function Grid(props: {
                     <Button className="botao-azul-1 w-24 flex justify-center pt-3" titulo={<AiOutlineArrowLeft />}
                         onClick={() => {
                             const numPagina = data?.data.previous
+                            console.log(numPagina);
+
                             if (paginalAtual === 1 || !numPagina) return toast.warn('Você está na primeira página', DEFAULT_TOAST_CONFIG)
                             if (numPagina) {
                                 setPaginalAtual(paginalAtual - 1)
@@ -137,7 +145,7 @@ export function Grid(props: {
                             }
                         }}
                     />
-                    <span className='font-bold font-sans text-blue-700'>{paginalAtual} de {calcularQuantidadePaginas() || 0}</span>
+                    <span className='font-bold font-sans text-blue-700'>{paginalAtual} de {totalPaginas}</span>
                     <Button className="botao-azul-1 w-24 flex justify-center pt-3" titulo={<AiOutlineArrowRight />}
                         onClick={() => {
                             const numPagina = data?.data.next
