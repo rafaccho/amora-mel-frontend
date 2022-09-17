@@ -32,7 +32,7 @@ export function FormProduto() {
     const { criarRegistro, editarRegistro, umRegistro, todosRegistros, deletarRegistro } = useBackend('produtos')
     const navigate = useNavigate()
 
-    const { data: dadosProduto, status: statusProduto } = useQuery(['produto', uuidEdit], () => umRegistro(uuidEdit ? uuidEdit : uuid), { enabled: uuidEdit !== undefined })
+    const { data: dadosProduto, status: statusProduto } = useQuery(['produto', uuidEdit], () => umRegistro(uuidEdit ? uuidEdit : uuid))
     const { data: dadosGrupos } = useQuery('grupo', () => todosRegistros('agrupamentos', 'entidade=G'))
     const { data: dadosSubgrupos } = useQuery('subgrupo', () => todosRegistros('agrupamentos', 'entidade=S'))
     const { data: dadosProdutoFornecedores } = useQuery(['produto_fornecedores', uuidEdit], () => todosRegistros('produto_fornecedores', `produto=${uuidEdit}`))
@@ -44,7 +44,7 @@ export function FormProduto() {
         codigo,
         nome,
         unidade1,
-        unidade2: quantidade2 || null,
+        unidade2: unidade2 || null,
         quantidade1,
         quantidade2: quantidade2 || null,
         grupo,
@@ -142,7 +142,7 @@ export function FormProduto() {
                     botoesForm={{
                         onSalvar: () => mutation.mutate(),
                         onVoltar: () => {
-                            queryClient.removeQueries('produtos')
+                            queryClient.invalidateQueries('produtos')
                         },
                         onDeletar: {
                             endpoint: 'produtos',
@@ -308,11 +308,7 @@ export function FormProduto() {
                                                 <td className="coluna-grid text-center">{produtoFornecedor.fornecedor.cidade}</td>
                                                 <td className="coluna-grid text-center">{produtoFornecedor.fornecedor.bairro}</td>
                                                 <td className="coluna-grid text-center">{produtoFornecedor.fornecedor.area_entrega.nome}</td>
-                                                <td className="coluna-grid text-center"
-                                                    onClick={() => {
-                                                        desassociarProdutoFornecedor.mutate(produtoFornecedor.uuid)
-                                                    }}
-                                                ><BsTrashFill /></td>
+                                                <td className="coluna-grid text-center"onClick={() => desassociarProdutoFornecedor.mutate(produtoFornecedor.uuid) } ><BsTrashFill /></td>
                                             </tr>
                                         ))
                                     }
@@ -328,5 +324,3 @@ export function FormProduto() {
         </div>
     )
 }
-
-
