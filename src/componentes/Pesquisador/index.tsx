@@ -1,5 +1,5 @@
-import { Fragment, useRef, useState, useEffect } from 'react'
-import { QueryClient, useQuery, useQueryClient } from 'react-query'
+import { Fragment, useRef } from 'react'
+import { useQuery } from 'react-query'
 import { IoIosCloseCircle } from "react-icons/io"
 
 import { useBackend } from '../../hooks/useBackend'
@@ -60,7 +60,7 @@ export function Pesquisador(props: Props) {
                 }}
             />
 
-            <div ref={listaRegistros} className='w-80 h-64 bg-blue-100 z-50 absolute p-3 hidden'>
+            <div ref={listaRegistros} className='w-80 h-96 bg-blue-100 z-50 absolute p-3 hidden'>
                 <div className="w-full flex justify-between">
                     <h1 className="mb-4 font-bold text-lg">{props.titulo}</h1>
                     <div className="flex justify-end items-start">
@@ -71,7 +71,7 @@ export function Pesquisador(props: Props) {
                     </div>
                 </div>
 
-                <div id="container-itens" className='bg-blue-200 w-full h-full flex flex-col gap-2 rounded p-3 overflow-auto'>
+                <div id="container-itens" className='bg-blue-200 w-full h-80 flex flex-col gap-2 rounded p-3 overflow-auto'>
                     {
                         data && data.data.results.map((item: any) => (
                             <div key={item.uuid} id={`item-${item.uuid}`} className='bg-blue-100 w-full rounded-lg font-semibold text-center p-2 cursor-pointer'
