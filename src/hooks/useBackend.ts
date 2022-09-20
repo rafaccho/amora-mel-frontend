@@ -11,6 +11,7 @@ export function useBackend(endpointPrimario: Endpoint) {
     }) {
         
         const urlBase = 'https://cors-everywhere-me.herokuapp.com/http://34.201.147.5:8000/api/v1'
+        // const urlBase = 'http://localhost:8000/api/v1'
 
         const url = `${urlBase}/${config.endpointSecundario ? config.endpointSecundario : endpointPrimario}/${config.uuid ? `${config.uuid}/` : config.filtros ? `?${config.filtros}` : ''}`
         return axios[config.metodo](url, config.body || {})

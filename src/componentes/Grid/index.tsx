@@ -31,7 +31,7 @@ export function Grid(props: {
     const navigate = useNavigate()
     const location = useLocation()
 
-    let filtro = props.requisicaoConfig.filtros ? props.requisicaoConfig.filtros + `&search=${filtroInput}` : `page=${pagina}&search=${filtroInput}`
+    let filtro = props.requisicaoConfig.filtros ? props.requisicaoConfig.filtros + `&page=${pagina}&search=${filtroInput}` : `&page=${pagina}&search=${filtroInput}`
 
     const { todosRegistros } = useBackend(props.requisicaoConfig.endpoint)
     const { data, refetch } = useQuery([props.requisicaoConfig.endpoint, filtro], () => todosRegistros(undefined, filtro))
@@ -54,7 +54,12 @@ export function Grid(props: {
 
     useEffect(() => {
         setFiltroInput('')
-        if (inputFiltro.current) inputFiltro.current.value = ''
+        if (inputFiltro.current) {
+            inputFiltro.current.value = ''
+            setPaginalAtual(1)
+            setTotalPaginas(1)
+            setPagina('1')
+        }
     }, [location.pathname])
 
     useEffect(() => { refetch() }, [])
@@ -62,7 +67,7 @@ export function Grid(props: {
     useEffect(() => {
         data && calcularQuantidadePaginas()
     }, [data])
-    
+
     return (
         <div id={`grid-${props.requisicaoConfig.endpoint}`} className="w-full">
 
@@ -89,7 +94,7 @@ export function Grid(props: {
                                         {
                                             props.exibicaoDadosConfig.map((dadoExibicao: ExibicaoDadoGridConfig) => (
                                                 <th key={dadoExibicao.coluna + dadoExibicao.chaveApi} scope="col" className="px-6 py-3 text-left text-xs text-black font-extrabold uppercase tracking-wider whitespace-nowrap">
-                                                    { dadoExibicao.coluna }
+                                                    {dadoExibicao.coluna}
                                                 </th>
                                             ))
                                         }
@@ -108,7 +113,7 @@ export function Grid(props: {
                                                 {
                                                     props.exibicaoDadosConfig.map((dadoExibicao: ExibicaoDadoGridConfig) => (
                                                         <td key={dadoExibicao.chaveApi + dadoExibicao.coluna} className="coluna-grid">
-                                                            { 
+                                                            {
                                                                 dadoExibicao.mascara
                                                                     ? dadoExibicao.mascara(registro)
                                                                     : registro[dadoExibicao.chaveApi]
@@ -135,9 +140,9 @@ export function Grid(props: {
                     <Button className="botao-azul-1 w-24 flex justify-center pt-3" titulo={<AiOutlineArrowLeft />}
                         onClick={() => {
                             const numPagina = data?.data.previous
-                            console.log(numPagina);
 
-                            if (paginalAtual === 1 || !numPagina) return toast.warn('Você está na primeira página', DEFAULT_TOAST_CONFIG)
+                            // if (paginalAtual === 1 || !numPagina) return toast.warn('Você está na primeira página', DEFAULT_TOAST_CONFIG)
+                            if (paginalAtual === 1) return toast.warn('Você está na primeira página', DEFAULT_TOAST_CONFIG)
                             if (numPagina) {
                                 setPaginalAtual(paginalAtual - 1)
                                 try { setPagina(numPagina.split('?')[1].match(/\d/)[0]) }
@@ -153,6 +158,8 @@ export function Grid(props: {
                             if (numPagina) {
                                 setPaginalAtual(paginalAtual + 1)
                                 setPagina(numPagina.split('?')[1].match(/\d/)[0])
+                                console.log(filtro);
+
                             }
                         }}
                     />

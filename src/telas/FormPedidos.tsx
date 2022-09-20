@@ -1,22 +1,27 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useQueryClient, useMutation, useQuery } from 'react-query'
+import { BsPencilSquare, BsTrashFill } from "react-icons/bs";
 import { toast } from "react-toastify";
-import { DEFAULT_TOAST_CONFIG } from "../constantes";
-import { useBackend } from "../hooks/useBackend";
-import { Pedido, PedidoItem, Produto } from "../interfaces";
-import { criarUrlVoltar } from "../utils/criarUrlVoltar";
+
 import { CabecalhoForm } from "../componentes/CabecalhoForm";
 import { Loading } from "../componentes/Loading";
 import { Error } from "../componentes/Error";
+import { Pesquisador } from "../componentes/Pesquisador";
+
+import { useBackend } from "../hooks/useBackend";
+import { criarUrlVoltar } from "../utils/criarUrlVoltar";
+
+import { DEFAULT_TOAST_CONFIG } from "../constantes";
+import { Pedido, PedidoItem, Produto } from "../interfaces";
 import { Button } from "../tags";
-import { BsPencilSquare, BsTrashFill } from "react-icons/bs";
 
 
 export function FormPedidos() {
     const [uuid, setUuid] = useState('')
     const [loja, setLoja] = useState('')
     const [produto, setProduto] = useState('')
+    const [inputProduto, setInputProduto] = useState('')
     const [quantidade, setQuantidade] = useState('')
     const [areaEntrega, setAreaEntrega] = useState('')
     const [uuidItemPedido, setUuidItemPedido] = useState('')
@@ -70,6 +75,7 @@ export function FormPedidos() {
             toast.success('Produto incluido com sucesso!', DEFAULT_TOAST_CONFIG)
             setProduto("")
             setQuantidade("")
+            setInputProduto("")
             setUuidItemPedido("")
         },
         onError: () => {
@@ -213,12 +219,25 @@ export function FormPedidos() {
                             <input type="number" className="text-right" value={uuidItemPedido} disabled />
                         </div>
 
-                        <div className="col-span-8 md:col-span-4">
+                        {/* <div className="col-span-8 md:col-span-4">
                             <label>Produto <i className="text-rose-700">*</i></label>
                             <select name="fornecedor" id="uf" value={produto} onChange={e => setProduto(e.target.value)} required>
                                 <option value="">Selecione</option>
                                 {produtos.map((produto: Produto) => <option key={produto.uuid} value={produto.uuid}>{produto.nome}</option>)}
                             </select>
+                        </div> */}
+
+                        <div className="col-span-8 md:col-span-4">
+                            <label>Produto <i className="text-rose-700">*</i></label>
+                            <Pesquisador
+                                state={{
+                                    uuid: produto, setUuid: setProduto,
+                                    filtro: inputProduto, setFiltro: setInputProduto,
+                                }}
+                                exibidor={(produto: Produto) => produto.codigo ? `${produto.codigo} - ${produto.nome}` : produto.nome}
+                                endpoint="produtos"
+                                titulo="Produtos"
+                            />
                         </div>
 
                         <div className="col-span-4 md:col-span-2">
